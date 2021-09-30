@@ -1,4 +1,4 @@
-package com.agaperra.weatherforecast
+package com.agaperra.weatherforecast.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
