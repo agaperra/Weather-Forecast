@@ -13,6 +13,5 @@ interface ApiService {
         @Query("days") days: Int,
         @Query("aqi") aqi: String,
         @Query("alerts") alerts: String
-
     ) : ForecastResponse
 }
