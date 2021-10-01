@@ -10,6 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,7 +24,7 @@ class SplashActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             WeatherForecastTheme {
-                SetImage()
+                SplashBackground(backgroundColor = firstGrayBlue)
             }
         }
 
@@ -31,17 +32,17 @@ class SplashActivity : ComponentActivity() {
 }
 
 @Composable
-fun SetImage() {
+fun SplashBackground(backgroundColor: Color) {
     Surface(
         modifier = Modifier
             .fillMaxSize(),
-        color = firstGrayBlue
+        color = backgroundColor
     ) {
         val systemUiController = rememberSystemUiController()
 
         SideEffect {
             systemUiController.setSystemBarsColor(
-                color = firstGrayBlue,
+                color = backgroundColor,
                 darkIcons = false
             )
         }
