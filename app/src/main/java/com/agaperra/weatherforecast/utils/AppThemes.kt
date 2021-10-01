@@ -3,7 +3,7 @@ package com.agaperra.weatherforecast.utils
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.agaperra.weatherforecast.R
-import com.agaperra.weatherforecast.ui.theme.Color.firstGrayBlue
+import com.agaperra.weatherforecast.ui.theme.firstGrayBlue
 
 
 sealed class AppThemes(
@@ -35,3 +35,4 @@ sealed class AppThemes(
         val tint: Color? = Color.White
     ) : AppThemes(backgroundRes = background, textColor = color, iconsTint = tint)
 }
+

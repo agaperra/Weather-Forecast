@@ -1,7 +1,6 @@
 package com.agaperra.weatherforecast.utils
 
-class Constants {
-    companion object{
-        const val WEATHER_API_URL = "http://api.weatherapi.com"
-    }
+object Constants {
+    const val SPLASH_SCREEN_DELAY = 1000L
+    const val WEATHER_API_URL = "http://api.weatherapi.com"
 }

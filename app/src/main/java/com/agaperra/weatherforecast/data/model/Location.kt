@@ -1,3 +1,5 @@
+package com.agaperra.weatherforecast.data.model
+
 import com.google.gson.annotations.SerializedName
 
 /*
@@ -20,6 +22,6 @@ data class Location (
 	@SerializedName("lat") val lat : Double,
 	@SerializedName("lon") val lon : Double,
 	@SerializedName("tz_id") val tz_id : String,
-	@SerializedName("localtime_epoch") val localtime_epoch : Int,
+	@SerializedName("localtime_epoch") val localtime_epoch : Double,
 	@SerializedName("localtime") val localtime : String
 )

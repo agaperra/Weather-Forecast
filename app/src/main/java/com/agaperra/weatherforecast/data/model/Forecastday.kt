@@ -1,3 +1,5 @@
+package com.agaperra.weatherforecast.data.model
+
 import com.google.gson.annotations.SerializedName
 
 /*
@@ -15,7 +17,7 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 data class Forecastday (
 
 	@SerializedName("date") val date : String,
-	@SerializedName("date_epoch") val date_epoch : Int,
+	@SerializedName("date_epoch") val date_epoch : Double,
 	@SerializedName("day") val day : Day,
 	@SerializedName("astro") val astro : Astro,
 	@SerializedName("hour") val hour : List<Hour>

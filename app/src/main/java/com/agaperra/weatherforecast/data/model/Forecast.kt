@@ -1,3 +1,5 @@
+package com.agaperra.weatherforecast.data.model
+
 import com.google.gson.annotations.SerializedName
 
 /*

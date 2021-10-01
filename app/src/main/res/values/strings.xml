@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Weather Forecast</string>
+    <string name="icon_location">Location icon</string>
+    <string name="icon_weather">Weather Icon</string>
+    <string name="weather_background">Weather Background</string>
+    <string name="unavailable_feature">Feature is not available</string>
+    <string name="location_rationale">Location access is important for this app. Please, grant the permission.</string>
+    <string name="ok">Ok!</string>
+    <string name="nope">Nope</string>
+    <string name="permission_denied_message">Location permission denied. Please, grant us access on the Settings screen.</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="splash_screen_background">Splash Screen Background</string>
 </resources>

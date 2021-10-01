@@ -1,3 +1,5 @@
+package com.agaperra.weatherforecast.data.model
+
 import com.google.gson.annotations.SerializedName
 
 /*
@@ -19,5 +21,5 @@ data class Astro (
 	@SerializedName("moonrise") val moonrise : String,
 	@SerializedName("moonset") val moonset : String,
 	@SerializedName("moon_phase") val moon_phase : String,
-	@SerializedName("moon_illumination") val moon_illumination : Int
+	@SerializedName("moon_illumination") val moon_illumination : Double
 )
