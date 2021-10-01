@@ -1,54 +1,157 @@
 package com.agaperra.weatherforecast.ui.main
 
+import android.Manifest
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomStart
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.Top
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.ui.theme.WeatherForecastTheme
 import com.agaperra.weatherforecast.ui.theme.ralewayFontFamily
+import com.agaperra.weatherforecast.ui.theme.secondOrangeDawn
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionRequired
+import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @ExperimentalPermissionsApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             WeatherForecastTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    WeatherScreen()
+                    val context = LocalContext.current
+                    LocationPermission() {
+                        context.startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS))
+                    }
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@ExperimentalPermissionsApi
 @Composable
-fun DefaultPreview() {
-    WeatherForecastTheme {
+fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
+    var doNotShowRationale by remember { mutableStateOf(false) }
+
+    val locationPermissionState =
+        rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
+
+    PermissionRequired(
+        permissionState = locationPermissionState,
+        permissionNotGrantedContent = {
+            if (doNotShowRationale) {
+                Box(contentAlignment = Center, modifier = Modifier.fillMaxSize()) {
+                    Text(
+                        text = stringResource(R.string.unavailable_feature),
+                        fontFamily = ralewayFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 25.sp
+                    )
+                }
+            } else {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
+                    Column {
+                        Text(
+                            text = stringResource(R.string.location_rationale),
+                            fontFamily = ralewayFontFamily,
+                            fontSize = 20.sp,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Row(
+                            modifier = Modifier
+                                .align(CenterHorizontally)
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp),
+                        ) {
+                            Button(
+                                onClick = { doNotShowRationale = true },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = secondOrangeDawn
+                                ),
+                                modifier = Modifier.weight(2f)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.nope),
+                                    fontFamily = ralewayFontFamily,
+                                    fontSize = 17.sp,
+                                    color = Color.White
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(0.5f))
+                            Button(
+                                onClick = { locationPermissionState.launchPermissionRequest() },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = secondOrangeDawn
+                                ),
+                                modifier = Modifier.weight(2f)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.ok),
+                                    fontFamily = ralewayFontFamily,
+                                    fontSize = 17.sp,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        permissionNotAvailableContent = {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
+                Column() {
+                    Text(
+                        text = stringResource(R.string.permission_denied_message),
+                        fontFamily = ralewayFontFamily,
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Button(
+                        onClick = { navigateToSettingsScreen() },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = secondOrangeDawn
+                        ),
+                        modifier = Modifier.align(CenterHorizontally)
+                    ) {
+                        Text(
+                            stringResource(R.string.open_settings),
+                            fontFamily = ralewayFontFamily,
+                            fontSize = 17.sp,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+        }) {
         WeatherScreen()
     }
 }
@@ -183,7 +286,7 @@ fun WeatherItem(mainViewModel: MainViewModel = viewModel()) {
     val currentTheme = mainViewModel.currentTheme.collectAsState()
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .padding(horizontal = 20.dp)
