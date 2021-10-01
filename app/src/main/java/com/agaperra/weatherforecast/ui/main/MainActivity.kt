@@ -1,9 +1,15 @@
 package com.agaperra.weatherforecast.ui.main
 
 import android.Manifest
+import android.content.Context
+import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.agaperra.weatherforecast.BuildConfig
@@ -39,8 +46,11 @@ import com.agaperra.weatherforecast.utils.Resource
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 @ExperimentalMaterialApi
 @AndroidEntryPoint
@@ -169,7 +179,7 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
 @Composable
 fun CallApi(
     mainViewModel: MainViewModel = hiltViewModel()
-){
+) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val scaffoldState = rememberScaffoldState()
@@ -214,9 +224,13 @@ fun WeatherScreen(mainViewModel: MainViewModel = viewModel()) {
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
+
         WeatherContent()
     }
+
+
 }
+
 
 @Composable
 fun WeatherContent() {
@@ -263,7 +277,7 @@ fun ColumnScope.LocationContent(mainViewModel: MainViewModel = viewModel()) {
         )
         Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxSize()) {
             Text(
-                text = "Noida",
+                text = "Moscow",
                 color = currentTheme.value.textColor,
                 fontFamily = ralewayFontFamily,
                 fontSize = 27.sp,
@@ -319,7 +333,7 @@ fun ColumnScope.WeatherList() {
         LazyRow(
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(6) {
+            items(7) {
                 WeatherItem()
             }
         }
