@@ -1,6 +1,9 @@
 package com.agaperra.weatherforecast.ui.splash
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -15,8 +18,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.agaperra.weatherforecast.R
+import com.agaperra.weatherforecast.ui.main.MainActivity
 import com.agaperra.weatherforecast.ui.theme.WeatherForecastTheme
 import com.agaperra.weatherforecast.ui.theme.firstGrayBlue
+import com.agaperra.weatherforecast.utils.Constants.SPLASH_SCREEN_DELAY
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class SplashActivity : ComponentActivity() {
@@ -28,6 +33,11 @@ class SplashActivity : ComponentActivity() {
             }
         }
 
+        Handler(Looper.getMainLooper()).postDelayed({
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }, SPLASH_SCREEN_DELAY)
     }
 }
 
