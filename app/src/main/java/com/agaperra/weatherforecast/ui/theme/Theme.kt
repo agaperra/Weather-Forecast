@@ -22,7 +22,7 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun WeatherForecastTheme(
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val colors = LightColorPalette
 
