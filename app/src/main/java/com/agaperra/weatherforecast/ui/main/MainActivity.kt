@@ -1,15 +1,9 @@
 package com.agaperra.weatherforecast.ui.main
 
 import android.Manifest
-import android.content.Context
-import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,21 +27,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.agaperra.weatherforecast.BuildConfig
 import com.agaperra.weatherforecast.R
-import com.agaperra.weatherforecast.data.model.ForecastResponse
 import com.agaperra.weatherforecast.ui.theme.WeatherForecastTheme
 import com.agaperra.weatherforecast.ui.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.ui.theme.secondOrangeDawn
+import com.agaperra.weatherforecast.utils.LocationTrack
 import com.agaperra.weatherforecast.utils.Resource
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -78,11 +69,11 @@ class MainActivity : ComponentActivity() {
 fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
     var doNotShowRationale by remember { mutableStateOf(false) }
 
-    val locationPermissionState =
+    val fineLocationPermissionState =
         rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
 
     PermissionRequired(
-        permissionState = locationPermissionState,
+        permissionState = fineLocationPermissionState,
         permissionNotGrantedContent = {
             if (doNotShowRationale) {
                 Box(contentAlignment = Center, modifier = Modifier.fillMaxSize()) {
@@ -125,7 +116,7 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
                             }
                             Spacer(modifier = Modifier.weight(0.5f))
                             Button(
-                                onClick = { locationPermissionState.launchPermissionRequest() },
+                                onClick = { fineLocationPermissionState.launchPermissionRequest() },
                                 colors = ButtonDefaults.buttonColors(
                                     backgroundColor = secondOrangeDawn
                                 ),
@@ -170,6 +161,18 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
                 }
             }
         }) {
+        val locationTrack = LocationTrack(LocalContext.current);
+        if (locationTrack.canGetLocation()) {
+            val longitude = locationTrack.getLongitude()
+            val latitude = locationTrack.getLatitude()
+            println("""
+                    Longitude:$longitude
+            Latitude:$latitude
+            """.trimIndent())
+
+        } else {
+            println("Ошибка. Не удалось определить местоположение.")
+        }
         WeatherScreen()
     }
 }
@@ -224,7 +227,6 @@ fun WeatherScreen(mainViewModel: MainViewModel = viewModel()) {
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-
         WeatherContent()
     }
 

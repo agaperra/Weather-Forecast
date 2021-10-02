@@ -18,5 +18,5 @@ data class Condition (
 
 	@SerializedName("text") val text : String,
 	@SerializedName("icon") val icon : String,
-	@SerializedName("code") val code : Int
+	@SerializedName("code") val code : Double
 )
