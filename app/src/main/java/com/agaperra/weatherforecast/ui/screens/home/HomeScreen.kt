@@ -36,9 +36,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 fun HomeScreen() {
     val context = LocalContext.current
 
-    LocationPermission() {
-        context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-    }
+    LocationPermission { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) }
 }
 
 @ExperimentalPermissionsApi
@@ -113,7 +111,7 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
         },
         permissionNotAvailableContent = {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Column() {
+                Column {
                     Text(
                         text = stringResource(R.string.permission_denied_message),
                         fontFamily = ralewayFontFamily,
