@@ -46,7 +46,7 @@ class DataStoreRepository @Inject constructor(
             if (exception is IOException) emit(emptyPreferences()) else throw exception
         }
         .map { preferences ->
-           preferences[PreferencesKeys.firstLaunchKey] ?: true
+            preferences[PreferencesKeys.firstLaunchKey] ?: true
         }
 
     val readLocationState: Flow<String> = dataStore.data

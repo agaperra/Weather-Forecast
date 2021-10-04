@@ -3,13 +3,11 @@ package com.agaperra.weatherforecast.ui.screens.home
 import android.Manifest
 import android.content.Intent
 import android.provider.Settings
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,13 +21,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.agaperra.weatherforecast.BuildConfig
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.ui.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.ui.theme.secondOrangeDawn
 import com.agaperra.weatherforecast.ui.viewmodel.SharedViewModel
+import com.agaperra.weatherforecast.utils.LocationTrack
+import com.agaperra.weatherforecast.utils.Resource
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.coroutines.launch
+import java.util.*
 
 @ExperimentalPermissionsApi
 @Composable
@@ -136,8 +139,57 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
                 }
             }
         }) {
+        val locationTrack = LocationTrack(LocalContext.current);
+        if (locationTrack.canGetLocation()) {
+            val longitude = locationTrack.getLongitude()
+            val latitude = locationTrack.getLatitude()
+            println("""
+                    Longitude:$longitude
+            Latitude:$latitude
+            """.trimIndent())
+
+        } else {
+            println("Ошибка. Не удалось определить местоположение.")
+        }
         WeatherScreen()
     }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun CallApi(
+    sharedViewModel: SharedViewModel = hiltViewModel()
+) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val scaffoldState = rememberScaffoldState()
+    val getAllForecastData = sharedViewModel.getForecastData.hasActiveObservers()
+    // получение данных от api
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        scaffoldState = scaffoldState
+    ) {
+        scope.launch {
+            val result =
+                sharedViewModel.getForecastData(
+                    key = BuildConfig.weather_key,
+                    q = "Moscow",
+                    days = 7,
+                    aqi = "no",
+                    alerts = "no",
+                    Locale.getDefault().language
+                )
+
+            if (result is Resource.Success) {
+                Toast.makeText(context, "Fetching data success!", Toast.LENGTH_SHORT).show()
+            } else if (result is Resource.Error) {
+                Toast.makeText(context, "Error: ${result.message}", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
 }
 
 @Composable
