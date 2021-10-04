@@ -1,21 +1,15 @@
-package com.agaperra.weatherforecast.ui.main
+package com.agaperra.weatherforecast.ui.screens.home
+
 import android.Manifest
 import android.content.Intent
-import android.os.Bundle
-import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
+import android.provider.Settings
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.BottomStart
-import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.Alignment.Companion.Top
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -27,54 +21,40 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.agaperra.weatherforecast.BuildConfig
 import com.agaperra.weatherforecast.R
-import com.agaperra.weatherforecast.ui.theme.WeatherForecastTheme
 import com.agaperra.weatherforecast.ui.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.ui.theme.secondOrangeDawn
+import com.agaperra.weatherforecast.ui.viewmodel.SharedViewModel
 import com.agaperra.weatherforecast.utils.LocationTrack
 import com.agaperra.weatherforecast.utils.Resource
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
 
-@ExperimentalMaterialApi
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+@ExperimentalPermissionsApi
+@Composable
+fun HomeScreen() {
+    val context = LocalContext.current
 
-    @ExperimentalPermissionsApi
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            WeatherForecastTheme {
-                Surface(color = MaterialTheme.colors.background) {
-                    val context = LocalContext.current
-                    CallApi()
-                    LocationPermission() {
-                        context.startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS))
-                    }
-                }
-            }
-        }
-    }
+    LocationPermission { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) }
 }
+
 @ExperimentalPermissionsApi
 @Composable
 fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
     var doNotShowRationale by remember { mutableStateOf(false) }
 
-    val fineLocationPermissionState =
+    val locationPermissionState =
         rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
 
     PermissionRequired(
-        permissionState = fineLocationPermissionState,
+        permissionState = locationPermissionState,
         permissionNotGrantedContent = {
             if (doNotShowRationale) {
-                Box(contentAlignment = Center, modifier = Modifier.fillMaxSize()) {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                     Text(
                         text = stringResource(R.string.unavailable_feature),
                         fontFamily = ralewayFontFamily,
@@ -83,7 +63,7 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
                     )
                 }
             } else {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column {
                         Text(
                             text = stringResource(R.string.location_rationale),
@@ -94,7 +74,7 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
                         Spacer(modifier = Modifier.height(20.dp))
                         Row(
                             modifier = Modifier
-                                .align(CenterHorizontally)
+                                .align(Alignment.CenterHorizontally)
                                 .fillMaxWidth()
                                 .padding(horizontal = 20.dp),
                         ) {
@@ -114,7 +94,7 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
                             }
                             Spacer(modifier = Modifier.weight(0.5f))
                             Button(
-                                onClick = { fineLocationPermissionState.launchPermissionRequest() },
+                                onClick = { locationPermissionState.launchPermissionRequest() },
                                 colors = ButtonDefaults.buttonColors(
                                     backgroundColor = secondOrangeDawn
                                 ),
@@ -133,8 +113,8 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
             }
         },
         permissionNotAvailableContent = {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
-                Column() {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column {
                     Text(
                         text = stringResource(R.string.permission_denied_message),
                         fontFamily = ralewayFontFamily,
@@ -147,7 +127,7 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = secondOrangeDawn
                         ),
-                        modifier = Modifier.align(CenterHorizontally)
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     ) {
                         Text(
                             stringResource(R.string.open_settings),
@@ -175,16 +155,15 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
     }
 }
 
-
 @ExperimentalMaterialApi
 @Composable
 fun CallApi(
-    mainViewModel: MainViewModel = hiltViewModel()
+    sharedViewModel: SharedViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val scaffoldState = rememberScaffoldState()
-    val getAllForecastData = mainViewModel.getForecastData.hasActiveObservers()
+    val getAllForecastData = sharedViewModel.getForecastData.hasActiveObservers()
     // получение данных от api
 
     Scaffold(
@@ -193,7 +172,7 @@ fun CallApi(
     ) {
         scope.launch {
             val result =
-                mainViewModel.getForecastData(
+                sharedViewModel.getForecastData(
                     key = BuildConfig.weather_key,
                     q = "Moscow",
                     days = 7,
@@ -213,11 +192,11 @@ fun CallApi(
 
 }
 
-
 @Composable
-fun WeatherScreen(mainViewModel: MainViewModel = viewModel()) {
+fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
-    val weatherBackground = mainViewModel.currentTheme.collectAsState()
+    val weatherBackground = sharedViewModel.currentTheme.collectAsState()
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = weatherBackground.value.backgroundRes),
@@ -227,14 +206,10 @@ fun WeatherScreen(mainViewModel: MainViewModel = viewModel()) {
         )
         WeatherContent()
     }
-
-
 }
-
 
 @Composable
 fun WeatherContent() {
-
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(
             modifier = Modifier
@@ -252,9 +227,12 @@ fun WeatherContent() {
         }
     }
 }
+
 @Composable
-fun ColumnScope.LocationContent(mainViewModel: MainViewModel = viewModel()) {
-    val currentTheme = mainViewModel.currentTheme.collectAsState()
+fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
+
+    val currentTheme = sharedViewModel.currentTheme.collectAsState()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -270,11 +248,11 @@ fun ColumnScope.LocationContent(mainViewModel: MainViewModel = viewModel()) {
             modifier = Modifier
                 .size(44.dp)
                 .padding(end = 10.dp)
-                .align(Top)
+                .align(Alignment.Top)
         )
         Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxSize()) {
             Text(
-                text = "Moscow",
+                text = "Noida",
                 color = currentTheme.value.textColor,
                 fontFamily = ralewayFontFamily,
                 fontSize = 27.sp,
@@ -289,9 +267,12 @@ fun ColumnScope.LocationContent(mainViewModel: MainViewModel = viewModel()) {
         }
     }
 }
+
 @Composable
-fun ColumnScope.CurrentWeatherContent(mainViewModel: MainViewModel = viewModel()) {
-    val currentTheme = mainViewModel.currentTheme.collectAsState()
+fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
+
+    val currentTheme = sharedViewModel.currentTheme.collectAsState()
+
     Column(
         Modifier
             .fillMaxWidth()
@@ -315,28 +296,33 @@ fun ColumnScope.CurrentWeatherContent(mainViewModel: MainViewModel = viewModel()
         )
     }
 }
+
 @Composable
 fun ColumnScope.WeatherList() {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 20.dp)
-            .weight(1f), contentAlignment = BottomStart
+            .weight(1f), contentAlignment = Alignment.BottomStart
     ) {
         LazyRow(
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(7) {
+            items(6) {
                 WeatherItem()
             }
         }
     }
+
 }
+
 @Composable
-fun WeatherItem(mainViewModel: MainViewModel = viewModel()) {
-    val currentTheme = mainViewModel.currentTheme.collectAsState()
+fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel()) {
+
+    val currentTheme = sharedViewModel.currentTheme.collectAsState()
+
     Column(
-        horizontalAlignment = CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .padding(horizontal = 20.dp)

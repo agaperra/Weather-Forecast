@@ -2,6 +2,16 @@ package com.agaperra.weatherforecast.utils
 
 object Constants {
     const val SPLASH_SCREEN_DELAY = 1000L
+    const val SPLASH_SCREEN_FIRST_LAUNCH_DELAY = 2500L
+    const val SPLASH_SCREEN_NORMAL = 700L
+
+    const val PREFERENCE_NAME = "forecast_preferences"
+    const val LOCATION_PREFERENCE_KEY = "location"
+    const val FIRST_LAUNCH_PREFERENCE_KEY = "isFirstLaunch"
+
+    const val SPLASH_SCREEN = "splash"
+    const val HOME_SCREEN = "home"
+
     const val WEATHER_API_URL = "http://api.weatherapi.com"
     const val MINIMUM_DISTANCE_FOR_UPDATES: Float = 10F // в метрах
     const val MINIMUM_TIME_BETWEEN_UPDATES: Long = 2000L // в мс
