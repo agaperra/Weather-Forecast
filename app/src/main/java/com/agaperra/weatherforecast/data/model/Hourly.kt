@@ -14,14 +14,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 
 
-data class Location (
+data class Hourly (
 
-	@SerializedName("name") val name : String,
-	@SerializedName("region") val region : String,
-	@SerializedName("country") val country : String,
-	@SerializedName("lat") val lat : Double,
-	@SerializedName("lon") val lon : Double,
-	@SerializedName("tz_id") val tz_id : String,
-	@SerializedName("localtime_epoch") val localtime_epoch : Double,
-	@SerializedName("localtime") val localtime : String
+	@SerializedName("dt") val dt : Double,
+	@SerializedName("temp") val temp : Double,
+	@SerializedName("feels_like") val feels_like : Double,
+	@SerializedName("pressure") val pressure : Double,
+	@SerializedName("humidity") val humidity : Double,
+	@SerializedName("dew_point") val dew_point : Double,
+	@SerializedName("uvi") val uvi : Double,
+	@SerializedName("clouds") val clouds : Double,
+	@SerializedName("visibility") val visibility : Double,
+	@SerializedName("wind_speed") val wind_speed : Double,
+	@SerializedName("wind_deg") val wind_deg : Double,
+	@SerializedName("wind_gust") val wind_gust : Double,
+	@SerializedName("weather") val weather : List<Weather>,
+	@SerializedName("pop") val pop : Double
 )

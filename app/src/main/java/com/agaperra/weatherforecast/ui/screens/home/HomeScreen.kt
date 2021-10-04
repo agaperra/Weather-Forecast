@@ -34,6 +34,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.launch
 import java.util.*
 
+@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
 fun HomeScreen() {
@@ -42,6 +43,7 @@ fun HomeScreen() {
     LocationPermission { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
 fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
@@ -151,6 +153,7 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
         } else {
             println("Ошибка. Не удалось определить местоположение.")
         }
+        CallApi()
         WeatherScreen()
     }
 }
@@ -163,7 +166,7 @@ fun CallApi(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val scaffoldState = rememberScaffoldState()
-    val getAllForecastData = sharedViewModel.getForecastData.hasActiveObservers()
+    //val getAllForecastData = sharedViewModel.getForecastData.hasActiveObservers()
     // получение данных от api
 
     Scaffold(
@@ -173,12 +176,11 @@ fun CallApi(
         scope.launch {
             val result =
                 sharedViewModel.getForecastData(
-                    key = BuildConfig.weather_key,
-                    q = "Moscow",
-                    days = 7,
-                    aqi = "no",
-                    alerts = "no",
-                    Locale.getDefault().language
+                    55.45,
+                    37.37,
+                    "metric",
+                    Locale.getDefault().language,
+                    BuildConfig.weather_key
                 )
 
             if (result is Resource.Success) {

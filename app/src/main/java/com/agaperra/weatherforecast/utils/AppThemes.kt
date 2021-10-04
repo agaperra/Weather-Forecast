@@ -23,8 +23,8 @@ sealed class AppThemes(
         val tint: Color? = Color.White
     ) : AppThemes(backgroundRes = background, textColor = color, iconsTint = tint)
 
-    data class WindyTheme(
-        @DrawableRes val background: Int = R.drawable.background_windy,
+    data class FoggyTheme(
+        @DrawableRes val background: Int = R.drawable.background_foggy,
         val color: Color = firstGrayBlue,
         val tint: Color? = firstGrayBlue
     ) : AppThemes(backgroundRes = background, textColor = color, iconsTint = tint)

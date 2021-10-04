@@ -43,14 +43,13 @@ class SharedViewModel @Inject constructor(
     var getForecastData: LiveData<ForecastResponse> = _getForecastData
 
     suspend fun getForecastData(
-        key: String,
-        q: String,
-        days: Int,
-        aqi: String,
-        alerts: String,
-        lang: String
+        lat: Double,
+        lon: Double,
+        units: String,
+        lang: String,
+        appid: String
     ): Resource<ForecastResponse> {
-        val result = forecastRepository.getForecastResponse(key, q, days, aqi, alerts, lang)
+        val result = forecastRepository.getForecastResponse(lat, lon, units, lang, appid)
         if (result is Resource.Success) {
             isLoading.value = true
             _getForecastData.value = result.data!!

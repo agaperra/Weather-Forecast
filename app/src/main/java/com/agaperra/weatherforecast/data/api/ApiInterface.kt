@@ -8,13 +8,12 @@ import javax.inject.Singleton
 @Singleton
 interface ApiInterface {
 
-    @GET(value = "/v1/forecast.json")
+    @GET(value = "/data/2.5/onecall")
     suspend fun getForecast(
-        @Query("key") key: String,
-        @Query("q") q: String,
-        @Query("days") days: Int,
-        @Query("aqi") aqi: String,
-        @Query("alerts") alerts: String,
-        @Query("lang") lang: String
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("units") units: String,
+        @Query("lang") lang: String,
+        @Query("appid") appid: String
     ) : ForecastResponse
 }
