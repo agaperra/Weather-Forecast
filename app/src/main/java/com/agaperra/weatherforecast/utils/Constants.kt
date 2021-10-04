@@ -16,10 +16,12 @@ object Constants {
     const val MINIMUM_DISTANCE_FOR_UPDATES: Float = 10F // в метрах
     const val MINIMUM_TIME_BETWEEN_UPDATES: Long = 2000L // в мс
     // коды для тем
-    val cloudy_theme = arrayListOf<Int>(1003, 1006, 1009, 1063, 1066, 1069, 1072, 1087, 1213, 1219, 1225, 1237)
-    val sunny_theme = arrayListOf<Int>(1000, 1210, 1216, 1222, 1240, 1243, 1246, 1249, 1252, 1255, 1258, 1261, 1264, 1273, 1279)
-    val rainy_theme = arrayListOf<Int>(1150, 1153, 1168, 1171, 1180, 1183, 1186, 1189, 1192, 1195, 1198, 1201, 1204, 1207, 1276, 1282)
-    val windy_theme = arrayListOf<Int>(1114, 1117, 1030, 1135, 1147)
+    val cloudy_theme = arrayListOf<Int>(1003, 1006, 1009, 1063, 1066, 1069, 1072)
+    val sunny_theme = arrayListOf<Int>(1000, 1240, 1243, 1249, 1252)
+    val rainy_theme = arrayListOf<Int>(1150, 1153, 1168, 1171, 1180, 1183, 1186, 1189, 1192, 1195, 1198, 1201)
+    val thunder_theme = arrayListOf<Int>(1087, 1246, 1273, 1276, 1279, 1282)
+    val foggy_theme = arrayListOf<Int>(1030, 1114, 1117, 1135, 1147)
+    val snow_theme = arrayListOf<Int>(1204, 1207, 1210, 1213, 1216, 1219, 1222, 1225, 1237, 1255, 1258, 1261, 1264)
 
     // коды для иконок
     val cloudy_icons = arrayListOf<Int>(119, 122, 311)
