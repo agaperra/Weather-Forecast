@@ -1,9 +1,9 @@
 package com.agaperra.weatherforecast.ui.main
-
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -26,16 +26,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.agaperra.weatherforecast.BuildConfig
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.ui.theme.WeatherForecastTheme
 import com.agaperra.weatherforecast.ui.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.ui.theme.secondOrangeDawn
+import com.agaperra.weatherforecast.utils.LocationTrack
+import com.agaperra.weatherforecast.utils.Resource
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import java.util.*
 
+@ExperimentalMaterialApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -46,6 +53,7 @@ class MainActivity : ComponentActivity() {
             WeatherForecastTheme {
                 Surface(color = MaterialTheme.colors.background) {
                     val context = LocalContext.current
+                    CallApi()
                     LocationPermission() {
                         context.startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS))
                     }
@@ -54,17 +62,16 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 @ExperimentalPermissionsApi
 @Composable
 fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
     var doNotShowRationale by remember { mutableStateOf(false) }
 
-    val locationPermissionState =
+    val fineLocationPermissionState =
         rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
 
     PermissionRequired(
-        permissionState = locationPermissionState,
+        permissionState = fineLocationPermissionState,
         permissionNotGrantedContent = {
             if (doNotShowRationale) {
                 Box(contentAlignment = Center, modifier = Modifier.fillMaxSize()) {
@@ -107,7 +114,7 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
                             }
                             Spacer(modifier = Modifier.weight(0.5f))
                             Button(
-                                onClick = { locationPermissionState.launchPermissionRequest() },
+                                onClick = { fineLocationPermissionState.launchPermissionRequest() },
                                 colors = ButtonDefaults.buttonColors(
                                     backgroundColor = secondOrangeDawn
                                 ),
@@ -152,15 +159,65 @@ fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
                 }
             }
         }) {
+        val locationTrack = LocationTrack(LocalContext.current);
+        if (locationTrack.canGetLocation()) {
+            val longitude = locationTrack.getLongitude()
+            val latitude = locationTrack.getLatitude()
+            println("""
+                    Longitude:$longitude
+            Latitude:$latitude
+            """.trimIndent())
+
+        } else {
+            println("Ошибка. Не удалось определить местоположение.")
+        }
         WeatherScreen()
     }
 }
+
+
+@ExperimentalMaterialApi
+@Composable
+fun CallApi(
+    mainViewModel: MainViewModel = hiltViewModel()
+) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val scaffoldState = rememberScaffoldState()
+    val getAllForecastData = mainViewModel.getForecastData.hasActiveObservers()
+    // получение данных от api
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        scaffoldState = scaffoldState
+    ) {
+        scope.launch {
+            val result =
+                mainViewModel.getForecastData(
+                    key = BuildConfig.weather_key,
+                    q = "Moscow",
+                    days = 7,
+                    aqi = "no",
+                    alerts = "no",
+                    Locale.getDefault().language
+                )
+
+            if (result is Resource.Success) {
+                Toast.makeText(context, "Fetching data success!", Toast.LENGTH_SHORT).show()
+            } else if (result is Resource.Error) {
+                Toast.makeText(context, "Error: ${result.message}", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
+}
+
 
 @Composable
 fun WeatherScreen(mainViewModel: MainViewModel = viewModel()) {
 
     val weatherBackground = mainViewModel.currentTheme.collectAsState()
-
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = weatherBackground.value.backgroundRes),
@@ -170,10 +227,14 @@ fun WeatherScreen(mainViewModel: MainViewModel = viewModel()) {
         )
         WeatherContent()
     }
+
+
 }
+
 
 @Composable
 fun WeatherContent() {
+
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(
             modifier = Modifier
@@ -191,12 +252,9 @@ fun WeatherContent() {
         }
     }
 }
-
 @Composable
 fun ColumnScope.LocationContent(mainViewModel: MainViewModel = viewModel()) {
-
     val currentTheme = mainViewModel.currentTheme.collectAsState()
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -216,7 +274,7 @@ fun ColumnScope.LocationContent(mainViewModel: MainViewModel = viewModel()) {
         )
         Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxSize()) {
             Text(
-                text = "Noida",
+                text = "Moscow",
                 color = currentTheme.value.textColor,
                 fontFamily = ralewayFontFamily,
                 fontSize = 27.sp,
@@ -231,12 +289,9 @@ fun ColumnScope.LocationContent(mainViewModel: MainViewModel = viewModel()) {
         }
     }
 }
-
 @Composable
 fun ColumnScope.CurrentWeatherContent(mainViewModel: MainViewModel = viewModel()) {
-
     val currentTheme = mainViewModel.currentTheme.collectAsState()
-
     Column(
         Modifier
             .fillMaxWidth()
@@ -260,7 +315,6 @@ fun ColumnScope.CurrentWeatherContent(mainViewModel: MainViewModel = viewModel()
         )
     }
 }
-
 @Composable
 fun ColumnScope.WeatherList() {
     Box(
@@ -272,19 +326,15 @@ fun ColumnScope.WeatherList() {
         LazyRow(
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(6) {
+            items(7) {
                 WeatherItem()
             }
         }
     }
-
 }
-
 @Composable
 fun WeatherItem(mainViewModel: MainViewModel = viewModel()) {
-
     val currentTheme = mainViewModel.currentTheme.collectAsState()
-
     Column(
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Center,
