@@ -187,7 +187,7 @@ fun CallApi(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val scaffoldState = rememberScaffoldState()
-    //val getAllForecastData = viewModel.getForecastData.hasActiveObservers()
+    val getAllForecastData = mainViewModel.getForecastData.hasActiveObservers()
     // получение данных от api
 
     Scaffold(
