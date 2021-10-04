@@ -14,11 +14,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 
 
-data class Forecastday (
+data class Feels_like (
 
-	@SerializedName("date") val date : String,
-	@SerializedName("date_epoch") val date_epoch : Double,
-	@SerializedName("day") val day : Day,
-	@SerializedName("astro") val astro : Astro,
-	@SerializedName("hour") val hour : List<Hour>
+	@SerializedName("day") val day : Double,
+	@SerializedName("night") val night : Double,
+	@SerializedName("eve") val eve : Double,
+	@SerializedName("morn") val morn : Double
 )

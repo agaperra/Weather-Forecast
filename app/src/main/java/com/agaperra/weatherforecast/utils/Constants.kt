@@ -12,7 +12,7 @@ object Constants {
     const val SPLASH_SCREEN = "splash"
     const val HOME_SCREEN = "home"
 
-    const val WEATHER_API_URL = "http://api.weatherapi.com"
+    const val WEATHER_API_URL = "https://api.openweathermap.org"
     const val MINIMUM_DISTANCE_FOR_UPDATES: Float = 10F // в метрах
     const val MINIMUM_TIME_BETWEEN_UPDATES: Long = 2000L // в мс
     // коды для тем

@@ -14,7 +14,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 
 
-data class Forecast (
+data class Weather (
 
-	@SerializedName("forecastday") val forecastday : List<Forecastday>
+	@SerializedName("id") val id : Double,
+	@SerializedName("main") val main : String,
+	@SerializedName("description") val description : String,
+	@SerializedName("icon") val icon : String
 )

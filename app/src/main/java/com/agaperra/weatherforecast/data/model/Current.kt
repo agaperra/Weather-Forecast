@@ -1,5 +1,4 @@
 package com.agaperra.weatherforecast.data.model
-
 import com.google.gson.annotations.SerializedName
 
 /*
@@ -16,27 +15,18 @@ For support, please feel free to contact me at https://www.linkedin.com/in/syeda
 
 data class Current (
 
-	@SerializedName("last_updated_epoch") val last_updated_epoch : Double,
-	@SerializedName("last_updated") val last_updated : String,
-	@SerializedName("temp_c") val temp_c : Double,
-	@SerializedName("temp_f") val temp_f : Double,
-	@SerializedName("is_day") val is_day : Double,
-	@SerializedName("condition") val condition : Condition,
-	@SerializedName("wind_mph") val wind_mph : Double,
-	@SerializedName("wind_kph") val wind_kph : Double,
-	@SerializedName("wind_degree") val wind_degree : Double,
-	@SerializedName("wind_dir") val wind_dir : String,
-	@SerializedName("pressure_mb") val pressure_mb : Double,
-	@SerializedName("pressure_in") val pressure_in : Double,
-	@SerializedName("precip_mm") val precip_mm : Double,
-	@SerializedName("precip_in") val precip_in : Double,
+	@SerializedName("dt") val dt : Double,
+	@SerializedName("sunrise") val sunrise : Double,
+	@SerializedName("sunset") val sunset : Double,
+	@SerializedName("temp") val temp : Double,
+	@SerializedName("feels_like") val feels_like : Double,
+	@SerializedName("pressure") val pressure : Double,
 	@SerializedName("humidity") val humidity : Double,
-	@SerializedName("cloud") val cloud : Double,
-	@SerializedName("feelslike_c") val feelslike_c : Double,
-	@SerializedName("feelslike_f") val feelslike_f : Double,
-	@SerializedName("vis_km") val vis_km : Double,
-	@SerializedName("vis_miles") val vis_miles : Double,
-	@SerializedName("uv") val uv : Double,
-	@SerializedName("gust_mph") val gust_mph : Double,
-	@SerializedName("gust_kph") val gust_kph : Double
+	@SerializedName("dew_point") val dew_point : Double,
+	@SerializedName("uvi") val uvi : Double,
+	@SerializedName("clouds") val clouds : Double,
+	@SerializedName("visibility") val visibility : Double,
+	@SerializedName("wind_speed") val wind_speed : Double,
+	@SerializedName("wind_deg") val wind_deg : Double,
+	@SerializedName("weather") val weather : List<Weather>
 )

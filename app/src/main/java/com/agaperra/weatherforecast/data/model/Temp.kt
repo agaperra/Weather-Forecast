@@ -14,12 +14,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 
 
-data class Astro (
+data class Temp (
 
-	@SerializedName("sunrise") val sunrise : String,
-	@SerializedName("sunset") val sunset : String,
-	@SerializedName("moonrise") val moonrise : String,
-	@SerializedName("moonset") val moonset : String,
-	@SerializedName("moon_phase") val moon_phase : String,
-	@SerializedName("moon_illumination") val moon_illumination : Double
+	@SerializedName("day") val day : Double,
+	@SerializedName("min") val min : Double,
+	@SerializedName("max") val max : Double,
+	@SerializedName("night") val night : Double,
+	@SerializedName("eve") val eve : Double,
+	@SerializedName("morn") val morn : Double
 )
