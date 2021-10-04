@@ -29,9 +29,10 @@ class MainViewModel @Inject constructor(
         q: String,
         days: Int,
         aqi: String,
-        alerts: String
+        alerts: String,
+        lang: String
     ): Resource<ForecastResponse> {
-        val result = forecastRepository.getForecastResponse(key, q, days, aqi, alerts)
+        val result = forecastRepository.getForecastResponse(key, q, days, aqi, alerts, lang)
         if (result is Resource.Success) {
             isLoading.value = true
             _getForecastData.value = result.data!!

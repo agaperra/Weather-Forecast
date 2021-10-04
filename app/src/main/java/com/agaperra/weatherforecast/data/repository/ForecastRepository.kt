@@ -16,10 +16,11 @@ class ForecastRepository @Inject constructor(
         q: String,
         days: Int,
         aqi: String,
-        alerts: String
+        alerts: String,
+        lang: String
     ): Resource<ForecastResponse> {
         val response = try {
-            apiInterface.getForecast(key, q, days, aqi, alerts)
+            apiInterface.getForecast(key, q, days, aqi, alerts, lang)
         } catch (e: Exception) {
             return Resource.Error("An unknown error occured: ${e.localizedMessage}")
         }

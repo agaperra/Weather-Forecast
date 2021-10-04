@@ -14,6 +14,7 @@ interface ApiInterface {
         @Query("q") q: String,
         @Query("days") days: Int,
         @Query("aqi") aqi: String,
-        @Query("alerts") alerts: String
+        @Query("alerts") alerts: String,
+        @Query("lang") lang: String
     ) : ForecastResponse
 }

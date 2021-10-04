@@ -41,6 +41,7 @@ import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 @ExperimentalMaterialApi
@@ -200,7 +201,8 @@ fun CallApi(
                     q = "Moscow",
                     days = 7,
                     aqi = "no",
-                    alerts = "no"
+                    alerts = "no",
+                    Locale.getDefault().language
                 )
 
             if (result is Resource.Success) {
