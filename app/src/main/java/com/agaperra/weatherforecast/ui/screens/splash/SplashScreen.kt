@@ -30,12 +30,12 @@ fun SplashScreen(
     LaunchedEffect(key1 = true) { sharedViewModel.readLaunchState() }
 
     LaunchedEffect(key1 = isFirstLaunch) {
-        Timber.d("Navigate to home screen")
         delay(
             timeMillis = if (isFirstLaunch) SPLASH_SCREEN_FIRST_LAUNCH_DELAY
             else SPLASH_SCREEN_NORMAL
         )
         navigateToHomeScreen()
+        Timber.d("Navigate to home screen")
     }
     SplashBackground()
 }
@@ -47,14 +47,9 @@ fun SplashBackground(backgroundColor: Color = firstGrayBlue) {
             .fillMaxSize(),
         color = backgroundColor
     ) {
-        val systemUiController = rememberSystemUiController()
 
-        SideEffect {
-            systemUiController.setSystemBarsColor(
-                color = backgroundColor,
-                darkIcons = false
-            )
-        }
+        val systemUiController = rememberSystemUiController()
+        SideEffect { systemUiController.setSystemBarsColor(color = firstGrayBlue) }
 
         Image(
             painterResource(R.drawable.ic_launcher_foreground),

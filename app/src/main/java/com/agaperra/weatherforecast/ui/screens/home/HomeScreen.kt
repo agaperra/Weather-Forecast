@@ -2,12 +2,14 @@ package com.agaperra.weatherforecast.ui.screens.home
 
 import android.Manifest
 import android.content.Intent
-import android.provider.Settings
-import android.widget.Toast
+import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.*
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,191 +19,42 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.agaperra.weatherforecast.BuildConfig
 import com.agaperra.weatherforecast.R
+import com.agaperra.weatherforecast.components.PermissionsRequest
+import com.agaperra.weatherforecast.model.ForecastDayModel
 import com.agaperra.weatherforecast.ui.theme.ralewayFontFamily
-import com.agaperra.weatherforecast.ui.theme.secondOrangeDawn
 import com.agaperra.weatherforecast.ui.viewmodel.SharedViewModel
-import com.agaperra.weatherforecast.utils.LocationTrack
-import com.agaperra.weatherforecast.utils.Resource
+import com.agaperra.weatherforecast.utils.getLocationName
+import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionRequired
-import com.google.accompanist.permissions.rememberPermissionState
-import kotlinx.coroutines.launch
-import java.util.*
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
-fun HomeScreen() {
+fun HomeScreen(sharedViewmodel: SharedViewModel = hiltViewModel()) {
     val context = LocalContext.current
-
-    LocationPermission { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) }
-}
-
-@ExperimentalMaterialApi
-@ExperimentalPermissionsApi
-@Composable
-fun LocationPermission(navigateToSettingsScreen: () -> Unit) {
-    var doNotShowRationale by remember { mutableStateOf(false) }
-
-    val locationPermissionState =
-        rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
-
-    PermissionRequired(
-        permissionState = locationPermissionState,
-        permissionNotGrantedContent = {
-            if (doNotShowRationale) {
-                Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    Text(
-                        text = stringResource(R.string.unavailable_feature),
-                        fontFamily = ralewayFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 25.sp
-                    )
-                }
-            } else {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column {
-                        Text(
-                            text = stringResource(R.string.location_rationale),
-                            fontFamily = ralewayFontFamily,
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Row(
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp),
-                        ) {
-                            Button(
-                                onClick = { doNotShowRationale = true },
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = secondOrangeDawn
-                                ),
-                                modifier = Modifier.weight(2f)
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.nope),
-                                    fontFamily = ralewayFontFamily,
-                                    fontSize = 17.sp,
-                                    color = Color.White
-                                )
-                            }
-                            Spacer(modifier = Modifier.weight(0.5f))
-                            Button(
-                                onClick = { locationPermissionState.launchPermissionRequest() },
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = secondOrangeDawn
-                                ),
-                                modifier = Modifier.weight(2f)
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.ok),
-                                    fontFamily = ralewayFontFamily,
-                                    fontSize = 17.sp,
-                                    color = Color.White
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        permissionNotAvailableContent = {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Column {
-                    Text(
-                        text = stringResource(R.string.permission_denied_message),
-                        fontFamily = ralewayFontFamily,
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Button(
-                        onClick = { navigateToSettingsScreen() },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = secondOrangeDawn
-                        ),
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    ) {
-                        Text(
-                            stringResource(R.string.open_settings),
-                            fontFamily = ralewayFontFamily,
-                            fontSize = 17.sp,
-                            color = Color.White
-                        )
-                    }
-                }
-            }
-        }) {
-        val locationTrack = LocationTrack(LocalContext.current);
-        if (locationTrack.canGetLocation()) {
-            val longitude = locationTrack.getLongitude()
-            val latitude = locationTrack.getLatitude()
-            println("""
-                    Longitude:$longitude
-            Latitude:$latitude
-            """.trimIndent())
-
-        } else {
-            println("Ошибка. Не удалось определить местоположение.")
-        }
-        CallApi()
-        WeatherScreen()
+    val systemUiController = rememberSystemUiController()
+    LaunchedEffect(key1 = true) { sharedViewmodel.getForecastData() }
+    SideEffect {
+        systemUiController.setStatusBarColor(darkIcons = true, color = Color.Transparent)
+        systemUiController.setNavigationBarColor(color = Color.Transparent)
     }
-}
-
-@ExperimentalMaterialApi
-@Composable
-fun CallApi(
-    sharedViewModel: SharedViewModel = hiltViewModel()
-) {
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val scaffoldState = rememberScaffoldState()
-    //val getAllForecastData = sharedViewModel.getForecastData.hasActiveObservers()
-    // получение данных от api
-
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        scaffoldState = scaffoldState
-    ) {
-        scope.launch {
-            val result =
-                sharedViewModel.getForecastData(
-                    55.45,
-                    37.37,
-                    "metric",
-                    Locale.getDefault().language,
-                    BuildConfig.weather_key
-                )
-
-            if (result is Resource.Success) {
-                Toast.makeText(context, "Fetching data success!", Toast.LENGTH_SHORT).show()
-            } else if (result is Resource.Error) {
-                Toast.makeText(context, "Error: ${result.message}", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
-    }
-
+    PermissionsRequest(
+        permission = Manifest.permission.ACCESS_FINE_LOCATION,
+        permissionDeniedMessage = stringResource(id = R.string.permission_denied_message),
+        navigateToSettingsScreen = { context.startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS)) },
+        content = { WeatherScreen() })
 }
 
 @Composable
 fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
-
-    val weatherBackground = sharedViewModel.currentTheme.collectAsState()
-
+    val weatherBackground by sharedViewModel.currentTheme.collectAsState()
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(id = weatherBackground.value.backgroundRes),
+            painter = painterResource(id = weatherBackground.backgroundRes),
             contentDescription = stringResource(R.string.weather_background),
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -211,22 +64,38 @@ fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun WeatherContent() {
-    Column(modifier = Modifier.fillMaxSize()) {
+fun WeatherContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
+
+    val isLoading by sharedViewModel.isLoading.collectAsState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
+    ) {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .weight(.8f)
         )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1.2f)
-        ) {
-            LocationContent()
-            CurrentWeatherContent()
-            WeatherList()
-        }
+        if (!isLoading)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1.2f)
+            ) {
+                LocationContent()
+                CurrentWeatherContent()
+                WeatherList()
+            }
+        else
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(50.dp),
+                    strokeWidth = 5.dp,
+                    color = sharedViewModel.currentTheme.value.iconsTint
+                )
+            }
     }
 }
 
@@ -234,27 +103,33 @@ fun WeatherContent() {
 fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
     val currentTheme = sharedViewModel.currentTheme.collectAsState()
+    val forecastData by sharedViewModel.forecastData.collectAsState()
+    val context = LocalContext.current
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .weight(0.5f)
+            .weight(weight = 1f),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_location),
             contentDescription = stringResource(
                 R.string.icon_location
             ),
-            tint = currentTheme.value.iconsTint ?: Color.White,
+            tint = currentTheme.value.iconsTint,
             modifier = Modifier
                 .size(44.dp)
                 .padding(end = 10.dp)
-                .align(Alignment.Top)
         )
-        Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxSize()) {
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center
+        ) {
             Text(
-                text = "Noida",
+                text = forecastData.location.getLocationName(context),
                 color = currentTheme.value.textColor,
                 fontFamily = ralewayFontFamily,
                 fontSize = 27.sp,
@@ -274,52 +149,53 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
 fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
     val currentTheme = sharedViewModel.currentTheme.collectAsState()
+    val forecastData by sharedViewModel.forecastData.collectAsState()
 
     Column(
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .weight(1f),
+            .weight(weight = 1f),
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Cloudy",
+            text = forecastData.weatherStatus,
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 45.sp
         )
         Text(
-            text = "9\u00B0",
+            text = "${forecastData.currentTemperature}\u00B0",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,
-            fontSize = 50.sp
+            fontSize = 70.sp
         )
     }
 }
 
 @Composable
-fun ColumnScope.WeatherList() {
+fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) {
+
+    val forecastData by sharedViewModel.forecastData.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 20.dp)
-            .weight(1f), contentAlignment = Alignment.BottomStart
+            .weight(weight = 1f), contentAlignment = Alignment.BottomStart
     ) {
         LazyRow(
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(6) {
-                WeatherItem()
-            }
+            items(items = forecastData.weekForecast) { day -> WeatherItem(forecastDay = day) }
         }
     }
 
 }
 
 @Composable
-fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel()) {
+fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay: ForecastDayModel) {
 
     val currentTheme = sharedViewModel.currentTheme.collectAsState()
 
@@ -327,11 +203,12 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .width(50.dp)
+            .padding(horizontal = 10.dp)
+            .width(80.dp)
+            .padding(bottom = 10.dp)
     ) {
         Text(
-            text = "Today 7/16",
+            text = forecastDay.dayName,
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light
@@ -339,11 +216,13 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel()) {
         Icon(
             painter = painterResource(id = R.drawable.ic_cloudy),
             contentDescription = stringResource(R.string.icon_weather),
-            modifier = Modifier.padding(vertical = 5.dp),
-            tint = currentTheme.value.iconsTint ?: Color.White
+            modifier = Modifier
+                .padding(5.dp)
+                .size(40.dp),
+            tint = currentTheme.value.iconsTint,
         )
         Text(
-            text = "Cloudy",
+            text = forecastDay.dayStatus,
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,

@@ -1,21 +1,20 @@
 package com.agaperra.weatherforecast.ui.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.agaperra.weatherforecast.data.model.ForecastResponse
+import com.agaperra.weatherforecast.data.repository.DataStoreRepository
 import com.agaperra.weatherforecast.data.repository.ForecastRepository
+import com.agaperra.weatherforecast.model.ForecastModel
+import com.agaperra.weatherforecast.utils.AppState
 import com.agaperra.weatherforecast.utils.AppThemes
-import com.agaperra.weatherforecast.utils.DataStoreRepository
-import com.agaperra.weatherforecast.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,25 +36,27 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    var isLoading = mutableStateOf(false)
-    private var _getForecastData: MutableLiveData<ForecastResponse> =
-        MutableLiveData<ForecastResponse>()
-    var getForecastData: LiveData<ForecastResponse> = _getForecastData
+    private val _isLoading = MutableStateFlow(value = true)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+    private val _forecastData = MutableStateFlow(ForecastModel())
+    val forecastData: StateFlow<ForecastModel> = _forecastData
 
     suspend fun getForecastData(
-        lat: Double,
-        lon: Double,
-        units: String,
-        lang: String,
-        appid: String
-    ): Resource<ForecastResponse> {
-        val result = forecastRepository.getForecastResponse(lat, lon, units, lang, appid)
-        if (result is Resource.Success) {
-            isLoading.value = true
-            _getForecastData.value = result.data!!
+        lat: Double = 55.45,
+        lon: Double = 37.37,
+        units: String = "metric",
+        lang: String = Locale.getDefault().language
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        _isLoading.value = true
+        when (val result = forecastRepository.getForecastResponse(lat, lon, units, lang)) {
+            is AppState.Error ->
+                Timber.e("Error occurred while receiving forecast: ${result.message}")
+            is AppState.Success -> {
+                _forecastData.value = result.data!!
+                _isLoading.value = false
+            }
         }
-
-        return result
     }
 
 }

@@ -1,4 +1,4 @@
-package com.agaperra.weatherforecast.utils
+package com.agaperra.weatherforecast.data.repository
 
 import android.content.Context
 import androidx.datastore.core.DataStore

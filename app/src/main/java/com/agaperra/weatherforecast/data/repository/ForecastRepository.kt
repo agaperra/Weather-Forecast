@@ -1,29 +1,31 @@
 package com.agaperra.weatherforecast.data.repository
 
-import com.agaperra.weatherforecast.data.api.ApiInterface
+import com.agaperra.weatherforecast.data.api.ForecastApi
+import com.agaperra.weatherforecast.data.mappers.toUi
 import com.agaperra.weatherforecast.data.model.ForecastResponse
-import com.agaperra.weatherforecast.utils.Resource
+import com.agaperra.weatherforecast.model.ForecastModel
+import com.agaperra.weatherforecast.utils.AppState
 import dagger.hilt.android.scopes.ActivityScoped
+import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
 
-@ActivityScoped
+@ViewModelScoped
 class ForecastRepository @Inject constructor(
-    private val apiInterface: ApiInterface
+    private val forecastApi: ForecastApi
 ) {
 
     suspend fun getForecastResponse(
         lat: Double,
         lon: Double,
         units: String,
-        lang: String,
-        appid: String
-    ): Resource<ForecastResponse> {
+        lang: String
+    ): AppState<ForecastModel> {
         val response = try {
-            apiInterface.getForecast(lat, lon, units, lang, appid)
+            forecastApi.getForecast(lat, lon, units, lang)
         } catch (e: Exception) {
-            return Resource.Error("An unknown error occured: ${e.localizedMessage}")
+            return AppState.Error(message = "An unknown error occurred: ${e.localizedMessage}")
         }
 
-        return Resource.Success(response)
+        return AppState.Success(response.toUi())
     }
 }
