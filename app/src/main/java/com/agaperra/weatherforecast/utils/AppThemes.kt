@@ -10,55 +10,46 @@ import com.agaperra.weatherforecast.ui.theme.secondOrangeDawn
 sealed class AppThemes(
     @DrawableRes val backgroundRes: Int,
     val textColor: Color,
-    val iconsTint: Color?,
-    val primaryColor: Color
+    val iconsTint: Color
 ) {
     data class RainyTheme(
         @DrawableRes val background: Int = R.drawable.background_rainy,
         val color: Color = firstGrayBlue,
-        val tint: Color? = firstGrayBlue,
-        val navigationColor: Color = Color.White
+        val tint: Color = firstGrayBlue
     ) : AppThemes(
         backgroundRes = background,
         textColor = color,
-        iconsTint = tint,
-        primaryColor = navigationColor
+        iconsTint = tint
     )
 
     data class CloudyTheme(
         @DrawableRes val background: Int = R.drawable.background_cloudy,
         val color: Color = Color.White,
-        val tint: Color? = Color.White,
-        val navigationColor: Color = firstGrayBlue
+        val tint: Color = Color.White
     ) : AppThemes(
         backgroundRes = background,
         textColor = color,
-        iconsTint = tint,
-        primaryColor = navigationColor
+        iconsTint = tint
     )
 
     data class FoggyTheme(
         @DrawableRes val background: Int = R.drawable.background_foggy,
         val color: Color = firstGrayBlue,
-        val tint: Color? = firstGrayBlue,
-        val navigationColor: Color = Color.White
+        val tint: Color = firstGrayBlue
     ) : AppThemes(
         backgroundRes = background,
         textColor = color,
-        iconsTint = tint,
-        primaryColor = navigationColor
+        iconsTint = tint
     )
 
     data class SunnyTheme(
         @DrawableRes val background: Int = R.drawable.background_sunny,
         val color: Color = Color.White,
-        val tint: Color? = Color.White,
-        val navigationColor: Color = secondOrangeDawn
+        val tint: Color = Color.White
     ) : AppThemes(
         backgroundRes = background,
         textColor = color,
-        iconsTint = tint,
-        primaryColor = navigationColor
+        iconsTint = tint
     )
 }
 

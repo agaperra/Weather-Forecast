@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -23,10 +24,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.components.PermissionsRequest
-import com.agaperra.weatherforecast.data.model.ForecastDay
+import com.agaperra.weatherforecast.model.ForecastDayModel
 import com.agaperra.weatherforecast.ui.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.ui.viewmodel.SharedViewModel
-import com.agaperra.weatherforecast.utils.toDateFormat
+import com.agaperra.weatherforecast.utils.getLocationName
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -63,22 +64,38 @@ fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun WeatherContent() {
-    Column(modifier = Modifier.fillMaxSize()) {
+fun WeatherContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
+
+    val isLoading by sharedViewModel.isLoading.collectAsState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
+    ) {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(.8f)
         )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1.2f)
-        ) {
-            LocationContent()
-            CurrentWeatherContent()
-            WeatherList()
-        }
+        if (!isLoading)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1.2f)
+            ) {
+                LocationContent()
+                CurrentWeatherContent()
+                WeatherList()
+            }
+        else
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(50.dp),
+                    strokeWidth = 5.dp,
+                    color = sharedViewModel.currentTheme.value.iconsTint
+                )
+            }
     }
 }
 
@@ -86,28 +103,33 @@ fun WeatherContent() {
 fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
     val currentTheme = sharedViewModel.currentTheme.collectAsState()
-    val forecastData by sharedViewModel.getForecastData.collectAsState()
+    val forecastData by sharedViewModel.forecastData.collectAsState()
+    val context = LocalContext.current
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .weight(0.5f)
+            .weight(weight = 1f),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_location),
             contentDescription = stringResource(
                 R.string.icon_location
             ),
-            tint = currentTheme.value.iconsTint ?: Color.White,
+            tint = currentTheme.value.iconsTint,
             modifier = Modifier
                 .size(44.dp)
                 .padding(end = 10.dp)
-                .align(Alignment.Top)
         )
-        Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxSize()) {
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center
+        ) {
             Text(
-                text = forecastData?.data?.location?.name ?: "Loading",
+                text = forecastData.location.getLocationName(context),
                 color = currentTheme.value.textColor,
                 fontFamily = ralewayFontFamily,
                 fontSize = 27.sp,
@@ -127,24 +149,24 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
 fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
     val currentTheme = sharedViewModel.currentTheme.collectAsState()
-    val forecastData by sharedViewModel.getForecastData.collectAsState()
+    val forecastData by sharedViewModel.forecastData.collectAsState()
 
     Column(
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .weight(1f),
+            .weight(weight = 1f),
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = forecastData?.data?.current?.condition?.text ?: "Loading",
+            text = forecastData.weatherStatus,
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 45.sp
         )
         Text(
-            text = "${forecastData?.data?.current?.temp_c?.toInt() ?: 0}\u00B0",
+            text = "${forecastData.currentTemperature}\u00B0",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,
@@ -156,27 +178,24 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
 @Composable
 fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
-    val forecastData by sharedViewModel.getForecastData.collectAsState()
+    val forecastData by sharedViewModel.forecastData.collectAsState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .navigationBarsPadding()
-            .weight(1f), contentAlignment = Alignment.CenterStart
+            .weight(weight = 1f), contentAlignment = Alignment.BottomStart
     ) {
         LazyRow(
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(items = forecastData?.data?.forecast?.forecastDay ?: listOf()) { item ->
-                WeatherItem(forecastDay = item)
-            }
+            items(items = forecastData.weekForecast) { day -> WeatherItem(forecastDay = day) }
         }
     }
 
 }
 
 @Composable
-fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay: ForecastDay) {
+fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay: ForecastDayModel) {
 
     val currentTheme = sharedViewModel.currentTheme.collectAsState()
 
@@ -189,7 +208,7 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
             .padding(bottom = 10.dp)
     ) {
         Text(
-            text = forecastDay.date.toDateFormat(),
+            text = forecastDay.dayName,
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light
@@ -200,10 +219,10 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
             modifier = Modifier
                 .padding(5.dp)
                 .size(40.dp),
-            tint = currentTheme.value.iconsTint ?: Color.White,
+            tint = currentTheme.value.iconsTint,
         )
         Text(
-            text = forecastDay.hour[12].condition.text,
+            text = forecastDay.dayStatus,
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,

@@ -1,27 +1,33 @@
 package com.agaperra.weatherforecast
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.core.view.WindowCompat
 import com.agaperra.weatherforecast.navigation.SetupNavigation
 import com.agaperra.weatherforecast.ui.theme.WeatherForecastTheme
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalAnimationApi
+@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            WeatherForecastTheme {
-                val navHostController = rememberAnimatedNavController()
-                SetupNavigation(navHostController = navHostController)
+            ProvideWindowInsets {
+                WeatherForecastTheme {
+                    val navHostController = rememberAnimatedNavController()
+                    SetupNavigation(navHostController = navHostController)
+                }
             }
         }
     }
