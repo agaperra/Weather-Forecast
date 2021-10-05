@@ -4,35 +4,61 @@ import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.ui.theme.firstGrayBlue
+import com.agaperra.weatherforecast.ui.theme.secondOrangeDawn
 
 
 sealed class AppThemes(
     @DrawableRes val backgroundRes: Int,
     val textColor: Color,
-    val iconsTint: Color?
+    val iconsTint: Color?,
+    val primaryColor: Color
 ) {
     data class RainyTheme(
         @DrawableRes val background: Int = R.drawable.background_rainy,
         val color: Color = firstGrayBlue,
-        val tint: Color? = firstGrayBlue
-    ) : AppThemes(backgroundRes = background, textColor = color, iconsTint = tint)
+        val tint: Color? = firstGrayBlue,
+        val navigationColor: Color = Color.White
+    ) : AppThemes(
+        backgroundRes = background,
+        textColor = color,
+        iconsTint = tint,
+        primaryColor = navigationColor
+    )
 
     data class CloudyTheme(
         @DrawableRes val background: Int = R.drawable.background_cloudy,
         val color: Color = Color.White,
-        val tint: Color? = Color.White
-    ) : AppThemes(backgroundRes = background, textColor = color, iconsTint = tint)
+        val tint: Color? = Color.White,
+        val navigationColor: Color = firstGrayBlue
+    ) : AppThemes(
+        backgroundRes = background,
+        textColor = color,
+        iconsTint = tint,
+        primaryColor = navigationColor
+    )
 
     data class FoggyTheme(
         @DrawableRes val background: Int = R.drawable.background_foggy,
         val color: Color = firstGrayBlue,
-        val tint: Color? = firstGrayBlue
-    ) : AppThemes(backgroundRes = background, textColor = color, iconsTint = tint)
+        val tint: Color? = firstGrayBlue,
+        val navigationColor: Color = Color.White
+    ) : AppThemes(
+        backgroundRes = background,
+        textColor = color,
+        iconsTint = tint,
+        primaryColor = navigationColor
+    )
 
     data class SunnyTheme(
         @DrawableRes val background: Int = R.drawable.background_sunny,
         val color: Color = Color.White,
-        val tint: Color? = Color.White
-    ) : AppThemes(backgroundRes = background, textColor = color, iconsTint = tint)
+        val tint: Color? = Color.White,
+        val navigationColor: Color = secondOrangeDawn
+    ) : AppThemes(
+        backgroundRes = background,
+        textColor = color,
+        iconsTint = tint,
+        primaryColor = navigationColor
+    )
 }
 

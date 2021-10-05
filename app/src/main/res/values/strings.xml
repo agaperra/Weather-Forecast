@@ -5,7 +5,7 @@
     <string name="weather_background">Weather Background</string>
     <string name="unavailable_feature">Feature is not available</string>
     <string name="location_rationale">Location access is important for this app. Please, grant the permission.</string>
-    <string name="ok">Ok!</string>
+    <string name="ok">OK!</string>
     <string name="nope">Nope</string>
     <string name="permission_denied_message">Location permission denied. Please, grant us access on the Settings screen.</string>
     <string name="open_settings">Open Settings</string>

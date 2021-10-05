@@ -47,14 +47,9 @@ fun SplashBackground(backgroundColor: Color = firstGrayBlue) {
             .fillMaxSize(),
         color = backgroundColor
     ) {
-        val systemUiController = rememberSystemUiController()
 
-        SideEffect {
-            systemUiController.setSystemBarsColor(
-                color = backgroundColor,
-                darkIcons = false
-            )
-        }
+        val systemUiController = rememberSystemUiController()
+        SideEffect { systemUiController.setNavigationBarColor(color = firstGrayBlue) }
 
         Image(
             painterResource(R.drawable.ic_launcher_foreground),
