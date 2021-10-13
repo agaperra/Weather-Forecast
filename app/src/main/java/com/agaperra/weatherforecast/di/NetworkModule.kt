@@ -2,6 +2,7 @@ package com.agaperra.weatherforecast.di
 
 import com.agaperra.weatherforecast.data.api.ForecastApi
 import com.agaperra.weatherforecast.utils.Constants.WEATHER_API_URL
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,6 +32,7 @@ object NetworkModule {
         .client(client)
         .baseUrl(WEATHER_API_URL)
         .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
         .build()
         .create(ForecastApi::class.java)
 
