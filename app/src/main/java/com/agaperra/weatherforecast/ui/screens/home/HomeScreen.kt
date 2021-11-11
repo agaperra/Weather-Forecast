@@ -29,9 +29,11 @@ import com.agaperra.weatherforecast.model.ForecastDayModel
 import com.agaperra.weatherforecast.ui.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.ui.viewmodel.SharedViewModel
 import com.agaperra.weatherforecast.utils.getLocationName
+import com.agaperra.weatherforecast.utils.temperatureConverter
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlin.math.abs
 
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
@@ -169,7 +171,7 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
             fontSize = 45.sp
         )
         Text(
-            text = "${forecastData.currentTemperature}\u00B0",
+            text = "${temperatureConverter(forecastData.currentTemperature.toString())}\u00B0",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,
@@ -224,8 +226,10 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
                 .size(40.dp),
             tint = currentTheme.value.iconsTint,
         )
+
+
         Text(
-            text = "${forecastDay.dayTemp}°" ,
+            text = "${temperatureConverter(forecastDay.dayTemp)}°" ,
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,
