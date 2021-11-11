@@ -67,6 +67,7 @@ fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
 fun WeatherContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
     val isLoading by sharedViewModel.isLoading.collectAsState()
+    val currentTheme by sharedViewModel.currentTheme.collectAsState()
 
     Column(
         modifier = Modifier
@@ -93,7 +94,7 @@ fun WeatherContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(50.dp),
                     strokeWidth = 5.dp,
-                    color = sharedViewModel.currentTheme.value.iconsTint
+                    color = currentTheme.iconsTint
                 )
             }
     }

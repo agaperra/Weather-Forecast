@@ -10,11 +10,11 @@ import com.google.accompanist.navigation.animation.composable
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.splashComposable(
-    navigateToHomeScreen: () -> Unit
+    navigateToHomeScreen: () -> Unit,
 ) {
     composable(
         route = SPLASH_SCREEN,
-        exitTransition = { _, _ ->
+        exitTransition = {
             fadeOut(animationSpec = tween(durationMillis = 1000))
         }
     ) {
