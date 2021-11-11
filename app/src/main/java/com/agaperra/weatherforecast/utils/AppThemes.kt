@@ -3,8 +3,7 @@ package com.agaperra.weatherforecast.utils
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.agaperra.weatherforecast.R
-import com.agaperra.weatherforecast.ui.theme.firstGrayBlue
-import com.agaperra.weatherforecast.ui.theme.secondOrangeDawn
+import com.agaperra.weatherforecast.presentation.theme.firstGrayBlue
 
 
 sealed class AppThemes(

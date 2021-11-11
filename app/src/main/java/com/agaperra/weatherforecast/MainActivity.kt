@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.view.WindowCompat
-import com.agaperra.weatherforecast.navigation.SetupNavigation
-import com.agaperra.weatherforecast.ui.theme.WeatherForecastTheme
+import com.agaperra.weatherforecast.presentation.navigation.SetupNavigation
+import com.agaperra.weatherforecast.presentation.theme.WeatherForecastTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
