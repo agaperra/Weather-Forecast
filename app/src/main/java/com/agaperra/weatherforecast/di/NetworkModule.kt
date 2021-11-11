@@ -1,7 +1,7 @@
 package com.agaperra.weatherforecast.di
 
 import com.agaperra.weatherforecast.data.api.ForecastApi
-import com.agaperra.weatherforecast.utils.Constants.WEATHER_API_URL
+import com.agaperra.weatherforecast.domain.util.Constants.WEATHER_API_URL
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides

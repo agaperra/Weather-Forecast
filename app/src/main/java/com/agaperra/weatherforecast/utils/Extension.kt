@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.math.abs
 
 fun Pair<Double, Double>.getLocationName(context: Context): String {
     val geocoder = Geocoder(context, Locale.getDefault())
@@ -19,4 +20,20 @@ fun Pair<Double, Double>.getLocationName(context: Context): String {
         Timber.e(e)
         ""
     }
+}
+
+fun temperatureConverter(temp: String): String{
+    var tempText = ""
+    tempText = when {
+        temp.toInt() > 0 -> {
+            "+$temp"
+        }
+        abs(temp.toInt()) ==0 -> {
+            abs(temp.toInt()).toString()
+        }
+        else -> {
+            temp
+        }
+    }
+    return tempText
 }
