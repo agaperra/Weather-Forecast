@@ -2,7 +2,6 @@ package com.agaperra.weatherforecast.data.repository
 
 import com.agaperra.weatherforecast.data.api.ForecastApi
 import com.agaperra.weatherforecast.data.mappers.toUi
-import com.agaperra.weatherforecast.data.model.ForecastResponse
 import com.agaperra.weatherforecast.model.ForecastModel
 import com.agaperra.weatherforecast.utils.AppState
 import dagger.hilt.android.scopes.ActivityScoped
