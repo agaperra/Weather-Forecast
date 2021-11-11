@@ -8,7 +8,7 @@ import java.util.*
 
 fun ForecastResponse.toDomain() = WeatherForecast(
     location = Pair(lat, lon),
-    currentWeather = current.temp,
+    currentWeather = String.format("%.1f", current.temp).toDouble(),
     currentWeatherStatus = if (current.weather.isNotEmpty()) current.weather[0].main else "Unknown",
     currentWeatherStatusId = if (current.weather.isNotEmpty()) current.weather[0].id.toInt() else 800,
     forecastDays = daily.mapIndexed { index, day ->

@@ -18,7 +18,6 @@ import com.agaperra.weatherforecast.presentation.theme.firstGrayBlue
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
-import timber.log.Timber
 
 @Composable
 fun SplashScreen(
@@ -33,7 +32,6 @@ fun SplashScreen(
             else SPLASH_SCREEN_NORMAL
         )
         navigateToHomeScreen()
-        Timber.d("Navigate to home screen")
     }
     SplashBackground()
 }

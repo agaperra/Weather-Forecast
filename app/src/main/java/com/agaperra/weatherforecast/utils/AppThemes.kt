@@ -3,8 +3,8 @@ package com.agaperra.weatherforecast.utils
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.agaperra.weatherforecast.R
-import com.agaperra.weatherforecast.ui.theme.firstGrayBlue
-
+import com.agaperra.weatherforecast.presentation.theme.firstGrayBlue
+import com.agaperra.weatherforecast.presentation.theme.secondaryPearlWhite
 
 sealed class AppThemes(
     @DrawableRes val backgroundRes: Int,
@@ -19,8 +19,8 @@ sealed class AppThemes(
 
     data class CloudyTheme(
         @DrawableRes val background: Int = R.drawable.background_cloudy,
-        val color: Color = Color.White,
-        val tint: Color = Color.White
+        val color: Color = secondaryPearlWhite,
+        val tint: Color = secondaryPearlWhite
     ) : AppThemes(backgroundRes = background, textColor = color, iconsTint = tint)
 
     data class SunnyTheme(

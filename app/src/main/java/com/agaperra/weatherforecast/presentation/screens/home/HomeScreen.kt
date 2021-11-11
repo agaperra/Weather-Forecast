@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -33,6 +34,7 @@ import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
 fun HomeScreen(sharedViewmodel: SharedViewModel = hiltViewModel()) {
