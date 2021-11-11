@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -32,6 +33,7 @@ import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
 fun HomeScreen(sharedViewmodel: SharedViewModel = hiltViewModel()) {
@@ -67,6 +69,7 @@ fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
 fun WeatherContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
     val isLoading by sharedViewModel.isLoading.collectAsState()
+    val currentTheme by sharedViewModel.currentTheme.collectAsState()
 
     Column(
         modifier = Modifier
@@ -93,7 +96,7 @@ fun WeatherContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(50.dp),
                     strokeWidth = 5.dp,
-                    color = sharedViewModel.currentTheme.value.iconsTint
+                    color = currentTheme.iconsTint
                 )
             }
     }
@@ -220,6 +223,13 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
                 .padding(5.dp)
                 .size(40.dp),
             tint = currentTheme.value.iconsTint,
+        )
+        Text(
+            text = "${forecastDay.dayTemp}°" ,
+            color = currentTheme.value.textColor,
+            fontFamily = ralewayFontFamily,
+            fontWeight = FontWeight.Light,
+            fontSize = 12.sp
         )
         Text(
             text = forecastDay.dayStatus,

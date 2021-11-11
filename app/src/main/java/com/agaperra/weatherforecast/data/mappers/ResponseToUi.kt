@@ -11,7 +11,7 @@ fun ForecastResponse.toUi() = ForecastModel(
     weatherStatus = this.current.weather[0].main,
     currentTemperature = this.current.temp.toInt(),
     weekForecast = this.daily.mapIndexed() { index, day ->
-        ForecastDayModel(dayName = getDayName(dayIndex = index), dayStatus = day.weather[0].main)
+        ForecastDayModel(dayName = getDayName(dayIndex = index), dayStatus = day.weather[0].main, dayTemp = "%.0f".format(day.temp.day))
     }
 )
 
