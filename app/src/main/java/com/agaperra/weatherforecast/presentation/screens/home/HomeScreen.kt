@@ -179,7 +179,7 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = "${forecast.data?.currentWeather}\u00B0",
+            text = forecast.data?.currentWeather ?: "",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,
