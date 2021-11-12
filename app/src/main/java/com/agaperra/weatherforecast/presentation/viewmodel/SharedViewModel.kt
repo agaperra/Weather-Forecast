@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.domain.use_case.GetWeeklyForecast
 import com.agaperra.weatherforecast.domain.use_case.ReadLaunchState
+import com.agaperra.weatherforecast.domain.use_case.UpdateLaunchState
 import com.agaperra.weatherforecast.utils.AppState
 import com.agaperra.weatherforecast.utils.AppThemes
 import com.agaperra.weatherforecast.utils.Constants.atmosphere_ids_range
@@ -18,12 +19,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     readLaunchState: ReadLaunchState,
+    saveLaunchState: UpdateLaunchState,
     private val getWeeklyForecast: GetWeeklyForecast,
 ) : ViewModel() {
 
@@ -39,6 +42,7 @@ class SharedViewModel @Inject constructor(
     init {
         readLaunchState().onEach {
             _isFirstLaunch.value = it
+            if (it) saveLaunchState()
         }.launchIn(viewModelScope)
     }
 
@@ -48,8 +52,9 @@ class SharedViewModel @Inject constructor(
             units = "metric",
             lang = Locale.getDefault().language).onEach { result ->
             _weatherForecast.value = result
-
             _currentTheme.value = selectTheme(result.data?.currentWeatherStatusId)
+
+            if (result is AppState.Error) Timber.e(result.message)
         }.launchIn(viewModelScope)
     }
 

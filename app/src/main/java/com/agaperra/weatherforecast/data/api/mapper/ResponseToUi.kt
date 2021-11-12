@@ -3,12 +3,13 @@ package com.agaperra.weatherforecast.data.api.mapper
 import com.agaperra.weatherforecast.data.api.dto.ForecastResponse
 import com.agaperra.weatherforecast.domain.model.ForecastDay
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
+import java.math.RoundingMode
 import java.text.SimpleDateFormat
 import java.util.*
 
 fun ForecastResponse.toDomain() = WeatherForecast(
     location = Pair(lat, lon),
-    currentWeather = String.format("%.1f", current.temp).toDouble(),
+    currentWeather = current.temp.toBigDecimal().setScale(1, RoundingMode.UP).toDouble(),
     currentWeatherStatus = if (current.weather.isNotEmpty()) current.weather[0].main else "Unknown",
     currentWeatherStatusId = if (current.weather.isNotEmpty()) current.weather[0].id.toInt() else 800,
     forecastDays = daily.mapIndexed { index, day ->

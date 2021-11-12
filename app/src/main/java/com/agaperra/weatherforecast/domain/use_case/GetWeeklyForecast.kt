@@ -22,7 +22,7 @@ class GetWeeklyForecast @Inject constructor(
         } catch (exception: HttpException) {
             emit(AppState.Error(message = "Connection error: ${exception.message()}"))
         } catch (exception: Exception) {
-            emit(AppState.Error(message = "Unknown exception: ${exception.message} stacktrace: ${exception.stackTrace}"))
+            emit(AppState.Error(message = "Unknown exception: ${exception.message}"))
         }
     }
 }
