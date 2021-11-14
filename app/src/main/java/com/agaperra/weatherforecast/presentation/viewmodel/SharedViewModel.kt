@@ -6,8 +6,8 @@ import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.domain.use_case.GetWeeklyForecast
 import com.agaperra.weatherforecast.domain.use_case.ReadLaunchState
 import com.agaperra.weatherforecast.domain.use_case.UpdateLaunchState
-import com.agaperra.weatherforecast.utils.AppState
-import com.agaperra.weatherforecast.utils.AppThemes
+import com.agaperra.weatherforecast.domain.model.AppState
+import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import com.agaperra.weatherforecast.utils.Constants.atmosphere_ids_range
 import com.agaperra.weatherforecast.utils.Constants.clouds_ids_range
 import com.agaperra.weatherforecast.utils.Constants.drizzle_ids_range
@@ -51,16 +51,22 @@ class SharedViewModel @Inject constructor(
             lon = lon,
             units = "metric",
             lang = Locale.getDefault().language).onEach { result ->
-            _weatherForecast.value = result
-            _currentTheme.value = selectTheme(result.data?.currentWeatherStatusId)
 
-            if (result is AppState.Error) Timber.e(result.message)
+            when (result) {
+                is AppState.Error -> Timber.e(result.message)
+                is AppState.Success -> _currentTheme.value =
+                    selectTheme(result.data?.currentWeatherStatusId)
+                else -> Unit
+            }
+
+            _weatherForecast.value = result
+
         }.launchIn(viewModelScope)
     }
 
-    private fun selectTheme(currentWeatherStatus: Int?): AppThemes =
-        if (currentWeatherStatus != null) {
-            when (currentWeatherStatus) {
+    private fun selectTheme(currentWeatherStatusId: Int?): AppThemes =
+        if (currentWeatherStatusId != null) {
+            when (currentWeatherStatusId) {
                 in rain_ids_range -> AppThemes.RainyTheme()
                 in clouds_ids_range -> AppThemes.CloudyTheme()
                 in atmosphere_ids_range -> AppThemes.AtmosphereTheme()

@@ -3,6 +3,8 @@ package com.agaperra.weatherforecast.presentation.screens.home
 import android.Manifest
 import android.content.Intent
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -31,7 +33,8 @@ import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
 import com.agaperra.weatherforecast.domain.model.ForecastDay
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
-import com.agaperra.weatherforecast.utils.AppState
+import com.agaperra.weatherforecast.domain.model.AppState
+import com.agaperra.weatherforecast.utils.Constants.HOME_SCREEN_BACKGROUND_ANIMATION_DURATION
 import com.agaperra.weatherforecast.utils.getLocationName
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -62,12 +65,15 @@ fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
     val weatherTheme by sharedViewModel.currentTheme.collectAsState()
 
     Box {
-        Image(
-            painter = painterResource(id = weatherTheme.backgroundRes),
-            contentDescription = stringResource(R.string.weather_background),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
+        Crossfade(targetState = weatherTheme.backgroundRes,
+            animationSpec = tween(HOME_SCREEN_BACKGROUND_ANIMATION_DURATION)) {
+            Image(
+                painter = painterResource(id = it),
+                contentDescription = stringResource(R.string.weather_background),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
         Column {
             Row(modifier = Modifier
                 .weight(.6f)

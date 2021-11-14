@@ -1,7 +1,7 @@
 package com.agaperra.weatherforecast.domain.use_case
 
 import com.agaperra.weatherforecast.domain.repository.ForecastRepository
-import com.agaperra.weatherforecast.utils.AppState
+import com.agaperra.weatherforecast.domain.model.AppState
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import javax.inject.Inject
