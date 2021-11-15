@@ -236,7 +236,7 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
             fontSize = 15.sp
         )
         Icon(
-            painter = painterResource(id = R.drawable.ic_cloudy),
+            painter = painterResource(id = forecastDay.dayIcon),
             contentDescription = stringResource(R.string.icon_weather),
             modifier = Modifier
                 .padding(5.dp)

@@ -3,7 +3,6 @@ package com.agaperra.weatherforecast.utils
 object Constants {
     const val HOME_SCREEN_BACKGROUND_ANIMATION_DURATION = 1000
 
-
     val thunderstorm_ids_range = 200..232
     val drizzle_ids_range = 300..321
     val rain_ids_range = 500..531

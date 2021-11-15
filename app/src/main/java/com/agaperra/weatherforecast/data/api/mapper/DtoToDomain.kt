@@ -20,7 +20,8 @@ fun ForecastResponse.toDomain() = WeatherForecast(
             if (day.weather.isNotEmpty())
                 "${day.weather[0].main}\n${day.temp.day.roundTo(1)}°"
             else
-                "Unknown"
+                "Unknown",
+            dayStatusId = if (day.weather.isNotEmpty()) day.weather[0].id.toInt() else 800
         )
     }
 )
