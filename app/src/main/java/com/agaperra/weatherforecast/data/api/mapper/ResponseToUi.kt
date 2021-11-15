@@ -14,7 +14,8 @@ fun ForecastResponse.toDomain() = WeatherForecast(
     forecastDays = daily.mapIndexed { index, day ->
         ForecastDay(
             dayName = getDayName(index),
-            dayStatus = if (day.weather.isNotEmpty()) day.weather[0].main else "Unknown"
+            dayStatus = if (day.weather.isNotEmpty()) day.weather[0].main else "Unknown",
+            dayTemp = if (day.weather.isNotEmpty()) "%.0f".format(day.temp.day) else "Undefine"
         )
     }
 )
