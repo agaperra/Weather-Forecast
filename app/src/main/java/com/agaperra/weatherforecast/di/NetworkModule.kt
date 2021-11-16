@@ -1,12 +1,16 @@
 package com.agaperra.weatherforecast.di
 
+import android.content.Context
 import com.agaperra.weatherforecast.data.api.ForecastApi
+import com.agaperra.weatherforecast.data.network.NetworkStatusListener
 import com.agaperra.weatherforecast.domain.util.Constants.WEATHER_API_URL
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -35,5 +39,11 @@ object NetworkModule {
         .addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
         .build()
         .create(ForecastApi::class.java)
+
+    @ExperimentalCoroutinesApi
+    @Singleton
+    @Provides
+    fun provideNetworkStatusListener(@ApplicationContext context: Context): NetworkStatusListener =
+        NetworkStatusListener(context)
 
 }
