@@ -10,7 +10,7 @@ import java.util.*
 
 fun ForecastResponse.toDomain() = WeatherForecast(
     location = Pair(lat, lon),
-    currentWeather = "${current.temp.roundTo(1)}°",
+    currentWeather = "%.0f".format(current.temp),
     currentWeatherStatus = if (current.weather.isNotEmpty()) current.weather[0].main else "Unknown",
     currentWeatherStatusId = if (current.weather.isNotEmpty()) current.weather[0].id.toInt() else 800,
     forecastDays = daily.mapIndexed { index, day ->
@@ -18,9 +18,14 @@ fun ForecastResponse.toDomain() = WeatherForecast(
             dayName = getDayName(index),
             dayStatus =
             if (day.weather.isNotEmpty())
-                "${day.weather[0].main}\n${day.temp.day.roundTo(1)}°"
+                day.weather[0].main
             else
                 "Unknown",
+            dayTemp =
+            if (day.weather.isNotEmpty())
+                "%.0f".format(day.temp.day)
+            else
+                "Undefine",
             dayStatusId = if (day.weather.isNotEmpty()) day.weather[0].id.toInt() else 800
         )
     }

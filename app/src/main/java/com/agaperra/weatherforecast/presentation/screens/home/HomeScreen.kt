@@ -36,10 +36,13 @@ import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.utils.Constants.HOME_SCREEN_BACKGROUND_ANIMATION_DURATION
 import com.agaperra.weatherforecast.utils.getLocationName
+import com.agaperra.weatherforecast.utils.temperatureConverter
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
@@ -58,6 +61,7 @@ fun HomeScreen(sharedViewmodel: SharedViewModel = hiltViewModel()) {
         content = { WeatherScreen() })
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
@@ -93,6 +97,7 @@ fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun LoadingContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
     val currentTheme by sharedViewModel.currentTheme.collectAsState()
@@ -106,6 +111,7 @@ fun LoadingContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.SuccessContent() {
     LocationContent()
@@ -118,6 +124,7 @@ fun ColumnScope.ErrorContent() {
 
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
@@ -162,6 +169,7 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
@@ -185,7 +193,7 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = forecast.data?.currentWeather ?: "",
+            text = "${temperatureConverter(forecast.data?.currentWeather.toString())}\u00B0",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,
@@ -194,6 +202,7 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
@@ -217,6 +226,7 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
 
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay: ForecastDay) {
 
@@ -245,6 +255,13 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
         )
         Text(
             text = forecastDay.dayStatus,
+            color = currentTheme.value.textColor,
+            fontFamily = ralewayFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 13.sp
+        )
+        Text(
+            text =  "${temperatureConverter(forecastDay.dayTemp)}°",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Medium,
