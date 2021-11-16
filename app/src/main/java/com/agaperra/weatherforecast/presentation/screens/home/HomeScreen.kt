@@ -2,6 +2,7 @@ package com.agaperra.weatherforecast.presentation.screens.home
 
 import android.Manifest
 import android.content.Intent
+import android.graphics.Paint
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -24,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -159,7 +161,7 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = "Just Updated",
+                text = stringResource(id = R.string.just_updated),
                 fontFamily = ralewayFontFamily,
                 color = currentTheme.value.textColor,
                 fontSize = 13.sp,
@@ -236,8 +238,9 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 10.dp)
             .padding(bottom = 10.dp)
+            .wrapContentWidth()
     ) {
         Text(
             text = forecastDay.dayName,
@@ -254,14 +257,16 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
             tint = currentTheme.value.iconsTint,
         )
         Text(
-            text = forecastDay.dayStatus,
+            text =  "${temperatureConverter(forecastDay.dayTemp)}°",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = 13.sp
         )
         Text(
-            text =  "${temperatureConverter(forecastDay.dayTemp)}°",
+            modifier = Modifier.width(90.dp),
+            text = forecastDay.dayStatus,
+            textAlign = TextAlign.Center,
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Medium,

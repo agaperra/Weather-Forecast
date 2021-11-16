@@ -11,4 +11,6 @@
     <string name="permission_denied_message">В разрешении на местоположение отказано. Пожалуйста, предоставьте нам доступ к экрану настроек.</string>
     <string name="open_settings">Открыть настройки</string>
     <string name="splash_screen_background">Фон Заставки</string>
+    <string name="today">Сегодня</string>
+    <string name="just_updated">Время обновления</string>
 </resources>
