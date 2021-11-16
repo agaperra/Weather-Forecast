@@ -40,5 +40,5 @@ fun getDayName(dayIndex: Int): String = if (dayIndex == 0) "Today\n ${
 else {
     val calendar = Calendar.getInstance()
     calendar.add(Calendar.DATE, dayIndex)
-    SimpleDateFormat("EEE\nM/d", Locale.getDefault()).format(calendar.time).capitalize()
+    SimpleDateFormat("EEE\nd/M", Locale.getDefault()).format(calendar.time).capitalize()
 }
