@@ -16,28 +16,29 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
+import com.google.accompanist.insets.systemBarsPadding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 @Composable
 fun PreferencesScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
     val weatherBackground by sharedViewModel.currentTheme.collectAsState()
-    Box(modifier = Modifier.fillMaxSize().background(color = Color(weatherBackground.backgroundRes))) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(weatherBackground.backgroundRes))
+            .systemBarsPadding()
+    ) {
         PreferencesContent(weatherBackground.textColor)
     }
 }
 
 @Composable
 fun PreferencesContent(textColor: Color) {
-    val windState = remember {
-        mutableStateOf(false)
-    }
-    val pressureState = remember {
-        mutableStateOf(false)
-    }
-    val temperatureState = remember {
-        mutableStateOf(false)
-    }
+    val windState = remember { mutableStateOf(false) }
+    val pressureState = remember { mutableStateOf(false) }
+    val temperatureState = remember { mutableStateOf(false) }
+
     val windTextRes =
         if (windState.value) R.string.wind_units_kilometer_per_hour else R.string.wind_units_meter_per_sec
     val pressureTextRes =
@@ -55,7 +56,8 @@ fun PreferencesContent(textColor: Color) {
             color = textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 40.sp
+            fontSize = 40.sp,
+            modifier = Modifier.padding(bottom = 20.dp)
         )
         PreferencesItem(
             mutableState = windState,
@@ -87,7 +89,9 @@ fun PreferencesItem(
 ) {
     Column {
         Text(
-            text = stringResource(textRes), color = textColor, fontFamily = ralewayFontFamily,
+            text = stringResource(textRes),
+            color = textColor,
+            fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.SemiBold,
             fontSize = 30.sp
         )
@@ -101,7 +105,6 @@ fun PreferencesItem(
                 fontFamily = ralewayFontFamily,
                 fontWeight = FontWeight.Light,
                 fontSize = 20.sp, modifier = Modifier.padding(start = 5.dp, bottom = 5.dp)
-
             )
         }
     }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -35,6 +36,7 @@ import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.agaperra.weatherforecast.utils.Constants.HOME_SCREEN_BACKGROUND_ANIMATION_DURATION
 import com.agaperra.weatherforecast.utils.getLocationName
 import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -109,10 +111,14 @@ fun WeatherScreen(
                     }
                 }
             }
-
-        }
-        Button(onClick = { navigateToPreferencesScreen() }) {
-            Text(text = stringResource(R.string.preferences), color = weatherTheme.textColor)
+            Button(
+                onClick = { navigateToPreferencesScreen() },
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .align(TopEnd)
+            ) {
+                Text(text = stringResource(R.string.preferences), color = weatherTheme.textColor)
+            }
         }
     }
 }
