@@ -15,4 +15,7 @@ class Screens(navHostController: NavHostController) {
         navHostController.navigate(route = "home")
     }
 
+    val preferences: () -> Unit = {
+        navHostController.navigate(route = "preferences")
+    }
 }

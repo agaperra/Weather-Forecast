@@ -14,6 +14,7 @@
     <string name="today">Сегодня</string>
     <string name="just_updated">Время обновления</string>
     <string name="units">Единицы измерения</string>
+    <string name="preferences">Настройки</string>
     <string name="wind">Ветер</string>
     <string name="pressure">Давление</string>
     <string name="temperature">Температура</string>

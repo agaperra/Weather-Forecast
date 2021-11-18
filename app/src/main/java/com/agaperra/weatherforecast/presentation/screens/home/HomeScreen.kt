@@ -46,7 +46,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
-fun HomeScreen(sharedViewmodel: SharedViewModel = hiltViewModel()) {
+fun HomeScreen(
+    sharedViewmodel: SharedViewModel = hiltViewModel(),
+    navigateToPreferencesScreen: () -> Unit
+) {
     val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
     LaunchedEffect(key1 = true) { sharedViewmodel.getWeatherForecast() }
@@ -58,19 +61,24 @@ fun HomeScreen(sharedViewmodel: SharedViewModel = hiltViewModel()) {
         permission = Manifest.permission.ACCESS_FINE_LOCATION,
         permissionDeniedMessage = stringResource(id = R.string.permission_denied_message),
         navigateToSettingsScreen = { context.startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS)) },
-        content = { WeatherScreen() })
+        content = { WeatherScreen(navigateToPreferencesScreen = navigateToPreferencesScreen) })
 }
 
 @ExperimentalCoroutinesApi
 @Composable
-fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
+fun WeatherScreen(
+    sharedViewModel: SharedViewModel = hiltViewModel(),
+    navigateToPreferencesScreen: () -> Unit
+) {
 
     val forecast by sharedViewModel.weatherForecast.collectAsState()
     val weatherTheme by sharedViewModel.currentTheme.collectAsState()
 
     Box {
-        Crossfade(targetState = weatherTheme.backgroundRes,
-            animationSpec = tween(HOME_SCREEN_BACKGROUND_ANIMATION_DURATION)) {
+        Crossfade(
+            targetState = weatherTheme.backgroundRes,
+            animationSpec = tween(HOME_SCREEN_BACKGROUND_ANIMATION_DURATION)
+        ) {
             Image(
                 painter = painterResource(id = it),
                 contentDescription = stringResource(R.string.weather_background),
@@ -83,16 +91,21 @@ fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
                 .weight(.6f)
                 .fillMaxWidth(),
                 content = {})
-            Column(modifier = Modifier
-                .weight(1f)
-                .fillMaxSize()
-                .navigationBarsPadding()) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .navigationBarsPadding()
+            ) {
                 when (forecast) {
                     is AppState.Error -> ErrorContent()
                     is AppState.Loading -> LoadingContent()
                     is AppState.Success -> SuccessContent()
                 }
             }
+        }
+        Button(onClick = { navigateToPreferencesScreen() }) {
+            Text(text = stringResource(R.string.preferences), color = weatherTheme.textColor)
         }
     }
 }
@@ -216,15 +229,18 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
         LazyRow(
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(items = forecast.data?.forecastDays
-                ?: listOf()) { day ->
+            items(
+                items = forecast.data?.forecastDays
+                    ?: listOf()
+            ) { day ->
                 WeatherItem(forecastDay = day)
             }
         }
     }
 
     val uiState = sharedViewModel._networkStatusListener.networkStatus.collectAsState(
-        ConnectionState.Available)
+        ConnectionState.Available
+    )
     val snackbarHostState = remember { SnackbarHostState() }
     when (uiState.value) {
         is ConnectionState.Unavailable -> {
@@ -267,7 +283,7 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
             tint = currentTheme.value.iconsTint,
         )
         Text(
-            text =  "${temperatureConverter(forecastDay.dayTemp)}°",
+            text = "${temperatureConverter(forecastDay.dayTemp)}°",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Medium,

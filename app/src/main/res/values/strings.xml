@@ -13,6 +13,7 @@
     <string name="today">Today</string>
     <string name="just_updated">Updated Time</string>
     <string name="units">Units</string>
+    <string name="preferences">Preferences</string>
     <string name="wind">Wind</string>
     <string name="pressure">Pressure</string>
     <string name="temperature">Temperature</string>
