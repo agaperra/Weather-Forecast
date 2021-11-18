@@ -243,7 +243,8 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
         verticalAlignment = Alignment.Bottom
     ) {
         LazyRow(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(horizontal = 5.dp)
         ) {
             items(
                 items = forecast.data?.forecastDays
@@ -266,7 +267,6 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(horizontal = 10.dp)
             .padding(bottom = 10.dp)
             .wrapContentWidth()
     ) {
@@ -289,10 +289,10 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Medium,
-            fontSize = 13.sp
+            fontSize = 14.sp
         )
         Text(
-            modifier = Modifier.width(90.dp),
+            modifier = Modifier.width(100.dp),
             text = forecastDay.dayStatus,
             textAlign = TextAlign.Center,
             color = currentTheme.value.textColor,
