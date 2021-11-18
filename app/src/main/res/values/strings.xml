@@ -13,4 +13,15 @@
     <string name="today">Today</string>
     <string name="just_updated">Updated Time</string>
     <string name="no_internet_connection">Looks like you don\'t have Internet connection.</string>
+    <string name="units">Units</string>
+    <string name="preferences">Preferences</string>
+    <string name="wind">Wind</string>
+    <string name="pressure">Pressure</string>
+    <string name="temperature">Temperature</string>
+    <string name="wind_units_meter_per_sec">meter/sec</string>
+    <string name="wind_units_kilometer_per_hour">kilometer/hour</string>
+    <string name="pressure_units_mm_hg">mm Hg</string>
+    <string name="pressure_units_pa">Pa</string>
+    <string name="temperature_units_celsius">Celsius</string>
+    <string name="temperature_units_fahrenheit">Fahrenheit</string>
 </resources>

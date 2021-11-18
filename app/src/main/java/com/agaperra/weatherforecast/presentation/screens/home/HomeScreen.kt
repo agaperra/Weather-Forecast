@@ -44,7 +44,10 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
-fun HomeScreen(sharedViewmodel: SharedViewModel = hiltViewModel()) {
+fun HomeScreen(
+    sharedViewmodel: SharedViewModel = hiltViewModel(),
+    navigateToPreferencesScreen: () -> Unit
+) {
     val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
     LaunchedEffect(key1 = true) { sharedViewmodel.getWeatherForecast() }
@@ -56,12 +59,15 @@ fun HomeScreen(sharedViewmodel: SharedViewModel = hiltViewModel()) {
         permission = Manifest.permission.ACCESS_FINE_LOCATION,
         permissionDeniedMessage = stringResource(id = R.string.permission_denied_message),
         navigateToSettingsScreen = { context.startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS)) },
-        content = { WeatherScreen() })
+        content = { WeatherScreen(navigateToPreferencesScreen = navigateToPreferencesScreen) })
 }
 
 @ExperimentalCoroutinesApi
 @Composable
-fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
+fun WeatherScreen(
+    sharedViewModel: SharedViewModel = hiltViewModel(),
+    navigateToPreferencesScreen: () -> Unit
+) {
 
     val forecast by sharedViewModel.weatherForecast.collectAsState()
     val weatherTheme by sharedViewModel.currentTheme.collectAsState()
@@ -104,6 +110,9 @@ fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
                 }
             }
 
+        }
+        Button(onClick = { navigateToPreferencesScreen() }) {
+            Text(text = stringResource(R.string.preferences), color = weatherTheme.textColor)
         }
     }
 }

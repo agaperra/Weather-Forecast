@@ -11,6 +11,7 @@ object Constants {
 
     const val SPLASH_SCREEN = "splash"
     const val HOME_SCREEN = "home"
+    const val PREFERENCES_SCREEN = "preferences"
 
     const val WEATHER_API_URL = "https://api.openweathermap.org"
     const val MINIMUM_DISTANCE_FOR_UPDATES: Float = 10F // в метрах

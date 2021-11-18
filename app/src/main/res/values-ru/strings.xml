@@ -13,5 +13,16 @@
     <string name="splash_screen_background">Фон Заставки</string>
     <string name="today">Сегодня</string>
     <string name="just_updated">Время обновления</string>
+    <string name="units">Единицы измерения</string>
+    <string name="preferences">Настройки</string>
+    <string name="wind">Ветер</string>
+    <string name="pressure">Давление</string>
+    <string name="temperature">Температура</string>
+    <string name="wind_units_meter_per_sec">м/с</string>
+    <string name="wind_units_kilometer_per_hour">км/ч</string>
+    <string name="pressure_units_mm_hg">мм рт.ст.</string>
+    <string name="pressure_units_pa">Па</string>
+    <string name="temperature_units_celsius">Цельсий</string>
+    <string name="temperature_units_fahrenheit">Фаренгейт</string>
     <string name="no_internet_connection">Похоже, у вас отсутствует интернет-соединение.</string>
 </resources>
