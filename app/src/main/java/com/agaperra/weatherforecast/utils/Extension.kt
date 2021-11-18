@@ -18,22 +18,6 @@ fun Pair<Double, Double>.getLocationName(context: Context): String {
         addresses[0].adminArea
     } catch (e: Exception) {
         Timber.e(e)
-        ""
+        "Unknown"
     }
-}
-
-fun temperatureConverter(temp: String): String{
-    var tempText = ""
-    tempText = when {
-        temp.toInt() > 0 -> {
-            "+$temp"
-        }
-        abs(temp.toInt()) ==0 -> {
-            abs(temp.toInt()).toString()
-        }
-        else -> {
-            temp
-        }
-    }
-    return tempText
 }
