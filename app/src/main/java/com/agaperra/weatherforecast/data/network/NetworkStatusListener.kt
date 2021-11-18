@@ -20,15 +20,15 @@ class NetworkStatusListener @Inject constructor(context: Context) {
     val networkStatus = callbackFlow {
         val networkStatusCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onUnavailable() {
-                trySend(NetworkStatus.Unavailable)
+                trySend(ConnectionState.Unavailable)
             }
 
             override fun onLost(network: Network) {
-                trySend(NetworkStatus.Unavailable)
+                trySend(ConnectionState.Unavailable)
             }
 
             override fun onAvailable(network: Network) {
-                trySend(NetworkStatus.Available)
+                trySend(ConnectionState.Available)
             }
         }
 
@@ -37,8 +37,8 @@ class NetworkStatusListener @Inject constructor(context: Context) {
             .build()
         cm.registerNetworkCallback(request, networkStatusCallback)
 
-        if (isNetworkAvailable()) trySend(NetworkStatus.Available)
-        else trySend(NetworkStatus.Unavailable)
+        if (isNetworkAvailable()) trySend(ConnectionState.Available)
+        else trySend(ConnectionState.Unavailable)
 
         awaitClose {
             cm.unregisterNetworkCallback(networkStatusCallback)

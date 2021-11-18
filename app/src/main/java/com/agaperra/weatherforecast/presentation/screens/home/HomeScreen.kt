@@ -10,10 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
@@ -31,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
+import com.agaperra.weatherforecast.data.network.ConnectionState
 import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
 import com.agaperra.weatherforecast.domain.model.ForecastDay
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
@@ -138,7 +136,7 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .weight(weight = .9f),
+            .weight(weight = .7f),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -186,20 +184,19 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
         verticalArrangement = Arrangement.Center
     ) {
         Text(
+            modifier = Modifier.fillMaxWidth(),
             text = forecast.data?.currentWeatherStatus ?: "Unknown",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 45.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            fontSize = 35.sp
         )
         Text(
             text = "${temperatureConverter(forecast.data?.currentWeather.toString())}\u00B0",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,
-            fontSize = 75.sp
+            fontSize = 60.sp
         )
     }
 }
@@ -222,6 +219,19 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
             items(items = forecast.data?.forecastDays
                 ?: listOf()) { day ->
                 WeatherItem(forecastDay = day)
+            }
+        }
+    }
+
+    val uiState = sharedViewModel._networkStatusListener.networkStatus.collectAsState(
+        ConnectionState.Available)
+    val snackbarHostState = remember { SnackbarHostState() }
+    when (uiState.value) {
+        is ConnectionState.Unavailable -> {
+            LaunchedEffect(sharedViewModel.weatherForecast) {
+                snackbarHostState.showSnackbar(
+                    "Похоже, у вас отсутствует интернет-соединение."
+                )
             }
         }
     }

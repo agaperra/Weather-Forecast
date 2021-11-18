@@ -2,7 +2,7 @@ package com.agaperra.weatherforecast.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.agaperra.weatherforecast.data.network.NetworkStatus
+import com.agaperra.weatherforecast.data.network.ConnectionState
 import com.agaperra.weatherforecast.data.network.NetworkStatusListener
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.domain.use_case.GetWeeklyForecast
@@ -44,6 +44,8 @@ class SharedViewModel @Inject constructor(
     private val _weatherForecast = MutableStateFlow<AppState<WeatherForecast>>(AppState.Loading())
     val weatherForecast = _weatherForecast.asStateFlow()
 
+    val _networkStatusListener = networkStatusListener
+
     init {
         readLaunchState().onEach {
             _isFirstLaunch.value = it
@@ -52,13 +54,15 @@ class SharedViewModel @Inject constructor(
 
         networkStatusListener.networkStatus.onEach { status ->
             when (status) {
-                NetworkStatus.Available -> getWeatherForecast()
-                NetworkStatus.Unavailable -> {
+                ConnectionState.Available -> getWeatherForecast()
+                ConnectionState.Unavailable -> {
                     _weatherForecast.value = AppState.Error(message = "No internet connection")
+
                 }
             }
         }.launchIn(viewModelScope)
     }
+
 
     fun getWeatherForecast(lat: Double = 55.45, lon: Double = 37.37) {
         getWeeklyForecast(lat = lat,
