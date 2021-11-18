@@ -2,12 +2,7 @@ package com.agaperra.weatherforecast.utils
 
 import android.content.Context
 import android.location.Geocoder
-import android.os.Build
-import android.text.format.DateUtils
 import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.abs
 
@@ -20,4 +15,23 @@ fun Pair<Double, Double>.getLocationName(context: Context): String {
         Timber.e(e)
         "Unknown"
     }
+}
+
+
+fun temperatureConverter(temp: String): String {
+    return if (temp != "Undefine") {
+        var tempText = ""
+        tempText = when {
+            temp.toInt() > 0 -> {
+                "+$temp"
+            }
+            abs(temp.toInt()) == 0 -> {
+                abs(temp.toInt()).toString()
+            }
+            else -> {
+                temp
+            }
+        }
+        tempText
+    } else temp
 }

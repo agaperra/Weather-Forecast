@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Моя погода</string>
+    <string name="icon_location">Иконка локации</string>
+    <string name="icon_weather">Иконка погоды</string>
+    <string name="weather_background">Погодный фон</string>
+    <string name="unavailable_feature">Функция недоступна</string>
+    <string name="location_rationale">Доступ к местоположению важен для этого приложения. Пожалуйста, дайте разрешение.</string>
+    <string name="ok">Ок</string>
+    <string name="nope">Нет</string>
+    <string name="permission_denied_message">В разрешении на местоположение отказано. Пожалуйста, предоставьте нам доступ к экрану настроек.</string>
+    <string name="open_settings">Открыть настройки</string>
+    <string name="splash_screen_background">Фон Заставки</string>
+    <string name="today">Сегодня</string>
+    <string name="just_updated">Время обновления</string>
+</resources>

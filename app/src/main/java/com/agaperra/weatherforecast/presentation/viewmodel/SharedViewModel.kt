@@ -2,6 +2,8 @@ package com.agaperra.weatherforecast.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.agaperra.weatherforecast.data.network.ConnectionState
+import com.agaperra.weatherforecast.data.network.NetworkStatusListener
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.domain.use_case.GetWeeklyForecast
 import com.agaperra.weatherforecast.domain.use_case.ReadLaunchState
@@ -15,6 +17,7 @@ import com.agaperra.weatherforecast.utils.Constants.rain_ids_range
 import com.agaperra.weatherforecast.utils.Constants.snow_ids_range
 import com.agaperra.weatherforecast.utils.Constants.thunderstorm_ids_range
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -23,11 +26,13 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     readLaunchState: ReadLaunchState,
     saveLaunchState: UpdateLaunchState,
     private val getWeeklyForecast: GetWeeklyForecast,
+    networkStatusListener: NetworkStatusListener,
 ) : ViewModel() {
 
     private val _currentTheme = MutableStateFlow<AppThemes>(AppThemes.SunnyTheme())
@@ -39,12 +44,25 @@ class SharedViewModel @Inject constructor(
     private val _weatherForecast = MutableStateFlow<AppState<WeatherForecast>>(AppState.Loading())
     val weatherForecast = _weatherForecast.asStateFlow()
 
+    val _networkStatusListener = networkStatusListener
+
     init {
         readLaunchState().onEach {
             _isFirstLaunch.value = it
             if (it) saveLaunchState()
         }.launchIn(viewModelScope)
+
+        networkStatusListener.networkStatus.onEach { status ->
+            when (status) {
+                ConnectionState.Available -> getWeatherForecast()
+                ConnectionState.Unavailable -> {
+                    _weatherForecast.value = AppState.Error(message = "No internet connection")
+
+                }
+            }
+        }.launchIn(viewModelScope)
     }
+
 
     fun getWeatherForecast(lat: Double = 55.45, lon: Double = 37.37) {
         getWeeklyForecast(lat = lat,

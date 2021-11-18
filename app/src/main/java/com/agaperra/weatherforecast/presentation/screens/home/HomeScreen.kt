@@ -2,6 +2,7 @@ package com.agaperra.weatherforecast.presentation.screens.home
 
 import android.Manifest
 import android.content.Intent
+import android.graphics.Paint
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -9,10 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
@@ -24,11 +22,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
+import com.agaperra.weatherforecast.data.network.ConnectionState
 import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
 import com.agaperra.weatherforecast.domain.model.ForecastDay
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
@@ -36,10 +36,13 @@ import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.utils.Constants.HOME_SCREEN_BACKGROUND_ANIMATION_DURATION
 import com.agaperra.weatherforecast.utils.getLocationName
+import com.agaperra.weatherforecast.utils.temperatureConverter
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
@@ -58,6 +61,7 @@ fun HomeScreen(sharedViewmodel: SharedViewModel = hiltViewModel()) {
         content = { WeatherScreen() })
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
@@ -93,6 +97,7 @@ fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun LoadingContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
     val currentTheme by sharedViewModel.currentTheme.collectAsState()
@@ -106,6 +111,7 @@ fun LoadingContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.SuccessContent() {
     LocationContent()
@@ -118,6 +124,7 @@ fun ColumnScope.ErrorContent() {
 
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
@@ -129,7 +136,7 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .weight(weight = .9f),
+            .weight(weight = .7f),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -152,7 +159,7 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = "Just Updated",
+                text = stringResource(id = R.string.just_updated),
                 fontFamily = ralewayFontFamily,
                 color = currentTheme.value.textColor,
                 fontSize = 13.sp,
@@ -162,6 +169,7 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
@@ -176,24 +184,24 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
         verticalArrangement = Arrangement.Center
     ) {
         Text(
+            modifier = Modifier.fillMaxWidth(),
             text = forecast.data?.currentWeatherStatus ?: "Unknown",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 45.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            fontSize = 35.sp
         )
         Text(
-            text = forecast.data?.currentWeather ?: "",
+            text = "${temperatureConverter(forecast.data?.currentWeather.toString())}\u00B0",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,
-            fontSize = 75.sp
+            fontSize = 60.sp
         )
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
@@ -215,8 +223,22 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
         }
     }
 
+    val uiState = sharedViewModel._networkStatusListener.networkStatus.collectAsState(
+        ConnectionState.Available)
+    val snackbarHostState = remember { SnackbarHostState() }
+    when (uiState.value) {
+        is ConnectionState.Unavailable -> {
+            LaunchedEffect(sharedViewModel.weatherForecast) {
+                snackbarHostState.showSnackbar(
+                    "Похоже, у вас отсутствует интернет-соединение."
+                )
+            }
+        }
+    }
+
 }
 
+@ExperimentalCoroutinesApi
 @Composable
 fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay: ForecastDay) {
 
@@ -226,8 +248,9 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 10.dp)
             .padding(bottom = 10.dp)
+            .wrapContentWidth()
     ) {
         Text(
             text = forecastDay.dayName,
@@ -244,7 +267,16 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
             tint = currentTheme.value.iconsTint,
         )
         Text(
+            text =  "${temperatureConverter(forecastDay.dayTemp)}°",
+            color = currentTheme.value.textColor,
+            fontFamily = ralewayFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 13.sp
+        )
+        Text(
+            modifier = Modifier.width(90.dp),
             text = forecastDay.dayStatus,
+            textAlign = TextAlign.Center,
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Medium,
