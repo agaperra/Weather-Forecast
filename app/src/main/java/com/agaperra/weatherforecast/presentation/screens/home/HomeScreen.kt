@@ -2,7 +2,6 @@ package com.agaperra.weatherforecast.presentation.screens.home
 
 import android.Manifest
 import android.content.Intent
-import android.graphics.Paint
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -23,24 +22,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
-import com.agaperra.weatherforecast.data.network.ConnectionState
-import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
+import com.agaperra.weatherforecast.domain.model.AppState
+import com.agaperra.weatherforecast.domain.model.ErrorState
 import com.agaperra.weatherforecast.domain.model.ForecastDay
+import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
-import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.utils.Constants.HOME_SCREEN_BACKGROUND_ANIMATION_DURATION
 import com.agaperra.weatherforecast.utils.getLocationName
-import com.agaperra.weatherforecast.utils.temperatureConverter
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
@@ -68,31 +66,44 @@ fun WeatherScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
     val forecast by sharedViewModel.weatherForecast.collectAsState()
     val weatherTheme by sharedViewModel.currentTheme.collectAsState()
 
-    Box {
-        Crossfade(targetState = weatherTheme.backgroundRes,
-            animationSpec = tween(HOME_SCREEN_BACKGROUND_ANIMATION_DURATION)) {
-            Image(
-                painter = painterResource(id = it),
-                contentDescription = stringResource(R.string.weather_background),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-        Column {
-            Row(modifier = Modifier
-                .weight(.6f)
-                .fillMaxWidth(),
-                content = {})
-            Column(modifier = Modifier
-                .weight(1f)
-                .fillMaxSize()
-                .navigationBarsPadding()) {
-                when (forecast) {
-                    is AppState.Error -> ErrorContent()
-                    is AppState.Loading -> LoadingContent()
-                    is AppState.Success -> SuccessContent()
+    val scaffoldState = rememberScaffoldState()
+
+    Scaffold(scaffoldState = scaffoldState) {
+
+        Box {
+            Crossfade(
+                targetState = weatherTheme.backgroundRes,
+                animationSpec = tween(HOME_SCREEN_BACKGROUND_ANIMATION_DURATION)
+            ) {
+                Image(
+                    painter = painterResource(id = it),
+                    contentDescription = stringResource(R.string.weather_background),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            Column {
+                Row(modifier = Modifier
+                    .weight(.6f)
+                    .fillMaxWidth(),
+                    content = {})
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize()
+                        .navigationBarsPadding()
+                ) {
+                    when (forecast) {
+                        is AppState.Error -> ErrorContent(
+                            message = forecast.message,
+                            scaffoldState = scaffoldState
+                        )
+                        is AppState.Loading -> LoadingContent()
+                        is AppState.Success -> SuccessContent()
+                    }
                 }
             }
+
         }
     }
 }
@@ -120,8 +131,26 @@ fun ColumnScope.SuccessContent() {
 }
 
 @Composable
-fun ColumnScope.ErrorContent() {
+fun ErrorContent(message: ErrorState?, scaffoldState: ScaffoldState) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
+    when (message) {
+        ErrorState.NO_INTERNET_CONNECTION -> {
+            LaunchedEffect(key1 = message) {
+                scope.launch {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = context.getString(R.string.no_internet_connection),
+                        actionLabel = "Got it",
+                        duration = SnackbarDuration.Indefinite
+                    )
+                }
+            }
+        }
+        ErrorState.LOCATION_NOT_FOUND -> TODO()
+        ErrorState.NO_FORECAST_LOADED -> TODO()
+        null -> TODO()
+    }
 }
 
 @ExperimentalCoroutinesApi
@@ -192,7 +221,7 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
             fontSize = 35.sp
         )
         Text(
-            text = "${temperatureConverter(forecast.data?.currentWeather.toString())}\u00B0",
+            text = "${forecast.data?.currentWeather}°",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,
@@ -216,22 +245,11 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
         LazyRow(
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(items = forecast.data?.forecastDays
-                ?: listOf()) { day ->
+            items(
+                items = forecast.data?.forecastDays
+                    ?: listOf()
+            ) { day ->
                 WeatherItem(forecastDay = day)
-            }
-        }
-    }
-
-    val uiState = sharedViewModel._networkStatusListener.networkStatus.collectAsState(
-        ConnectionState.Available)
-    val snackbarHostState = remember { SnackbarHostState() }
-    when (uiState.value) {
-        is ConnectionState.Unavailable -> {
-            LaunchedEffect(sharedViewModel.weatherForecast) {
-                snackbarHostState.showSnackbar(
-                    "Похоже, у вас отсутствует интернет-соединение."
-                )
             }
         }
     }
@@ -267,7 +285,7 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
             tint = currentTheme.value.iconsTint,
         )
         Text(
-            text =  "${temperatureConverter(forecastDay.dayTemp)}°",
+            text = "${forecastDay.dayTemp}°",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Medium,

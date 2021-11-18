@@ -9,6 +9,7 @@ import com.agaperra.weatherforecast.domain.use_case.GetWeeklyForecast
 import com.agaperra.weatherforecast.domain.use_case.ReadLaunchState
 import com.agaperra.weatherforecast.domain.use_case.UpdateLaunchState
 import com.agaperra.weatherforecast.domain.model.AppState
+import com.agaperra.weatherforecast.domain.model.ErrorState
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import com.agaperra.weatherforecast.utils.Constants.atmosphere_ids_range
 import com.agaperra.weatherforecast.utils.Constants.clouds_ids_range
@@ -22,7 +23,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -44,8 +44,6 @@ class SharedViewModel @Inject constructor(
     private val _weatherForecast = MutableStateFlow<AppState<WeatherForecast>>(AppState.Loading())
     val weatherForecast = _weatherForecast.asStateFlow()
 
-    val _networkStatusListener = networkStatusListener
-
     init {
         readLaunchState().onEach {
             _isFirstLaunch.value = it
@@ -54,24 +52,22 @@ class SharedViewModel @Inject constructor(
 
         networkStatusListener.networkStatus.onEach { status ->
             when (status) {
-                ConnectionState.Available -> getWeatherForecast()
-                ConnectionState.Unavailable -> {
-                    _weatherForecast.value = AppState.Error(message = "No internet connection")
-
-                }
+//                ConnectionState.Available -> getWeatherForecast() не работает как задумано
+                ConnectionState.Unavailable -> _weatherForecast.value =
+                    AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION)
             }
         }.launchIn(viewModelScope)
     }
 
-
     fun getWeatherForecast(lat: Double = 55.45, lon: Double = 37.37) {
-        getWeeklyForecast(lat = lat,
+        getWeeklyForecast(
+            lat = lat,
             lon = lon,
             units = "metric",
-            lang = Locale.getDefault().language).onEach { result ->
+            lang = Locale.getDefault().language
+        ).onEach { result ->
 
             when (result) {
-                is AppState.Error -> Timber.e(result.message)
                 is AppState.Success -> _currentTheme.value =
                     selectTheme(result.data?.currentWeatherStatusId)
                 else -> Unit

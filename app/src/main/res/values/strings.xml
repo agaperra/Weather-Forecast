@@ -12,4 +12,5 @@
     <string name="splash_screen_background">Splash Screen Background</string>
     <string name="today">Today</string>
     <string name="just_updated">Updated Time</string>
+    <string name="no_internet_connection">Looks like you don\'t have Internet connection.</string>
 </resources>

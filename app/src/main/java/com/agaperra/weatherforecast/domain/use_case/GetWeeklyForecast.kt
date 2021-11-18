@@ -3,10 +3,11 @@ package com.agaperra.weatherforecast.domain.use_case
 import com.agaperra.weatherforecast.domain.interactor.WeatherIconsInteractor
 import com.agaperra.weatherforecast.domain.repository.ForecastRepository
 import com.agaperra.weatherforecast.domain.model.AppState
-import com.agaperra.weatherforecast.presentation.theme.AppThemes
+import com.agaperra.weatherforecast.domain.model.ErrorState
 import com.agaperra.weatherforecast.utils.Constants
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class GetWeeklyForecast @Inject constructor(
@@ -27,9 +28,10 @@ class GetWeeklyForecast @Inject constructor(
             }
             emit(AppState.Success(data = response))
         } catch (exception: HttpException) {
-            emit(AppState.Error(message = "Connection error: ${exception.message()}"))
+            emit(AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION))
+            Timber.e(exception)
         } catch (exception: Exception) {
-            emit(AppState.Error(message = "Unknown exception: ${exception.message}"))
+            emit(AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION))
         }
     }
 
