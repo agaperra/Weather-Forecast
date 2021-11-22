@@ -2,8 +2,8 @@ package com.agaperra.weatherforecast.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.agaperra.weatherforecast.data.network.ConnectionState
-import com.agaperra.weatherforecast.data.network.NetworkStatusListener
+import com.agaperra.weatherforecast.presentation.network.ConnectionState
+import com.agaperra.weatherforecast.presentation.network.NetworkStatusListener
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.domain.use_case.GetWeeklyForecast
 import com.agaperra.weatherforecast.domain.use_case.ReadLaunchState
@@ -52,7 +52,7 @@ class SharedViewModel @Inject constructor(
 
         networkStatusListener.networkStatus.onEach { status ->
             when (status) {
-//                ConnectionState.Available -> getWeatherForecast() не работает как задумано
+                ConnectionState.Available -> getWeatherForecast() // не работает как задумано
                 ConnectionState.Unavailable -> _weatherForecast.value =
                     AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION)
             }

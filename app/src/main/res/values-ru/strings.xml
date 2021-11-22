@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Моя погода</string>
     <string name="icon_location">Иконка локации</string>
+    <string name="icon_settings">Иконка настроек</string>
     <string name="icon_weather">Иконка погоды</string>
     <string name="weather_background">Погодный фон</string>
     <string name="unavailable_feature">Функция недоступна</string>
@@ -25,4 +26,5 @@
     <string name="temperature_units_celsius">Цельсий</string>
     <string name="temperature_units_fahrenheit">Фаренгейт</string>
     <string name="no_internet_connection">Похоже, у вас отсутствует интернет-соединение.</string>
+    <string name="no_internet_connection_action">Понятно</string>
 </resources>

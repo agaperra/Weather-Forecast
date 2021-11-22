@@ -40,14 +40,14 @@
       android:strokeColor="#393e5b"
       android:strokeLineCap="round"/>
   <path
-      android:pathData="M118,105.333L118,215"
+      android:pathData="M118.043,66.833L118.043,176.5"
       android:strokeLineJoin="round"
       android:strokeWidth="5"
       android:fillColor="#00000000"
       android:strokeColor="#393e5b"
       android:strokeLineCap="round"/>
   <path
-      android:pathData="M126,105.333L126,201.333"
+      android:pathData="M126,92L126,188"
       android:strokeLineJoin="round"
       android:strokeWidth="5"
       android:fillColor="#00000000"

@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -90,9 +91,9 @@ fun WeatherScreen(
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            Column {
+            Column(modifier = Modifier.fillMaxSize())  {
                 Row(modifier = Modifier
-                    .weight(.6f)
+                    .weight(.4f)
                     .fillMaxWidth(),
                     content = {})
                 Column(
@@ -111,13 +112,19 @@ fun WeatherScreen(
                     }
                 }
             }
-            Button(
+            IconButton(
                 onClick = { navigateToPreferencesScreen() },
                 modifier = Modifier
                     .statusBarsPadding()
                     .align(TopEnd)
             ) {
-                Text(text = stringResource(R.string.preferences), color = weatherTheme.textColor)
+                Icon( painter = painterResource(id = R.drawable.ic_baseline_settings_24),
+                    contentDescription = stringResource(R.string.icon_settings),
+                    modifier = Modifier
+                        .size(45.dp)
+                        .padding(end = 10.dp),
+                    tint = MaterialTheme.colors.primary
+                )
             }
         }
     }
@@ -156,7 +163,7 @@ fun ErrorContent(message: ErrorState?, scaffoldState: ScaffoldState) {
                 scope.launch {
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = context.getString(R.string.no_internet_connection),
-                        actionLabel = "Got it",
+                        actionLabel = context.getString(R.string.no_internet_connection_action),
                         duration = SnackbarDuration.Indefinite
                     )
                 }
@@ -180,7 +187,7 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .weight(weight = .7f),
+            .weight(weight = 1.5f),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -224,7 +231,7 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .weight(weight = 1f),
+            .weight(weight = 1.5f),
         verticalArrangement = Arrangement.Center
     ) {
         Text(
@@ -233,14 +240,14 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 35.sp
+            fontSize = 25.sp
         )
         Text(
             text = "${forecast.data?.currentWeather}°",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,
-            fontSize = 60.sp
+            fontSize = 50.sp
         )
     }
 }
@@ -254,7 +261,7 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .weight(weight = 1f),
+            .weight(weight = 1.9f),
         verticalAlignment = Alignment.Bottom
     ) {
         LazyRow(
@@ -307,7 +314,7 @@ fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay:
             fontSize = 14.sp
         )
         Text(
-            modifier = Modifier.width(100.dp),
+            modifier = Modifier.width(110.dp),
             text = forecastDay.dayStatus,
             textAlign = TextAlign.Center,
             color = currentTheme.value.textColor,

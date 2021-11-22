@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Weather Forecast</string>
     <string name="icon_location">Location icon</string>
+    <string name="icon_settings">Settings icon</string>
     <string name="icon_weather">Weather Icon</string>
     <string name="weather_background">Weather Background</string>
     <string name="unavailable_feature">Feature is not available</string>
@@ -13,6 +14,7 @@
     <string name="today">Today</string>
     <string name="just_updated">Updated Time</string>
     <string name="no_internet_connection">Looks like you don\'t have Internet connection.</string>
+    <string name="no_internet_connection_action">Got it!</string>
     <string name="units">Units</string>
     <string name="preferences">Preferences</string>
     <string name="wind">Wind</string>
