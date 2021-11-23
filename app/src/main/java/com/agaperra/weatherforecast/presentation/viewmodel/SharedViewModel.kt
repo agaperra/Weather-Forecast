@@ -1,6 +1,6 @@
 package com.agaperra.weatherforecast.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
+import  androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.agaperra.weatherforecast.presentation.network.ConnectionState
 import com.agaperra.weatherforecast.presentation.network.NetworkStatusListener
@@ -9,7 +9,6 @@ import com.agaperra.weatherforecast.domain.use_case.GetWeeklyForecast
 import com.agaperra.weatherforecast.domain.use_case.ReadLaunchState
 import com.agaperra.weatherforecast.domain.use_case.UpdateLaunchState
 import com.agaperra.weatherforecast.domain.model.AppState
-import com.agaperra.weatherforecast.domain.model.ErrorState
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import com.agaperra.weatherforecast.utils.Constants.atmosphere_ids_range
 import com.agaperra.weatherforecast.utils.Constants.clouds_ids_range
@@ -23,6 +22,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -52,9 +52,8 @@ class SharedViewModel @Inject constructor(
 
         networkStatusListener.networkStatus.onEach { status ->
             when (status) {
-                ConnectionState.Available -> getWeatherForecast() // не работает как задумано
-                ConnectionState.Unavailable -> _weatherForecast.value =
-                    AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION)
+                ConnectionState.Available -> Timber.d("Network is Available")
+                ConnectionState.Unavailable -> Timber.d("Network is Unavailable")
             }
         }.launchIn(viewModelScope)
     }
