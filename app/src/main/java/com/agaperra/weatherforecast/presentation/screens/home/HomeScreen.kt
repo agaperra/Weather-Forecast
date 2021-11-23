@@ -23,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -93,7 +92,7 @@ fun WeatherScreen(
             }
             Column(modifier = Modifier.fillMaxSize())  {
                 Row(modifier = Modifier
-                    .weight(.4f)
+                    .weight(.5f)
                     .fillMaxWidth(),
                     content = {})
                 Column(
@@ -240,14 +239,14 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 25.sp
+            fontSize = 35.sp
         )
         Text(
             text = "${forecast.data?.currentWeather}°",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,
-            fontSize = 50.sp
+            fontSize = 60.sp
         )
     }
 }
