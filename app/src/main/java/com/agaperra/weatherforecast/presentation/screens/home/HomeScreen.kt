@@ -1,7 +1,12 @@
 package com.agaperra.weatherforecast.presentation.screens.home
 
 import android.Manifest
+import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -23,9 +28,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.domain.model.AppState
@@ -35,6 +40,7 @@ import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.agaperra.weatherforecast.utils.Constants.HOME_SCREEN_BACKGROUND_ANIMATION_DURATION
+import com.agaperra.weatherforecast.utils.formatLocation
 import com.agaperra.weatherforecast.utils.getLocationName
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
@@ -42,6 +48,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
@@ -62,7 +69,9 @@ fun HomeScreen(
         permission = Manifest.permission.ACCESS_FINE_LOCATION,
         permissionDeniedMessage = stringResource(id = R.string.permission_denied_message),
         navigateToSettingsScreen = { context.startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS)) },
-        content = { WeatherScreen(navigateToPreferencesScreen = navigateToPreferencesScreen) })
+        content = {
+            WeatherScreen(navigateToPreferencesScreen = navigateToPreferencesScreen)
+        })
 }
 
 @ExperimentalCoroutinesApi
@@ -71,6 +80,25 @@ fun WeatherScreen(
     sharedViewModel: SharedViewModel = hiltViewModel(),
     navigateToPreferencesScreen: () -> Unit
 ) {
+    val locationManager: LocationManager =
+        LocalContext.current.getSystemService(LOCATION_SERVICE) as LocationManager
+    val locationListener = LocationListener { location -> formatLocation(location = location) }
+    if (ActivityCompat.checkSelfPermission(
+            LocalContext.current,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        return
+    } else {
+        locationManager.requestLocationUpdates(
+            LocationManager.GPS_PROVIDER,
+            1000 * 10, 10f, locationListener
+        )
+        locationManager.requestLocationUpdates(
+            LocationManager.NETWORK_PROVIDER, 1000 * 10, 10f,
+            locationListener
+        )
+    }
 
     val forecast by sharedViewModel.weatherForecast.collectAsState()
     val weatherTheme by sharedViewModel.currentTheme.collectAsState()
@@ -91,7 +119,7 @@ fun WeatherScreen(
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            Column(modifier = Modifier.fillMaxSize())  {
+            Column(modifier = Modifier.fillMaxSize()) {
                 Row(modifier = Modifier
                     .weight(.4f)
                     .fillMaxWidth(),
@@ -118,7 +146,8 @@ fun WeatherScreen(
                     .statusBarsPadding()
                     .align(TopEnd)
             ) {
-                Icon( painter = painterResource(id = R.drawable.ic_baseline_settings_24),
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_settings_24),
                     contentDescription = stringResource(R.string.icon_settings),
                     modifier = Modifier
                         .size(45.dp)
@@ -177,7 +206,9 @@ fun ErrorContent(message: ErrorState?, scaffoldState: ScaffoldState) {
 
 @ExperimentalCoroutinesApi
 @Composable
-fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
+fun ColumnScope.LocationContent(
+    sharedViewModel: SharedViewModel = hiltViewModel()
+) {
 
     val currentTheme = sharedViewModel.currentTheme.collectAsState()
     val forecast by sharedViewModel.weatherForecast.collectAsState()
