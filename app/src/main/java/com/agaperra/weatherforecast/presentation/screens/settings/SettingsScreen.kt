@@ -1,7 +1,8 @@
-package com.agaperra.weatherforecast.presentation.screens.preferences
+package com.agaperra.weatherforecast.presentation.screens.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -10,11 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
+import com.agaperra.weatherforecast.presentation.theme.secondaryPearlWhite
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,14 +25,26 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 @Composable
 fun PreferencesScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
-    val weatherBackground by sharedViewModel.currentTheme.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(weatherBackground.backgroundRes))
+            .background(color = secondaryPearlWhite)
             .systemBarsPadding()
     ) {
-        PreferencesContent(weatherBackground.textColor)
+        PreferencesContent(Color.Black)
+    }
+}
+
+@Preview
+@Composable
+fun SettingsScreenPreview() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = secondaryPearlWhite)
+            .systemBarsPadding()
+    ) {
+        PreferencesContent(Color.Black)
     }
 }
 
