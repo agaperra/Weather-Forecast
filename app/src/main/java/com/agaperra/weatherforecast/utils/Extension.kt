@@ -12,6 +12,8 @@ fun Pair<Double, Double>.getLocationName(context: Context): String {
     return try {
         val addresses = geocoder.getFromLocation(this.first, this.second, 1)
         addresses[0].adminArea
+    } catch (e: NullPointerException) {
+        getLocationName(context)
     } catch (e: Exception) {
         Timber.e(e)
         "Unknown"

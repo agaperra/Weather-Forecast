@@ -13,7 +13,8 @@
     <string name="open_settings">Открыть настройки</string>
     <string name="splash_screen_background">Фон Заставки</string>
     <string name="today">Сегодня</string>
-    <string name="just_updated">Время обновления</string>
+    <string name="just_updated">Недавно обновлено</string>
+    <string name="updated_time">Обновлено %1$d минут назад</string>
     <string name="units">Единицы измерения</string>
     <string name="preferences">Настройки</string>
     <string name="wind">Ветер</string>

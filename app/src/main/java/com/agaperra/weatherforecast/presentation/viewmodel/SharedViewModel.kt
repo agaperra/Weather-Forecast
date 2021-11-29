@@ -2,14 +2,13 @@ package com.agaperra.weatherforecast.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.agaperra.weatherforecast.presentation.network.ConnectionState
-import com.agaperra.weatherforecast.presentation.network.NetworkStatusListener
+import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.domain.use_case.GetWeeklyForecast
 import com.agaperra.weatherforecast.domain.use_case.ReadLaunchState
 import com.agaperra.weatherforecast.domain.use_case.UpdateLaunchState
-import com.agaperra.weatherforecast.domain.model.AppState
-import com.agaperra.weatherforecast.domain.model.ErrorState
+import com.agaperra.weatherforecast.presentation.network.ConnectionState
+import com.agaperra.weatherforecast.presentation.network.NetworkStatusListener
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import com.agaperra.weatherforecast.utils.Constants.atmosphere_ids_range
 import com.agaperra.weatherforecast.utils.Constants.clouds_ids_range
@@ -23,7 +22,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import timber.log.Timber
 import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -35,6 +38,10 @@ class SharedViewModel @Inject constructor(
     networkStatusListener: NetworkStatusListener,
 ) : ViewModel() {
 
+    companion object {
+        const val WEATHER_UPDATE_TIMER_PERIOD = 5L
+    }
+
     private val _currentTheme = MutableStateFlow<AppThemes>(AppThemes.SunnyTheme())
     val currentTheme = _currentTheme.asStateFlow()
 
@@ -44,6 +51,12 @@ class SharedViewModel @Inject constructor(
     private val _weatherForecast = MutableStateFlow<AppState<WeatherForecast>>(AppState.Loading())
     val weatherForecast = _weatherForecast.asStateFlow()
 
+    private val _weatherLastUpdate = MutableStateFlow(value = 0)
+    val weatherLastUpdate = _weatherLastUpdate.asStateFlow()
+
+    private val scheduledExecutorService = Executors.newScheduledThreadPool(1)
+    private var future: ScheduledFuture<*>? = null
+
     init {
         readLaunchState().onEach {
             _isFirstLaunch.value = it
@@ -52,9 +65,8 @@ class SharedViewModel @Inject constructor(
 
         networkStatusListener.networkStatus.onEach { status ->
             when (status) {
-                ConnectionState.Available -> getWeatherForecast() // не работает как задумано
-                ConnectionState.Unavailable -> _weatherForecast.value =
-                    AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION)
+                ConnectionState.Available -> Timber.d("Network is Available")
+                ConnectionState.Unavailable -> Timber.d("Network is Unavailable")
             }
         }.launchIn(viewModelScope)
     }
@@ -68,14 +80,28 @@ class SharedViewModel @Inject constructor(
         ).onEach { result ->
 
             when (result) {
-                is AppState.Success -> _currentTheme.value =
-                    selectTheme(result.data?.currentWeatherStatusId)
-                else -> Unit
+                is AppState.Success -> {
+                    _currentTheme.value =
+                        selectTheme(result.data?.currentWeatherStatusId)
+                    startForecastUpdateTimer()
+                }
+                is AppState.Loading -> {
+                    if (future?.isCancelled == false) future?.cancel(false)
+                    _weatherLastUpdate.value = 0
+                }
+                is AppState.Error -> Timber.e(result.message?.name)
             }
-
             _weatherForecast.value = result
-
         }.launchIn(viewModelScope)
+    }
+
+    private fun startForecastUpdateTimer() {
+        future = scheduledExecutorService.scheduleAtFixedRate(
+            { _weatherLastUpdate.value += WEATHER_UPDATE_TIMER_PERIOD.toInt() },
+            WEATHER_UPDATE_TIMER_PERIOD,
+            WEATHER_UPDATE_TIMER_PERIOD,
+            TimeUnit.MINUTES
+        )
     }
 
     private fun selectTheme(currentWeatherStatusId: Int?): AppThemes =
@@ -90,4 +116,9 @@ class SharedViewModel @Inject constructor(
                 else -> AppThemes.SunnyTheme()
             }
         } else AppThemes.SunnyTheme()
+
+    override fun onCleared() {
+        super.onCleared()
+        future?.cancel(false)
+    }
 }
