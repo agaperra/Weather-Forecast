@@ -1,5 +1,6 @@
 package com.agaperra.weatherforecast.presentation.viewmodel
 
+import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.agaperra.weatherforecast.domain.model.AppState
@@ -57,6 +58,7 @@ class SharedViewModel @Inject constructor(
     private val scheduledExecutorService = Executors.newScheduledThreadPool(1)
     private var future: ScheduledFuture<*>? = null
 
+
     init {
         readLaunchState().onEach {
             _isFirstLaunch.value = it
@@ -69,9 +71,10 @@ class SharedViewModel @Inject constructor(
                 ConnectionState.Unavailable -> Timber.d("Network is Unavailable")
             }
         }.launchIn(viewModelScope)
+
     }
 
-    fun getWeatherForecast(lat: Double = 55.45, lon: Double = 37.37) {
+    fun getWeatherForecast(lat: Double , lon: Double) {
         getWeeklyForecast(
             lat = lat,
             lon = lon,
