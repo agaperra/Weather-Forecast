@@ -90,7 +90,7 @@ fun WeatherScreen(
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            Column(modifier = Modifier.fillMaxSize())  {
+            Column(modifier = Modifier.fillMaxSize()) {
                 Row(modifier = Modifier
                     .weight(.5f)
                     .fillMaxWidth(),
@@ -117,7 +117,8 @@ fun WeatherScreen(
                     .statusBarsPadding()
                     .align(TopEnd)
             ) {
-                Icon( painter = painterResource(id = R.drawable.ic_baseline_settings_24),
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_settings_24),
                     contentDescription = stringResource(R.string.icon_settings),
                     modifier = Modifier
                         .size(45.dp)
@@ -178,8 +179,9 @@ fun ErrorContent(message: ErrorState?, scaffoldState: ScaffoldState) {
 @Composable
 fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
-    val currentTheme = sharedViewModel.currentTheme.collectAsState()
+    val currentTheme by sharedViewModel.currentTheme.collectAsState()
     val forecast by sharedViewModel.weatherForecast.collectAsState()
+    val forecastUpdateTime by sharedViewModel.weatherLastUpdate.collectAsState()
     val context = LocalContext.current
 
     Row(
@@ -192,7 +194,7 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
         Icon(
             painter = painterResource(id = R.drawable.ic_location),
             contentDescription = stringResource(R.string.icon_location),
-            tint = currentTheme.value.iconsTint,
+            tint = currentTheme.iconsTint,
             modifier = Modifier
                 .size(45.dp)
                 .padding(end = 10.dp)
@@ -203,15 +205,18 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
         ) {
             Text(
                 text = forecast.data?.location?.getLocationName(context) ?: "Unknown",
-                color = currentTheme.value.textColor,
+                color = currentTheme.textColor,
                 fontFamily = ralewayFontFamily,
                 fontSize = 27.sp,
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = stringResource(id = R.string.just_updated),
+                text = if (forecastUpdateTime == 0)
+                    stringResource(id = R.string.just_updated)
+                else
+                    stringResource(id = R.string.updated_time, forecastUpdateTime),
                 fontFamily = ralewayFontFamily,
-                color = currentTheme.value.textColor,
+                color = currentTheme.textColor,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium
             )
