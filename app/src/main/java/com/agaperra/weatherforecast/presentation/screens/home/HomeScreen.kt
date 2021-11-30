@@ -34,7 +34,6 @@ import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.agaperra.weatherforecast.utils.Constants.HOME_SCREEN_BACKGROUND_ANIMATION_DURATION
-import com.agaperra.weatherforecast.utils.getLocationName
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -52,10 +51,14 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
+    val currentTheme by sharedViewmodel.currentTheme.collectAsState()
 
-    SideEffect {
+    LaunchedEffect(key1 = currentTheme) {
         systemUiController.setStatusBarColor(darkIcons = true, color = Color.Transparent)
-        systemUiController.setNavigationBarColor(color = Color.Transparent)
+        systemUiController.setNavigationBarColor(
+            color = Color.Transparent,
+            darkIcons = currentTheme.useDarkNavigationIcons
+        )
     }
     PermissionsRequest(
         permissions = Manifest.permission.ACCESS_FINE_LOCATION,
@@ -189,7 +192,6 @@ fun ColumnScope.LocationContent(
     val currentTheme by sharedViewModel.currentTheme.collectAsState()
     val forecast by sharedViewModel.weatherForecast.collectAsState()
     val forecastUpdateTime by sharedViewModel.weatherLastUpdate.collectAsState()
-    val context = LocalContext.current
 
     Row(
         modifier = Modifier
@@ -211,7 +213,7 @@ fun ColumnScope.LocationContent(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = forecast.data?.location?.getLocationName(context) ?: "Unknown",
+                text = forecast.data?.location ?: "Unknown",
                 color = currentTheme.textColor,
                 fontFamily = ralewayFontFamily,
                 fontSize = 27.sp,

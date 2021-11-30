@@ -1,8 +1,7 @@
 package com.agaperra.weatherforecast.data.repository
 
 import com.agaperra.weatherforecast.data.api.ForecastApi
-import com.agaperra.weatherforecast.data.api.mapper.toDomain
-import com.agaperra.weatherforecast.domain.model.WeatherForecast
+import com.agaperra.weatherforecast.data.api.mapper.DtoToDomain
 import com.agaperra.weatherforecast.domain.repository.ForecastRepository
 import dagger.hilt.android.scopes.ViewModelScoped
 import javax.inject.Inject
@@ -10,6 +9,7 @@ import javax.inject.Inject
 @ViewModelScoped
 class ForecastRepositoryImpl @Inject constructor(
     private val forecastApi: ForecastApi,
+    private val mapper: DtoToDomain
 ) : ForecastRepository {
 
     override suspend fun getWeeklyForecast(
@@ -17,6 +17,6 @@ class ForecastRepositoryImpl @Inject constructor(
         lon: Double,
         units: String,
         lang: String,
-    ) = forecastApi.getWeekForecast(lat = lat, lon = lon, units = units, lang = lang).toDomain()
+    ) = mapper.map(forecastApi.getWeekForecast(lat = lat, lon = lon, units = units, lang = lang))
 
 }
