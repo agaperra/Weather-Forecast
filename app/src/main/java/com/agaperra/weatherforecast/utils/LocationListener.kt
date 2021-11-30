@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import javax.inject.Inject
 
-@Suppress("RemoveExplicitTypeArguments")
 @SuppressLint("MissingPermission")
 @ExperimentalCoroutinesApi
 class LocationListener @Inject constructor(
@@ -28,14 +27,13 @@ class LocationListener @Inject constructor(
     private var locationManager: LocationManager? =
         context.getSystemService(LOCATION_SERVICE) as LocationManager
 
-    val currentLocation = callbackFlow<AppState<Pair<Double, Double>>> {
-        var currentCoordinates: Pair<Double, Double> = Pair(0.0, 0.0)
+    val currentLocation = callbackFlow {
+        var currentCoordinates: Pair<Double, Double>
 
         val locationListener = LocationListener { location ->
             Timber.d("Got location")
             currentCoordinates = Pair(location.latitude, location.longitude)
             trySend(AppState.Success(currentCoordinates))
-            Timber.e(currentCoordinates.toString())
         }
 
         if (ActivityCompat.checkSelfPermission(
@@ -47,11 +45,10 @@ class LocationListener @Inject constructor(
         } else {
             locationManager?.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
-                1000 * 10,
+                10_000,
                 10f,
                 locationListener
             )
-            Timber.e(currentCoordinates.toString())
             Timber.d("Location requested")
         }
 
