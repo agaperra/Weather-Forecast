@@ -34,7 +34,6 @@ import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.agaperra.weatherforecast.utils.Constants.HOME_SCREEN_BACKGROUND_ANIMATION_DURATION
-import com.agaperra.weatherforecast.utils.getLocationName
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -52,16 +51,25 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
-    LaunchedEffect(key1 = true) { sharedViewmodel.getWeatherForecast() }
-    SideEffect {
+    val currentTheme by sharedViewmodel.currentTheme.collectAsState()
+
+    LaunchedEffect(key1 = currentTheme) {
         systemUiController.setStatusBarColor(darkIcons = true, color = Color.Transparent)
-        systemUiController.setNavigationBarColor(color = Color.Transparent)
+        systemUiController.setNavigationBarColor(
+            color = Color.Transparent,
+            darkIcons = currentTheme.useDarkNavigationIcons
+        )
     }
     PermissionsRequest(
-        permission = Manifest.permission.ACCESS_FINE_LOCATION,
+        permissions = Manifest.permission.ACCESS_FINE_LOCATION,
         permissionDeniedMessage = stringResource(id = R.string.permission_denied_message),
         navigateToSettingsScreen = { context.startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS)) },
-        content = { WeatherScreen(navigateToPreferencesScreen = navigateToPreferencesScreen) })
+        content = {
+            LaunchedEffect(key1 = true) {
+                sharedViewmodel.observeCurrentLocation()
+            }
+            WeatherScreen(navigateToPreferencesScreen = navigateToPreferencesScreen)
+        })
 }
 
 @ExperimentalCoroutinesApi
@@ -171,18 +179,20 @@ fun ErrorContent(message: ErrorState?, scaffoldState: ScaffoldState) {
         }
         ErrorState.LOCATION_NOT_FOUND -> TODO()
         ErrorState.NO_FORECAST_LOADED -> TODO()
+        ErrorState.NO_LOCATION_PERMISSION -> TODO()
         null -> TODO()
     }
 }
 
 @ExperimentalCoroutinesApi
 @Composable
-fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
+fun ColumnScope.LocationContent(
+    sharedViewModel: SharedViewModel = hiltViewModel()
+) {
 
     val currentTheme by sharedViewModel.currentTheme.collectAsState()
     val forecast by sharedViewModel.weatherForecast.collectAsState()
     val forecastUpdateTime by sharedViewModel.weatherLastUpdate.collectAsState()
-    val context = LocalContext.current
 
     Row(
         modifier = Modifier
@@ -204,7 +214,7 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = forecast.data?.location?.getLocationName(context) ?: "Unknown",
+                text = forecast.data?.location ?: "Unknown",
                 color = currentTheme.textColor,
                 fontFamily = ralewayFontFamily,
                 fontSize = 27.sp,

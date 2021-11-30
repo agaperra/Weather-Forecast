@@ -17,12 +17,14 @@ import com.agaperra.weatherforecast.domain.util.Constants.SPLASH_SCREEN_NORMAL
 import com.agaperra.weatherforecast.presentation.theme.firstGrayBlue
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 
+@ExperimentalCoroutinesApi
 @Composable
 fun SplashScreen(
     sharedViewModel: SharedViewModel = hiltViewModel(),
-    navigateToHomeScreen: () -> Unit
+    navigateToHomeScreen: () -> Unit,
 ) {
     val isFirstLaunch by sharedViewModel.isFirstLaunch.collectAsState()
 
