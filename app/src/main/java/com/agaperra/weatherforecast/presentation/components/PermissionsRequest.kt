@@ -25,7 +25,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 @ExperimentalPermissionsApi
 @Composable
 fun PermissionsRequest(
-    permission: String,
+    permissions: String,
     permissionDeniedMessage: String,
     navigateToSettingsScreen: () -> Unit,
     content: @Composable () -> Unit
@@ -33,7 +33,7 @@ fun PermissionsRequest(
     var doNotShowRationale by remember { mutableStateOf(false) }
 
     val permissionState =
-        rememberPermissionState(permission = permission)
+        rememberPermissionState(permission = permissions)
 
     PermissionRequired(
         permissionState = permissionState,
