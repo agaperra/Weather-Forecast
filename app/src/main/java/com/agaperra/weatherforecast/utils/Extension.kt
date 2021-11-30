@@ -21,12 +21,4 @@ fun Pair<Double, Double>.getLocationName(context: Context): String {
     }
 }
 
-fun formatLocation(location: Location?): Pair<Double, Double> {
-    return if (location == null) Pair(0.0, 0.0)
-    else Pair(
-        location.latitude,
-        location.longitude
-    )
-}
-
 

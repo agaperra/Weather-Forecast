@@ -1,10 +1,5 @@
 package com.agaperra.weatherforecast.presentation.screens.splash
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import android.location.LocationListener
-import android.location.LocationManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
@@ -13,21 +8,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.domain.util.Constants.SPLASH_SCREEN_FIRST_LAUNCH_DELAY
 import com.agaperra.weatherforecast.domain.util.Constants.SPLASH_SCREEN_NORMAL
 import com.agaperra.weatherforecast.presentation.theme.firstGrayBlue
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
-import com.agaperra.weatherforecast.utils.formatLocation
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 @Composable

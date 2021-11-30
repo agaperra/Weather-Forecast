@@ -47,7 +47,6 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.properties.Delegates
 
 
 @ExperimentalCoroutinesApi
@@ -61,18 +60,13 @@ fun HomeScreen(
     val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
 
-
-    var location: Pair<Double, Double> = Pair(0.0, 0.0)
-    var locationReceived = false
+    var location = remember { Pair(0.0, 0.0) }
     val locationManager: LocationManager =
         LocalContext.current.getSystemService(LOCATION_SERVICE) as LocationManager
     val locationListener = LocationListener { loc ->
         location = Pair(loc.latitude, loc.longitude)
-        Timber.e(location.toString())
-        locationReceived = true
-        Timber.e(locationReceived.toString() + "1")
     }
-    Timber.e(locationReceived.toString()+ "2")
+
 
 
     if (ActivityCompat.checkSelfPermission(
@@ -91,13 +85,11 @@ fun HomeScreen(
             locationListener
         )
     }
-    LaunchedEffect(key1 = locationReceived, block = {
-        Timber.e(locationReceived.toString()+ "3")
-        if (locationReceived) {
-            Timber.e("ЛОКАЦИЯ ПОЛУЧЕНА")
-            sharedViewmodel.getWeatherForecast(location.first, location.second)
-        }
-    })
+    LaunchedEffect(key1 = true) {
+
+        sharedViewmodel.getWeatherForecast(location.first, location.second)
+
+    }
     SideEffect {
         systemUiController.setStatusBarColor(darkIcons = true, color = Color.Transparent)
         systemUiController.setNavigationBarColor(color = Color.Transparent)
