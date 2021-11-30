@@ -1,5 +1,6 @@
 package com.agaperra.weatherforecast.utils
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
@@ -28,48 +29,35 @@ class LocationListener @Inject constructor(
         context.getSystemService(LOCATION_SERVICE) as LocationManager
 
     val currentLocation = callbackFlow<AppState<Pair<Double, Double>>> {
-        var currentCoordinates: Pair<Double, Double>
+        var currentCoordinates: Pair<Double, Double> = Pair(0.0, 0.0)
 
         val locationListener = LocationListener { location ->
             Timber.d("Got location")
             currentCoordinates = Pair(location.latitude, location.longitude)
             trySend(AppState.Success(currentCoordinates))
+            Timber.e(currentCoordinates.toString())
         }
 
         if (ActivityCompat.checkSelfPermission(
                 context,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
-            chooseLocationProvider(locationListener)
-            Timber.d("Location requested")
-        } else {
             trySend(AppState.Error(ErrorState.NO_LOCATION_PERMISSION))
+        } else {
+            locationManager?.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                1000 * 10,
+                10f,
+                locationListener
+            )
+            Timber.e(currentCoordinates.toString())
+            Timber.d("Location requested")
         }
 
         awaitClose {
             locationManager?.removeUpdates(locationListener)
             locationManager = null
-        }
-    }
-
-    private fun chooseLocationProvider(locationListener: LocationListener) {
-        Criteria().apply {
-            powerRequirement = Criteria.POWER_LOW
-            accuracy = Criteria.ACCURACY_FINE
-            isSpeedRequired = true
-            isAltitudeRequired = false
-            isBearingRequired = false
-            isCostAllowed = false
-        }.also { criteria ->
-            locationManager?.getBestProvider(criteria, true)?.let { provider ->
-                locationManager?.requestLocationUpdates(
-                    provider,
-                    1000 * 10,
-                    10f,
-                    locationListener
-                )
-            }
         }
     }
 }
