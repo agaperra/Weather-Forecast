@@ -12,7 +12,7 @@ fun Pair<Double, Double>.getLocationName(context: Context): String {
     val geocoder = Geocoder(context, Locale.getDefault())
     return try {
         val addresses = geocoder.getFromLocation(this.first, this.second, 1)
-        addresses[0].adminArea
+        addresses[0].subAdminArea
     } catch (e: NullPointerException) {
         getLocationName(context)
     } catch (e: Exception) {

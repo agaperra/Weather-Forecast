@@ -1,6 +1,5 @@
 package com.agaperra.weatherforecast.presentation.viewmodel
 
-import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.agaperra.weatherforecast.domain.model.AppState
@@ -17,6 +16,7 @@ import com.agaperra.weatherforecast.utils.Constants.drizzle_ids_range
 import com.agaperra.weatherforecast.utils.Constants.rain_ids_range
 import com.agaperra.weatherforecast.utils.Constants.snow_ids_range
 import com.agaperra.weatherforecast.utils.Constants.thunderstorm_ids_range
+import com.agaperra.weatherforecast.utils.LocationListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,8 +35,9 @@ import javax.inject.Inject
 class SharedViewModel @Inject constructor(
     readLaunchState: ReadLaunchState,
     saveLaunchState: UpdateLaunchState,
-    private val getWeeklyForecast: GetWeeklyForecast,
     networkStatusListener: NetworkStatusListener,
+    private val getWeeklyForecast: GetWeeklyForecast,
+    private val locationListener: LocationListener
 ) : ViewModel() {
 
     companion object {
@@ -58,7 +59,6 @@ class SharedViewModel @Inject constructor(
     private val scheduledExecutorService = Executors.newScheduledThreadPool(1)
     private var future: ScheduledFuture<*>? = null
 
-
     init {
         readLaunchState().onEach {
             _isFirstLaunch.value = it
@@ -71,10 +71,21 @@ class SharedViewModel @Inject constructor(
                 ConnectionState.Unavailable -> Timber.d("Network is Unavailable")
             }
         }.launchIn(viewModelScope)
-
     }
 
-    fun getWeatherForecast(lat: Double , lon: Double) {
+    fun observeCurrentLocation() = locationListener.currentLocation.onEach { locationResult ->
+        when (locationResult) {
+            is AppState.Error -> Timber.e(locationResult.message?.name)
+            is AppState.Loading -> Timber.d("Location loading")
+            is AppState.Success -> {
+                locationResult.data?.let { coordinates ->
+                    getWeatherForecast(lat = coordinates.first, lon = coordinates.second)
+                }
+            }
+        }
+    }.launchIn(viewModelScope)
+
+    private fun getWeatherForecast(lat: Double, lon: Double) {
         getWeeklyForecast(
             lat = lat,
             lon = lon,

@@ -1,11 +1,7 @@
 package com.agaperra.weatherforecast.presentation.screens.home
 
 import android.Manifest
-import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.location.LocationListener
-import android.location.LocationManager
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -29,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.domain.model.AppState
@@ -46,9 +41,6 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import kotlin.properties.Delegates
-
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
@@ -61,52 +53,18 @@ fun HomeScreen(
     val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
 
-
-    var location: Pair<Double, Double> = Pair(0.0, 0.0)
-    var locationReceived = false
-    val locationManager: LocationManager =
-        LocalContext.current.getSystemService(LOCATION_SERVICE) as LocationManager
-    val locationListener = LocationListener { loc ->
-        location = Pair(loc.latitude, loc.longitude)
-        Timber.e(location.toString())
-        locationReceived = true
-        Timber.e(locationReceived.toString() + "1")
-    }
-    Timber.e(locationReceived.toString()+ "2")
-
-
-    if (ActivityCompat.checkSelfPermission(
-            LocalContext.current,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-    ) {
-        return
-    } else {
-        locationManager.requestLocationUpdates(
-            LocationManager.GPS_PROVIDER,
-            1000 * 10, 10f, locationListener
-        )
-        locationManager.requestLocationUpdates(
-            LocationManager.NETWORK_PROVIDER, 1000 * 10, 10f,
-            locationListener
-        )
-    }
-    LaunchedEffect(key1 = locationReceived, block = {
-        Timber.e(locationReceived.toString()+ "3")
-        if (locationReceived) {
-            Timber.e("ЛОКАЦИЯ ПОЛУЧЕНА")
-            sharedViewmodel.getWeatherForecast(location.first, location.second)
-        }
-    })
     SideEffect {
         systemUiController.setStatusBarColor(darkIcons = true, color = Color.Transparent)
         systemUiController.setNavigationBarColor(color = Color.Transparent)
     }
     PermissionsRequest(
-        permission = Manifest.permission.ACCESS_FINE_LOCATION,
+        permissions = Manifest.permission.ACCESS_FINE_LOCATION,
         permissionDeniedMessage = stringResource(id = R.string.permission_denied_message),
         navigateToSettingsScreen = { context.startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS)) },
         content = {
+            LaunchedEffect(key1 = true) {
+                sharedViewmodel.observeCurrentLocation()
+            }
             WeatherScreen(navigateToPreferencesScreen = navigateToPreferencesScreen)
         })
 }
