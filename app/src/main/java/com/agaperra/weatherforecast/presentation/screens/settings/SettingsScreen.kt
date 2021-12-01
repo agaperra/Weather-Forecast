@@ -1,4 +1,4 @@
-package com.agaperra.weatherforecast.presentation.screens.preferences
+package com.agaperra.weatherforecast.presentation.screens.settings
 
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.TweenSpec
@@ -28,6 +28,7 @@ import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.theme.secondaryPearlWhite
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.google.accompanist.insets.systemBarsPadding
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.math.roundToInt
 
@@ -36,6 +37,13 @@ import kotlin.math.roundToInt
 @Composable
 fun PreferencesScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
     val weatherBackground by sharedViewModel.currentTheme.collectAsState()
+    val systemUiController = rememberSystemUiController()
+
+    SideEffect {
+        systemUiController.setStatusBarColor(color = Color.Transparent)
+        systemUiController.setNavigationBarColor(color = Color.Transparent)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()

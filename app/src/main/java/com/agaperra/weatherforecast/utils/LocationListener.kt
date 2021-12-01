@@ -5,9 +5,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
-import android.location.Criteria
+import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.ErrorState
@@ -30,10 +31,17 @@ class LocationListener @Inject constructor(
     val currentLocation = callbackFlow {
         var currentCoordinates: Pair<Double, Double>
 
-        val locationListener = LocationListener { location ->
-            Timber.d("Got location")
-            currentCoordinates = Pair(location.latitude, location.longitude)
-            trySend(AppState.Success(currentCoordinates))
+        val locationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                currentCoordinates = Pair(location.latitude, location.longitude)
+                trySend(AppState.Success(currentCoordinates))
+            }
+
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) = Unit
+
+            override fun onProviderEnabled(provider: String) = Unit
+
+            override fun onProviderDisabled(provider: String) = Unit
         }
 
         if (ActivityCompat.checkSelfPermission(
