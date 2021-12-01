@@ -1,15 +1,25 @@
 package com.agaperra.weatherforecast.presentation.screens.preferences
 
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,7 +28,9 @@ import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlin.math.roundToInt
 
+@ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
 fun PreferencesScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
@@ -33,18 +45,12 @@ fun PreferencesScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun PreferencesContent(textColor: Color) {
     val windState = remember { mutableStateOf(false) }
     val pressureState = remember { mutableStateOf(false) }
     val temperatureState = remember { mutableStateOf(false) }
-
-    val windTextRes =
-        if (windState.value) R.string.wind_units_kilometer_per_hour else R.string.wind_units_meter_per_sec
-    val pressureTextRes =
-        if (pressureState.value) R.string.pressure_units_mm_hg else R.string.pressure_units_pa
-    val temperatureTextRes =
-        if (temperatureState.value) R.string.temperature_units_celsius else R.string.temperature_units_fahrenheit
 
     Column(
         horizontalAlignment = Alignment.Start, modifier = Modifier
@@ -61,51 +67,168 @@ fun PreferencesContent(textColor: Color) {
         )
         PreferencesItem(
             mutableState = windState,
-            textUnitRes = windTextRes,
             textRes = R.string.wind,
-            textColor
+            textStart = R.string.wind_units_kilometer_per_hour,
+            textEnd = R.string.wind_units_meter_per_sec,
+            textColor = textColor,
+            onValueChange = { windState.value = !windState.value }
         )
         PreferencesItem(
             mutableState = pressureState,
-            textUnitRes = pressureTextRes,
             textRes = R.string.pressure,
-            textColor
+            textStart = R.string.pressure_units_mm_hg,
+            textEnd = R.string.pressure_units_pa,
+            textColor = textColor,
+            onValueChange = { pressureState.value = !pressureState.value }
         )
         PreferencesItem(
             mutableState = temperatureState,
-            textUnitRes = temperatureTextRes,
             textRes = R.string.temperature,
-            textColor
+            textStart = R.string.temperature_units_celsius,
+            textEnd = R.string.temperature_units_fahrenheit,
+            textColor = textColor,
+            onValueChange = { temperatureState.value = !temperatureState.value }
         )
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 fun PreferencesItem(
     mutableState: MutableState<Boolean>,
-    textUnitRes: Int,
     textRes: Int,
-    textColor: Color
+    textStart: Int,
+    textEnd: Int,
+    textColor: Color,
+    onValueChange: () -> Unit
 ) {
+    val AnimationSpec = TweenSpec<Float>(durationMillis = 100)
+
+    val swipeableState =
+        rememberSwipeableStateFor(
+            mutableState.value, onValueChange = { onValueChange() },
+            animationSpec = AnimationSpec
+        )
+
+    val trackWidth = 300.dp
+    val thumbWidth = 150.dp
+    val thumbHeight = 50.dp
+
+    val minBound = 0f
+    val maxBound = with(LocalDensity.current) { thumbWidth.toPx() }
+    val roundedShape = RoundedCornerShape(5.dp)
+    val anchors = mapOf(minBound to false, maxBound to true)
+    val trackColor by SwitchDefaults.colors().trackColor(true, mutableState.value)
+
+    val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
+
     Column {
         Text(
             text = stringResource(textRes),
             color = textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 30.sp
+            fontSize = 30.sp,
+            modifier = Modifier.padding(bottom = 10.dp)
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Switch(
-                checked = mutableState.value,
-                onCheckedChange = { mutableState.value = !mutableState.value })
-            Text(
-                text = stringResource(textUnitRes),
-                color = textColor,
-                fontFamily = ralewayFontFamily,
-                fontWeight = FontWeight.Light,
-                fontSize = 20.sp, modifier = Modifier.padding(start = 5.dp, bottom = 5.dp)
+        Box(
+            modifier = Modifier
+                .width(trackWidth)
+                .toggleable(
+                    value = mutableState.value,
+                    role = Role.Switch,
+                    enabled = true,
+                    interactionSource = interactionSource,
+                    indication = null,
+                    onValueChange = { onValueChange() })
+                .swipeable(
+                    state = swipeableState,
+                    anchors = anchors,
+                    thresholds = { _, _ -> FractionalThreshold(0.3f) },
+                    orientation = Orientation.Horizontal
+                )
+                .clip(shape = roundedShape)
+        ) {
+            AddTexts(
+                textStart = textStart,
+                textEnd = textEnd,
+                trackColor = trackColor
             )
+            Box(
+                Modifier
+                    .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
+                    .height(thumbHeight)
+                    .width(thumbWidth)
+                    .clip(shape = roundedShape)
+                    .background(Color.DarkGray.copy(0.8f))
+            )
+
+        }
+
+    }
+}
+
+@Composable
+fun AddTexts(textStart: Int, textEnd: Int, trackColor: Color) {
+    Row(
+        modifier = Modifier
+            .width(300.dp)
+            .height(50.dp)
+            .background(trackColor),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+
+            modifier = Modifier
+                .weight(1f),
+            color = Color.White,
+            fontFamily = ralewayFontFamily,
+            fontWeight = FontWeight.Light,
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center,
+            text = stringResource(id = textStart),
+        )
+        Text(
+            modifier = Modifier
+
+                .weight(1f),
+            color = Color.White,
+            fontFamily = ralewayFontFamily,
+            fontWeight = FontWeight.Light,
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center,
+            text = stringResource(id = textEnd),
+        )
+    }
+}
+
+@Composable
+@ExperimentalMaterialApi
+private fun <T : Any> rememberSwipeableStateFor(
+    value: T,
+    onValueChange: (T) -> Unit,
+    animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec
+): SwipeableState<T> {
+    val swipeableState = remember {
+        SwipeableState(
+            initialValue = value,
+            animationSpec = animationSpec,
+            confirmStateChange = { true }
+        )
+    }
+    val forceAnimationCheck = remember { mutableStateOf(false) }
+    LaunchedEffect(value, forceAnimationCheck.value) {
+        if (value != swipeableState.currentValue) {
+            swipeableState.animateTo(value)
         }
     }
+    DisposableEffect(swipeableState.currentValue) {
+        if (value != swipeableState.currentValue) {
+            onValueChange(swipeableState.currentValue)
+            forceAnimationCheck.value = !forceAnimationCheck.value
+        }
+        onDispose { }
+    }
+    return swipeableState
 }
