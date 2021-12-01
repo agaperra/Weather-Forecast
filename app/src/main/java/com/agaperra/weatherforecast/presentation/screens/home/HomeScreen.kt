@@ -23,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,7 +34,6 @@ import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.agaperra.weatherforecast.utils.Constants.HOME_SCREEN_BACKGROUND_ANIMATION_DURATION
-import com.agaperra.weatherforecast.utils.getLocationName
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -53,16 +51,25 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
-    LaunchedEffect(key1 = true) { sharedViewmodel.getWeatherForecast() }
-    SideEffect {
+    val currentTheme by sharedViewmodel.currentTheme.collectAsState()
+
+    LaunchedEffect(key1 = currentTheme) {
         systemUiController.setStatusBarColor(darkIcons = true, color = Color.Transparent)
-        systemUiController.setNavigationBarColor(color = Color.Transparent)
+        systemUiController.setNavigationBarColor(
+            color = Color.Transparent,
+            darkIcons = currentTheme.useDarkNavigationIcons
+        )
     }
     PermissionsRequest(
-        permission = Manifest.permission.ACCESS_FINE_LOCATION,
+        permissions = Manifest.permission.ACCESS_FINE_LOCATION,
         permissionDeniedMessage = stringResource(id = R.string.permission_denied_message),
         navigateToSettingsScreen = { context.startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS)) },
-        content = { WeatherScreen(navigateToPreferencesScreen = navigateToPreferencesScreen) })
+        content = {
+            LaunchedEffect(key1 = true) {
+                sharedViewmodel.observeCurrentLocation()
+            }
+            WeatherScreen(navigateToPreferencesScreen = navigateToPreferencesScreen)
+        })
 }
 
 @ExperimentalCoroutinesApi
@@ -91,9 +98,9 @@ fun WeatherScreen(
                     modifier = Modifier.fillMaxSize()
                 )
             }
-            Column(modifier = Modifier.fillMaxSize())  {
+            Column(modifier = Modifier.fillMaxSize()) {
                 Row(modifier = Modifier
-                    .weight(.4f)
+                    .weight(.5f)
                     .fillMaxWidth(),
                     content = {})
                 Column(
@@ -118,7 +125,8 @@ fun WeatherScreen(
                     .statusBarsPadding()
                     .align(TopEnd)
             ) {
-                Icon( painter = painterResource(id = R.drawable.ic_baseline_settings_24),
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_settings_24),
                     contentDescription = stringResource(R.string.icon_settings),
                     modifier = Modifier
                         .size(45.dp)
@@ -171,17 +179,20 @@ fun ErrorContent(message: ErrorState?, scaffoldState: ScaffoldState) {
         }
         ErrorState.LOCATION_NOT_FOUND -> TODO()
         ErrorState.NO_FORECAST_LOADED -> TODO()
+        ErrorState.NO_LOCATION_PERMISSION -> TODO()
         null -> TODO()
     }
 }
 
 @ExperimentalCoroutinesApi
 @Composable
-fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
+fun ColumnScope.LocationContent(
+    sharedViewModel: SharedViewModel = hiltViewModel()
+) {
 
-    val currentTheme = sharedViewModel.currentTheme.collectAsState()
+    val currentTheme by sharedViewModel.currentTheme.collectAsState()
     val forecast by sharedViewModel.weatherForecast.collectAsState()
-    val context = LocalContext.current
+    val forecastUpdateTime by sharedViewModel.weatherLastUpdate.collectAsState()
 
     Row(
         modifier = Modifier
@@ -193,7 +204,7 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
         Icon(
             painter = painterResource(id = R.drawable.ic_location),
             contentDescription = stringResource(R.string.icon_location),
-            tint = currentTheme.value.iconsTint,
+            tint = currentTheme.iconsTint,
             modifier = Modifier
                 .size(45.dp)
                 .padding(end = 10.dp)
@@ -203,16 +214,19 @@ fun ColumnScope.LocationContent(sharedViewModel: SharedViewModel = hiltViewModel
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = forecast.data?.location?.getLocationName(context) ?: "Unknown",
-                color = currentTheme.value.textColor,
+                text = forecast.data?.location ?: "Unknown",
+                color = currentTheme.textColor,
                 fontFamily = ralewayFontFamily,
                 fontSize = 27.sp,
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = stringResource(id = R.string.just_updated),
+                text = if (forecastUpdateTime == 0)
+                    stringResource(id = R.string.just_updated)
+                else
+                    stringResource(id = R.string.updated_time, forecastUpdateTime),
                 fontFamily = ralewayFontFamily,
-                color = currentTheme.value.textColor,
+                color = currentTheme.textColor,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium
             )
@@ -240,14 +254,14 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 25.sp
+            fontSize = 35.sp
         )
         Text(
             text = "${forecast.data?.currentWeather}°",
             color = currentTheme.value.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Light,
-            fontSize = 50.sp
+            fontSize = 60.sp
         )
     }
 }

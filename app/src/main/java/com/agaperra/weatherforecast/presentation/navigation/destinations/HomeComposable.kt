@@ -7,7 +7,9 @@ import com.agaperra.weatherforecast.domain.util.Constants.HOME_SCREEN
 import com.agaperra.weatherforecast.presentation.screens.home.HomeScreen
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @ExperimentalAnimationApi

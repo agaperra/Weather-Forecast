@@ -7,7 +7,9 @@ import androidx.navigation.NavGraphBuilder
 import com.agaperra.weatherforecast.domain.util.Constants.SPLASH_SCREEN
 import com.agaperra.weatherforecast.presentation.screens.splash.SplashScreen
 import com.google.accompanist.navigation.animation.composable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @ExperimentalAnimationApi
 fun NavGraphBuilder.splashComposable(
     navigateToHomeScreen: () -> Unit,

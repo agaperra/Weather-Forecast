@@ -69,7 +69,7 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.4.0'
 
     // Design
-    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.google.accompanist:accompanist-systemuicontroller:0.21.2-beta'
     implementation 'com.google.accompanist:accompanist-insets:0.21.2-beta'
@@ -89,10 +89,10 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     // Hilt
-    def hilt_version = '2.40'
+    def hilt_version = '2.40.1'
     implementation "com.google.dagger:hilt-android:$hilt_version"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha03'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-beta01'
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     // Retrofit
@@ -107,7 +107,7 @@ dependencies {
     // Navigation
     implementation "androidx.navigation:navigation-compose:2.4.0-beta02"
     implementation "com.google.accompanist:accompanist-navigation-animation:0.21.2-beta"
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha03'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-beta01'
 
     // Timber Logging
     implementation 'com.jakewharton.timber:timber:5.0.1'

@@ -12,7 +12,8 @@
     <string name="open_settings">Open Settings</string>
     <string name="splash_screen_background">Splash Screen Background</string>
     <string name="today">Today</string>
-    <string name="just_updated">Updated Time</string>
+    <string name="just_updated">Just Updated</string>
+    <string name="updated_time">Updated %1$d minutes ago</string>
     <string name="no_internet_connection">Looks like you don\'t have Internet connection.</string>
     <string name="no_internet_connection_action">Got it!</string>
     <string name="units">Units</string>

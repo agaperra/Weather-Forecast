@@ -2,17 +2,23 @@ package com.agaperra.weatherforecast.utils
 
 import android.content.Context
 import android.location.Geocoder
+import android.location.Location
+import android.location.LocationManager
 import timber.log.Timber
 import java.util.*
-import kotlin.math.abs
+import kotlin.properties.Delegates
 
 fun Pair<Double, Double>.getLocationName(context: Context): String {
     val geocoder = Geocoder(context, Locale.getDefault())
     return try {
         val addresses = geocoder.getFromLocation(this.first, this.second, 1)
-        addresses[0].adminArea
+        addresses[0].subAdminArea
+    } catch (e: NullPointerException) {
+        getLocationName(context)
     } catch (e: Exception) {
         Timber.e(e)
         "Unknown"
     }
 }
+
+

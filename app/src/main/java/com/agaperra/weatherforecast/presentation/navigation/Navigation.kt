@@ -11,7 +11,9 @@ import com.agaperra.weatherforecast.presentation.navigation.destinations.prefere
 import com.agaperra.weatherforecast.presentation.navigation.destinations.splashComposable
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @ExperimentalAnimationApi
