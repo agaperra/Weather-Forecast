@@ -25,7 +25,7 @@ class LocationListener @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    private var locationManager: LocationManager? =
+    private var locationManager: LocationManager =
         context.getSystemService(LOCATION_SERVICE) as LocationManager
 
     val currentLocation = callbackFlow {
@@ -51,7 +51,16 @@ class LocationListener @Inject constructor(
         ) {
             trySend(AppState.Error(ErrorState.NO_LOCATION_PERMISSION))
         } else {
-            locationManager?.requestLocationUpdates(
+
+
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                10_000,
+                10f,
+                locationListener
+            )
+
+            locationManager.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
                 10_000,
                 10f,
@@ -61,8 +70,7 @@ class LocationListener @Inject constructor(
         }
 
         awaitClose {
-            locationManager?.removeUpdates(locationListener)
-            locationManager = null
+            locationManager.removeUpdates(locationListener)
         }
     }
 }
