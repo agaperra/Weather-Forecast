@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Weather Forecast</string>
     <string name="icon_location">Location icon</string>
+    <string name="icon_wind">Wind icon</string>
+    <string name="icon_humidity">Humidity icon</string>
     <string name="icon_settings">Settings icon</string>
     <string name="icon_weather">Weather Icon</string>
     <string name="weather_background">Weather Background</string>

@@ -245,7 +245,7 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .weight(weight = 1.5f),
+            .weight(weight = 1.8f),
         verticalArrangement = Arrangement.Center
     ) {
         Text(
@@ -256,13 +256,57 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
             fontWeight = FontWeight.Bold,
             fontSize = 35.sp
         )
-        Text(
-            text = "${forecast.data?.currentWeather}°",
-            color = currentTheme.value.textColor,
-            fontFamily = ralewayFontFamily,
-            fontWeight = FontWeight.Light,
-            fontSize = 60.sp
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "${forecast.data?.currentWeather}°",
+                color = currentTheme.value.textColor,
+                fontFamily = ralewayFontFamily,
+                fontWeight = FontWeight.Light,
+                fontSize = 60.sp
+            )
+            Column() {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.wind),
+                        contentDescription = stringResource(R.string.icon_wind),
+                        tint = currentTheme.value.iconsTint,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 20.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 5.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                        text = "${forecast.data?.currentWindSpeed}",
+                        color = currentTheme.value.textColor,
+                        fontFamily = ralewayFontFamily,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 18.sp
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_drizzle),
+                        contentDescription = stringResource(R.string.icon_humidity),
+                        tint = currentTheme.value.iconsTint,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 20.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 5.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                        text = "${forecast.data?.currentHumidity}",
+                        color = currentTheme.value.textColor,
+                        fontFamily = ralewayFontFamily,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 18.sp
+                    )
+                }
+            }
+        }
     }
 }
 
