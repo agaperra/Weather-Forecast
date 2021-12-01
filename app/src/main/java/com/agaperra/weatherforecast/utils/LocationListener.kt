@@ -6,8 +6,11 @@ import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
 import android.location.Criteria
+import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Bundle
+import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.ErrorState
@@ -25,7 +28,7 @@ class LocationListener @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    private var locationManager: LocationManager? =
+    private var locationManager: LocationManager =
         context.getSystemService(LOCATION_SERVICE) as LocationManager
 
     val currentLocation = callbackFlow<AppState<Pair<Double, Double>>> {
@@ -35,7 +38,6 @@ class LocationListener @Inject constructor(
             Timber.d("Got location")
             currentCoordinates = Pair(location.latitude, location.longitude)
             trySend(AppState.Success(currentCoordinates))
-            Timber.e(currentCoordinates.toString())
         }
 
         if (ActivityCompat.checkSelfPermission(
@@ -45,7 +47,7 @@ class LocationListener @Inject constructor(
         ) {
             trySend(AppState.Error(ErrorState.NO_LOCATION_PERMISSION))
         } else {
-            locationManager?.requestLocationUpdates(
+            locationManager.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
                 1000 * 10,
                 10f,
@@ -53,11 +55,14 @@ class LocationListener @Inject constructor(
             )
             Timber.e(currentCoordinates.toString())
             Timber.d("Location requested")
+
         }
 
         awaitClose {
-            locationManager?.removeUpdates(locationListener)
-            locationManager = null
+            locationManager.removeUpdates(locationListener)
+            //locationManager = null
         }
+
+
     }
 }
