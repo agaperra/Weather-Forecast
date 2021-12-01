@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
+import com.agaperra.weatherforecast.presentation.theme.secondaryPearlWhite
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -119,18 +120,20 @@ fun PreferencesItem(
     val roundedShape = RoundedCornerShape(5.dp)
     val anchors = mapOf(minBound to false, maxBound to true)
     val trackColor by SwitchDefaults.colors().trackColor(true, mutableState.value)
-
+    val trackColors = mapOf(true to textColor, false to secondaryPearlWhite)
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 
     Column {
-        Text(
-            text = stringResource(textRes),
-            color = textColor,
-            fontFamily = ralewayFontFamily,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 30.sp,
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
+
+            Text(
+                text = stringResource(textRes),
+                color = textColor,
+                fontFamily = ralewayFontFamily,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 30.sp,
+                modifier = Modifier.padding(bottom = 10.dp)
+            )
+
         Box(
             modifier = Modifier
                 .width(trackWidth)
@@ -152,7 +155,9 @@ fun PreferencesItem(
             AddTexts(
                 textStart = textStart,
                 textEnd = textEnd,
-                trackColor = trackColor
+                trackColor = textColor,
+                textColorStart = trackColors.getValue(mutableState.value),
+                textColorEnd = trackColors.getValue(!mutableState.value)
             )
             Box(
                 Modifier
@@ -160,7 +165,7 @@ fun PreferencesItem(
                     .height(thumbHeight)
                     .width(thumbWidth)
                     .clip(shape = roundedShape)
-                    .background(Color.DarkGray.copy(0.8f))
+                    .background(secondaryPearlWhite.copy(0.8f))
             )
 
         }
@@ -169,12 +174,12 @@ fun PreferencesItem(
 }
 
 @Composable
-fun AddTexts(textStart: Int, textEnd: Int, trackColor: Color) {
+fun AddTexts(textStart: Int, textEnd: Int, trackColor: Color,textColorStart: Color,textColorEnd: Color) {
     Row(
         modifier = Modifier
             .width(300.dp)
             .height(50.dp)
-            .background(trackColor),
+            .background(Color.DarkGray.copy(0.8f)),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -182,9 +187,9 @@ fun AddTexts(textStart: Int, textEnd: Int, trackColor: Color) {
 
             modifier = Modifier
                 .weight(1f),
-            color = Color.White,
+            color = textColorStart,
             fontFamily = ralewayFontFamily,
-            fontWeight = FontWeight.Light,
+            fontWeight = FontWeight.Medium,
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
             text = stringResource(id = textStart),
@@ -193,9 +198,9 @@ fun AddTexts(textStart: Int, textEnd: Int, trackColor: Color) {
             modifier = Modifier
 
                 .weight(1f),
-            color = Color.White,
+            color = textColorEnd,
             fontFamily = ralewayFontFamily,
-            fontWeight = FontWeight.Light,
+            fontWeight = FontWeight.Medium,
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
             text = stringResource(id = textEnd),
