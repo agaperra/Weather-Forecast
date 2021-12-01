@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
+import com.agaperra.weatherforecast.presentation.theme.secondaryLightCarrot
 import com.agaperra.weatherforecast.presentation.theme.secondaryPearlWhite
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.google.accompanist.insets.systemBarsPadding
@@ -36,21 +37,24 @@ import kotlin.math.roundToInt
 @ExperimentalCoroutinesApi
 @Composable
 fun PreferencesScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
-    val weatherBackground by sharedViewModel.currentTheme.collectAsState()
+    val currentTheme by sharedViewModel.currentTheme.collectAsState()
     val systemUiController = rememberSystemUiController()
 
     SideEffect {
-        systemUiController.setStatusBarColor(color = Color.Transparent)
-        systemUiController.setNavigationBarColor(color = Color.Transparent)
+        systemUiController.setStatusBarColor(darkIcons = true, color = Color.Transparent)
+        systemUiController.setNavigationBarColor(
+            color = Color.Transparent,
+            darkIcons = currentTheme.useDarkNavigationIcons
+        )
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(weatherBackground.backgroundRes))
+            .background(color = secondaryPearlWhite)
             .systemBarsPadding()
     ) {
-        PreferencesContent(weatherBackground.textColor)
+        PreferencesContent(Color.Black)
     }
 }
 
@@ -111,17 +115,18 @@ fun PreferencesItem(
     textColor: Color,
     onValueChange: () -> Unit
 ) {
-    val AnimationSpec = TweenSpec<Float>(durationMillis = 10)
+    val animationSpec = TweenSpec<Float>(durationMillis = 10)
 
     val swipeableState =
         rememberSwipeableStateFor(
             mutableState.value, onValueChange = { onValueChange() },
-            animationSpec = AnimationSpec
+            animationSpec = animationSpec
         )
 
     val trackWidth = 300.dp
     val thumbWidth = 150.dp
     val thumbHeight = 50.dp
+    val thumbHeightMax = 60.dp
 
     val minBound = 0f
     val maxBound = with(LocalDensity.current) { thumbWidth.toPx() }
@@ -158,9 +163,9 @@ fun PreferencesItem(
                     thresholds = { _, _ -> FractionalThreshold(0.3f) },
                     orientation = Orientation.Horizontal
                 )
-                .clip(shape = roundedShape)
+                .clip(shape = roundedShape),
+            contentAlignment = Alignment.CenterStart
         ) {
-
 
             Row(
                 modifier = Modifier
@@ -195,10 +200,10 @@ fun PreferencesItem(
             Box(
                 Modifier
                     .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
-                    .height(thumbHeight)
+                    .height(thumbHeightMax)
                     .width(thumbWidth)
                     .clip(shape = roundedShape)
-                    .background(secondaryPearlWhite),
+                    .background(secondaryLightCarrot),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
