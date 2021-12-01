@@ -5,12 +5,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
-import android.location.Criteria
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.ErrorState
@@ -21,23 +19,29 @@ import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import javax.inject.Inject
 
-@Suppress("RemoveExplicitTypeArguments")
 @SuppressLint("MissingPermission")
 @ExperimentalCoroutinesApi
 class LocationListener @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    private var locationManager: LocationManager =
+    private var locationManager: LocationManager? =
         context.getSystemService(LOCATION_SERVICE) as LocationManager
 
-    val currentLocation = callbackFlow<AppState<Pair<Double, Double>>> {
-        var currentCoordinates: Pair<Double, Double> = Pair(0.0, 0.0)
+    val currentLocation = callbackFlow {
+        var currentCoordinates: Pair<Double, Double>
 
-        val locationListener = LocationListener { location ->
-            Timber.d("Got location")
-            currentCoordinates = Pair(location.latitude, location.longitude)
-            trySend(AppState.Success(currentCoordinates))
+        val locationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                currentCoordinates = Pair(location.latitude, location.longitude)
+                trySend(AppState.Success(currentCoordinates))
+            }
+
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) = Unit
+
+            override fun onProviderEnabled(provider: String) = Unit
+
+            override fun onProviderDisabled(provider: String) = Unit
         }
 
         if (ActivityCompat.checkSelfPermission(
@@ -47,22 +51,18 @@ class LocationListener @Inject constructor(
         ) {
             trySend(AppState.Error(ErrorState.NO_LOCATION_PERMISSION))
         } else {
-            locationManager.requestLocationUpdates(
+            locationManager?.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
-                1000 * 10,
+                10_000,
                 10f,
                 locationListener
             )
-            Timber.e(currentCoordinates.toString())
             Timber.d("Location requested")
-
         }
 
         awaitClose {
-            locationManager.removeUpdates(locationListener)
-            //locationManager = null
+            locationManager?.removeUpdates(locationListener)
+            locationManager = null
         }
-
-
     }
 }

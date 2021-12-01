@@ -179,6 +179,7 @@ fun ErrorContent(message: ErrorState?, scaffoldState: ScaffoldState) {
         }
         ErrorState.LOCATION_NOT_FOUND -> TODO()
         ErrorState.NO_FORECAST_LOADED -> TODO()
+        ErrorState.NO_LOCATION_PERMISSION -> TODO()
         null -> TODO()
     }
 }
