@@ -4,15 +4,17 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import com.agaperra.weatherforecast.presentation.theme.secondOrangeDawn
 
 enum class CardFace(val angle: Float) {
     Front(0f) {
@@ -30,9 +32,10 @@ enum class CardFace(val angle: Float) {
 @ExperimentalMaterialApi
 @Composable
 fun FlipCard(
-    cardFace: CardFace,
-    onClick: (CardFace) -> Unit,
     modifier: Modifier = Modifier,
+    cardFace: CardFace,
+    backgroundColor: Color,
+    onClick: (CardFace) -> Unit,
     back: @Composable () -> Unit,
     front: @Composable () -> Unit
 ) {
@@ -57,17 +60,26 @@ fun FlipCard(
                     cameraDistance = 12f * density
                 }
                 .width(cardWidth)
-                .fillMaxHeight(.9f),
-            backgroundColor = secondOrangeDawn
+                .height(150.dp),
+            backgroundColor = backgroundColor,
+            border = BorderStroke(width = 1.dp, color = Color.LightGray)
         ) {
             if (rotation <= 90f) {
-                Box(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    contentAlignment = Alignment.Center
+                ) {
                     front()
                 }
             } else {
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .graphicsLayer { rotationY = 180f }) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .graphicsLayer { rotationY = 180f }
+                ) {
                     back()
                 }
             }

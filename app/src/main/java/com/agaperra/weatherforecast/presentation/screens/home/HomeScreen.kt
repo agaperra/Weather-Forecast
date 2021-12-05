@@ -22,16 +22,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.ErrorState
-import com.agaperra.weatherforecast.domain.model.ForecastDay
-import com.agaperra.weatherforecast.presentation.components.*
-import com.agaperra.weatherforecast.presentation.theme.AppThemes
+import com.agaperra.weatherforecast.presentation.components.CardFace
+import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.agaperra.weatherforecast.utils.Constants.HOME_SCREEN_BACKGROUND_ANIMATION_DURATION
@@ -283,121 +281,35 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
 
     var firstVisibleItem by remember { mutableStateOf(0) }
 
-    Row(
+    LazyRow(
         modifier = Modifier
-            .fillMaxSize()
-            .weight(weight = 1.9f)
-            .padding(bottom = 10.dp)
+            .fillMaxWidth()
+            .weight(1.9f)
+            .padding(bottom = 10.dp),
+        contentPadding = PaddingValues(horizontal = 5.dp),
+        state = listState,
+        verticalAlignment = Alignment.Bottom
     ) {
-        LazyRow(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 5.dp),
-            state = listState,
-            verticalAlignment = Alignment.Bottom
-        ) {
-            itemsIndexed(
-                items = forecast.data?.forecastDays
-                    ?: listOf(),
-            ) { currentIndex, day ->
-                ForecastItem(forecastDay = day, appThemes = currentTheme, onClick = { cardFace ->
-                    coroutineScope.launch {
-                        when (cardFace) {
-                            CardFace.Front -> {
-                                firstVisibleItem = listState.firstVisibleItemIndex
-                                delay(500)
-                                listState.animateScrollToItem(index = currentIndex)
-                            }
-                            CardFace.Back -> {
-                                delay(500)
-                                listState.animateScrollToItem(firstVisibleItem)
-                            }
+        itemsIndexed(
+            items = forecast.data?.forecastDays
+                ?: listOf(),
+        ) { currentIndex, day ->
+            ForecastItem(forecastDay = day, appThemes = currentTheme, onClick = { cardFace ->
+                coroutineScope.launch {
+                    when (cardFace) {
+                        CardFace.Front -> {
+                            firstVisibleItem = listState.firstVisibleItemIndex
+                            delay(500)
+                            listState.animateScrollToItem(index = currentIndex)
+                        }
+                        CardFace.Back -> {
+                            delay(900)
+                            listState.animateScrollToItem(firstVisibleItem)
                         }
                     }
-                })
-                Spacer(modifier = Modifier.width(15.dp))
-            }
+                }
+            })
+            Spacer(modifier = Modifier.width(15.dp))
         }
-    }
-}
-
-@ExperimentalMaterialApi
-@Composable
-fun ForecastItem(
-    forecastDay: ForecastDay,
-    modifier: Modifier = Modifier,
-    appThemes: AppThemes,
-    onClick: (CardFace) -> Unit
-) {
-    var cardFace by remember { mutableStateOf(CardFace.Front) }
-
-    FlipCard(
-        cardFace = cardFace,
-        onClick = {
-            onClick(cardFace)
-            cardFace = cardFace.next
-        },
-        back = { ForecastAdditionalInfo(forecastDay = forecastDay, currentTheme = appThemes) },
-        front = { ForecastMainInfo(forecastDay = forecastDay, currentTheme = appThemes) },
-        modifier = modifier
-    )
-}
-
-@Composable
-fun ForecastMainInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .padding(10.dp)
-                .wrapContentSize()
-        ) {
-            Text(
-                text = forecastDay.dayName,
-                color = currentTheme.textColor,
-                fontWeight = FontWeight.Medium,
-                fontSize = 15.sp
-            )
-            Icon(
-                painter = painterResource(id = forecastDay.dayIcon),
-                contentDescription = stringResource(R.string.icon_weather),
-                modifier = Modifier
-                    .padding(5.dp)
-                    .size(40.dp),
-                tint = currentTheme.iconsTint,
-            )
-            Text(
-                text = forecastDay.dayTemp,
-                color = currentTheme.textColor,
-                fontFamily = ralewayFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp
-            )
-            Text(
-                modifier = Modifier.width(110.dp),
-                text = forecastDay.dayStatus,
-                textAlign = TextAlign.Center,
-                color = currentTheme.textColor,
-                fontFamily = ralewayFontFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 13.sp
-            )
-        }
-    }
-}
-
-@Composable
-fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Center
-    ) {
-        Text(
-            text = "Card Back",
-            style = MaterialTheme.typography.h3,
-            modifier = Modifier.fillMaxSize(),
-            textAlign = TextAlign.Center
-        )
     }
 }

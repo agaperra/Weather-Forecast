@@ -51,7 +51,7 @@ class DtoToDomain @Inject constructor(@ApplicationContext private val context: C
         val geocoder = Geocoder(context, Locale.getDefault())
         return try {
             val addresses = geocoder.getFromLocation(lat, lon, 1)
-            addresses[0].subAdminArea
+            addresses.first().subAdminArea ?: addresses.first().adminArea
         } catch (e: NullPointerException) {
             getLocationName(lat = lat, lon = lon)
         } catch (e: Exception) {
