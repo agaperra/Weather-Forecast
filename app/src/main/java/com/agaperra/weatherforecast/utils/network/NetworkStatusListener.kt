@@ -1,4 +1,4 @@
-package com.agaperra.weatherforecast.presentation.network
+package com.agaperra.weatherforecast.utils.network
 
 import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE

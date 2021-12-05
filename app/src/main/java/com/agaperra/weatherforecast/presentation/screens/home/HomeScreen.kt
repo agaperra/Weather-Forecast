@@ -8,12 +8,12 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,14 +22,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.ErrorState
-import com.agaperra.weatherforecast.domain.model.ForecastDay
+import com.agaperra.weatherforecast.presentation.components.CardFace
 import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
@@ -39,6 +38,7 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
@@ -72,6 +72,7 @@ fun HomeScreen(
         })
 }
 
+@ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
 fun WeatherScreen(
@@ -152,6 +153,7 @@ fun LoadingContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.SuccessContent() {
@@ -179,7 +181,7 @@ fun ErrorContent(message: ErrorState?, scaffoldState: ScaffoldState) {
         }
         ErrorState.LOCATION_NOT_FOUND -> TODO()
         ErrorState.NO_FORECAST_LOADED -> TODO()
-        ErrorState.NO_LOCATION_PERMISSION -> TODO()
+        ErrorState.NO_LOCATION_AVAILABLE -> TODO()
         null -> TODO()
     }
 }
@@ -310,75 +312,48 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
     val forecast by sharedViewModel.weatherForecast.collectAsState()
+    val currentTheme by sharedViewModel.currentTheme.collectAsState()
 
-    Row(
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+
+    var firstVisibleItem by remember { mutableStateOf(0) }
+
+    LazyRow(
         modifier = Modifier
-            .fillMaxSize()
-            .weight(weight = 1.9f),
+            .fillMaxWidth()
+            .weight(1.9f)
+            .padding(bottom = 10.dp),
+        contentPadding = PaddingValues(horizontal = 5.dp),
+        state = listState,
         verticalAlignment = Alignment.Bottom
     ) {
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = 5.dp)
-        ) {
-            items(
-                items = forecast.data?.forecastDays
-                    ?: listOf()
-            ) { day ->
-                WeatherItem(forecastDay = day)
-            }
+        itemsIndexed(
+            items = forecast.data?.forecastDays
+                ?: listOf(),
+        ) { currentIndex, day ->
+            ForecastItem(forecastDay = day, appThemes = currentTheme, onClick = { cardFace ->
+                coroutineScope.launch {
+                    when (cardFace) {
+                        CardFace.Front -> {
+                            firstVisibleItem = listState.firstVisibleItemIndex
+                            delay(500)
+                            listState.animateScrollToItem(index = currentIndex)
+                        }
+                        CardFace.Back -> {
+                            delay(900)
+                            listState.animateScrollToItem(firstVisibleItem)
+                        }
+                    }
+                }
+            })
+            Spacer(modifier = Modifier.width(15.dp))
         }
-    }
-
-}
-
-@ExperimentalCoroutinesApi
-@Composable
-fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay: ForecastDay) {
-
-    val currentTheme = sharedViewModel.currentTheme.collectAsState()
-
-    Column(
-        horizontalAlignment = CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .padding(bottom = 10.dp)
-            .wrapContentWidth()
-    ) {
-        Text(
-            text = forecastDay.dayName,
-            color = currentTheme.value.textColor,
-            fontWeight = FontWeight.Medium,
-            fontSize = 15.sp
-        )
-        Icon(
-            painter = painterResource(id = forecastDay.dayIcon),
-            contentDescription = stringResource(R.string.icon_weather),
-            modifier = Modifier
-                .padding(5.dp)
-                .size(40.dp),
-            tint = currentTheme.value.iconsTint,
-        )
-        Text(
-            text = "${forecastDay.dayTemp}°",
-            color = currentTheme.value.textColor,
-            fontFamily = ralewayFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp
-        )
-        Text(
-            modifier = Modifier.width(110.dp),
-            text = forecastDay.dayStatus,
-            textAlign = TextAlign.Center,
-            color = currentTheme.value.textColor,
-            fontFamily = ralewayFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 13.sp
-        )
     }
 }

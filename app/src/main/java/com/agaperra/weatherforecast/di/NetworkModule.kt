@@ -2,7 +2,7 @@ package com.agaperra.weatherforecast.di
 
 import android.content.Context
 import com.agaperra.weatherforecast.data.api.ForecastApi
-import com.agaperra.weatherforecast.presentation.network.NetworkStatusListener
+import com.agaperra.weatherforecast.utils.network.NetworkStatusListener
 import com.agaperra.weatherforecast.domain.util.Constants.WEATHER_API_URL
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
