@@ -1,4 +1,4 @@
-package com.agaperra.weatherforecast.utils
+package com.agaperra.weatherforecast.utils.location
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -49,10 +49,10 @@ class LocationListener @Inject constructor(
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            trySend(AppState.Error(ErrorState.NO_LOCATION_PERMISSION))
+            trySend(AppState.Error(ErrorState.NO_LOCATION_AVAILABLE))
         } else {
             locationManager?.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER,
+                LocationManager.GPS_PROVIDER,
                 10_000,
                 10f,
                 locationListener

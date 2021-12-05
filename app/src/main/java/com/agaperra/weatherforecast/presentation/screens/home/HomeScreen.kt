@@ -8,12 +8,12 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,7 +30,8 @@ import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.ErrorState
 import com.agaperra.weatherforecast.domain.model.ForecastDay
-import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
+import com.agaperra.weatherforecast.presentation.components.*
+import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
 import com.agaperra.weatherforecast.utils.Constants.HOME_SCREEN_BACKGROUND_ANIMATION_DURATION
@@ -39,6 +40,7 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
@@ -72,6 +74,7 @@ fun HomeScreen(
         })
 }
 
+@ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
 fun WeatherScreen(
@@ -152,6 +155,7 @@ fun LoadingContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.SuccessContent() {
@@ -179,7 +183,7 @@ fun ErrorContent(message: ErrorState?, scaffoldState: ScaffoldState) {
         }
         ErrorState.LOCATION_NOT_FOUND -> TODO()
         ErrorState.NO_FORECAST_LOADED -> TODO()
-        ErrorState.NO_LOCATION_PERMISSION -> TODO()
+        ErrorState.NO_LOCATION_AVAILABLE -> TODO()
         null -> TODO()
     }
 }
@@ -266,75 +270,134 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) {
 
     val forecast by sharedViewModel.weatherForecast.collectAsState()
+    val currentTheme by sharedViewModel.currentTheme.collectAsState()
+
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+
+    var firstVisibleItem by remember { mutableStateOf(0) }
 
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .weight(weight = 1.9f),
-        verticalAlignment = Alignment.Bottom
+            .weight(weight = 1.9f)
+            .padding(bottom = 10.dp)
     ) {
         LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(horizontal = 5.dp)
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 5.dp),
+            state = listState,
+            verticalAlignment = Alignment.Bottom
         ) {
-            items(
+            itemsIndexed(
                 items = forecast.data?.forecastDays
-                    ?: listOf()
-            ) { day ->
-                WeatherItem(forecastDay = day)
+                    ?: listOf(),
+            ) { currentIndex, day ->
+                ForecastItem(forecastDay = day, appThemes = currentTheme, onClick = { cardFace ->
+                    coroutineScope.launch {
+                        when (cardFace) {
+                            CardFace.Front -> {
+                                firstVisibleItem = listState.firstVisibleItemIndex
+                                delay(500)
+                                listState.animateScrollToItem(index = currentIndex)
+                            }
+                            CardFace.Back -> {
+                                delay(500)
+                                listState.animateScrollToItem(firstVisibleItem)
+                            }
+                        }
+                    }
+                })
+                Spacer(modifier = Modifier.width(15.dp))
             }
         }
     }
-
 }
 
-@ExperimentalCoroutinesApi
+@ExperimentalMaterialApi
 @Composable
-fun WeatherItem(sharedViewModel: SharedViewModel = hiltViewModel(), forecastDay: ForecastDay) {
+fun ForecastItem(
+    forecastDay: ForecastDay,
+    modifier: Modifier = Modifier,
+    appThemes: AppThemes,
+    onClick: (CardFace) -> Unit
+) {
+    var cardFace by remember { mutableStateOf(CardFace.Front) }
 
-    val currentTheme = sharedViewModel.currentTheme.collectAsState()
+    FlipCard(
+        cardFace = cardFace,
+        onClick = {
+            onClick(cardFace)
+            cardFace = cardFace.next
+        },
+        back = { ForecastAdditionalInfo(forecastDay = forecastDay, currentTheme = appThemes) },
+        front = { ForecastMainInfo(forecastDay = forecastDay, currentTheme = appThemes) },
+        modifier = modifier
+    )
+}
 
-    Column(
-        horizontalAlignment = CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+@Composable
+fun ForecastMainInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Center) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .padding(10.dp)
+                .wrapContentSize()
+        ) {
+            Text(
+                text = forecastDay.dayName,
+                color = currentTheme.textColor,
+                fontWeight = FontWeight.Medium,
+                fontSize = 15.sp
+            )
+            Icon(
+                painter = painterResource(id = forecastDay.dayIcon),
+                contentDescription = stringResource(R.string.icon_weather),
+                modifier = Modifier
+                    .padding(5.dp)
+                    .size(40.dp),
+                tint = currentTheme.iconsTint,
+            )
+            Text(
+                text = forecastDay.dayTemp,
+                color = currentTheme.textColor,
+                fontFamily = ralewayFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp
+            )
+            Text(
+                modifier = Modifier.width(110.dp),
+                text = forecastDay.dayStatus,
+                textAlign = TextAlign.Center,
+                color = currentTheme.textColor,
+                fontFamily = ralewayFontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 13.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
+    Box(
         modifier = Modifier
-            .padding(bottom = 10.dp)
-            .wrapContentWidth()
+            .fillMaxSize(),
+        contentAlignment = Center
     ) {
         Text(
-            text = forecastDay.dayName,
-            color = currentTheme.value.textColor,
-            fontWeight = FontWeight.Medium,
-            fontSize = 15.sp
-        )
-        Icon(
-            painter = painterResource(id = forecastDay.dayIcon),
-            contentDescription = stringResource(R.string.icon_weather),
-            modifier = Modifier
-                .padding(5.dp)
-                .size(40.dp),
-            tint = currentTheme.value.iconsTint,
-        )
-        Text(
-            text = "${forecastDay.dayTemp}°",
-            color = currentTheme.value.textColor,
-            fontFamily = ralewayFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp
-        )
-        Text(
-            modifier = Modifier.width(110.dp),
-            text = forecastDay.dayStatus,
-            textAlign = TextAlign.Center,
-            color = currentTheme.value.textColor,
-            fontFamily = ralewayFontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 13.sp
+            text = "Card Back",
+            style = MaterialTheme.typography.h3,
+            modifier = Modifier.fillMaxSize(),
+            textAlign = TextAlign.Center
         )
     }
 }
