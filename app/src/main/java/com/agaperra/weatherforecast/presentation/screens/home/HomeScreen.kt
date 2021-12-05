@@ -57,8 +57,8 @@ fun HomeScreen(
         systemUiController.setStatusBarColor(darkIcons = true, color = Color.Transparent)
         systemUiController.setNavigationBarColor(
             color = Color.Transparent,
-            darkIcons = currentTheme.useDarkNavigationIcons
-        )
+
+            )
     }
     PermissionsRequest(
         permissions = Manifest.permission.ACCESS_FINE_LOCATION,
@@ -279,8 +279,6 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-    var firstVisibleItem by remember { mutableStateOf(0) }
-
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -296,16 +294,9 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
         ) { currentIndex, day ->
             ForecastItem(forecastDay = day, appThemes = currentTheme, onClick = { cardFace ->
                 coroutineScope.launch {
-                    when (cardFace) {
-                        CardFace.Front -> {
-                            firstVisibleItem = listState.firstVisibleItemIndex
-                            delay(500)
-                            listState.animateScrollToItem(index = currentIndex)
-                        }
-                        CardFace.Back -> {
-                            delay(900)
-                            listState.animateScrollToItem(firstVisibleItem)
-                        }
+                    if (cardFace == CardFace.Front) {
+                        delay(500)
+                        listState.animateScrollToItem(index = currentIndex)
                     }
                 }
             })
