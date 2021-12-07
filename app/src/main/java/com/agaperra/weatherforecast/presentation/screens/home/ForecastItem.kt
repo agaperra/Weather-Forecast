@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.agaperra.weatherforecast.R
@@ -51,10 +52,10 @@ fun ForecastMainInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         modifier = Modifier
-            .padding(10.dp)
-            .wrapContentSize()
+            .padding(2.dp)
+            .width(180.dp)
     ) {
         Text(
             text = forecastDay.dayName,
@@ -66,7 +67,7 @@ fun ForecastMainInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
             painter = painterResource(id = forecastDay.dayIcon),
             contentDescription = stringResource(R.string.icon_weather),
             modifier = Modifier
-                .padding(5.dp)
+                .padding(2.dp)
                 .size(40.dp),
             tint = if (currentTheme.primaryColor == Color.White)
                 Color.Unspecified
@@ -99,7 +100,7 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(170.dp)
+            .height(180.dp)
             .background(currentTheme.primaryColor)
             .padding(10.dp)
     ) {
@@ -237,7 +238,7 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                 tint = currentTheme.iconsTint
             )
             Text(
-                text = "${forecastDay.tempFeelsLike}C",
+                text = "${forecastDay.tempFeelsLike}°",
                 modifier = Modifier.weight(1f),
                 color = currentTheme.textColor,
                 fontSize = 12.sp
