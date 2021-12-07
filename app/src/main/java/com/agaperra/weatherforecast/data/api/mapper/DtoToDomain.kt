@@ -18,6 +18,8 @@ class DtoToDomain @Inject constructor(@ApplicationContext private val context: C
     fun map(weekForecast: ForecastResponse) = WeatherForecast(
         location = getLocationName(lat = weekForecast.lat, lon = weekForecast.lon),
         currentWeather = "%.0f".format(weekForecast.current.temp).addTempPrefix(),
+        currentWindSpeed = "${"%.0f".format(weekForecast.current.wind_speed)}м/с",
+        currentHumidity = "${"%.0f".format(weekForecast.current.humidity)}%",
         currentWeatherStatus = if (weekForecast.current.weather.isNotEmpty())
             weekForecast.current.weather[0].description.capitalize()
         else

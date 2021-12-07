@@ -1,10 +1,11 @@
-package com.agaperra.weatherforecast.utils.location
+package com.agaperra.weatherforecast.utils
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
+import android.location.Criteria
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -25,7 +26,7 @@ class LocationListener @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    private var locationManager: LocationManager? =
+    private var locationManager: LocationManager =
         context.getSystemService(LOCATION_SERVICE) as LocationManager
 
     val currentLocation = callbackFlow {
@@ -49,20 +50,35 @@ class LocationListener @Inject constructor(
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            trySend(AppState.Error(ErrorState.NO_LOCATION_AVAILABLE))
+            trySend(AppState.Error(ErrorState.NO_LOCATION_PERMISSION))
         } else {
-            locationManager?.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                10_000,
-                10f,
-                locationListener
-            )
+            chooseLocationProvider(locationListener)
             Timber.d("Location requested")
         }
 
         awaitClose {
-            locationManager?.removeUpdates(locationListener)
-            locationManager = null
+            locationManager.removeUpdates(locationListener)
+        }
+    }
+
+    private fun chooseLocationProvider(locationListener: LocationListener) {
+        Criteria().apply {
+            powerRequirement = Criteria.POWER_LOW
+            accuracy = Criteria.ACCURACY_COARSE
+            isSpeedRequired = false
+            isAltitudeRequired = false
+            isBearingRequired = false
+            isCostAllowed = false
+        }.also { criteria ->
+            locationManager.getBestProvider(criteria, true)?.let { provider ->
+                locationManager.requestLocationUpdates(
+                    provider,
+                    1000 * 10,
+                    10f,
+                    locationListener
+                )
+            }
         }
     }
 }
+
