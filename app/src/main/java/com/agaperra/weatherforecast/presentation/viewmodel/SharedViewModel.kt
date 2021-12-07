@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
-import com.agaperra.weatherforecast.domain.use_case.GetWeeklyForecast
-import com.agaperra.weatherforecast.domain.use_case.ReadLaunchState
-import com.agaperra.weatherforecast.domain.use_case.UpdateLaunchState
+import com.agaperra.weatherforecast.domain.use_case.*
 import com.agaperra.weatherforecast.presentation.network.ConnectionState
 import com.agaperra.weatherforecast.presentation.network.NetworkStatusListener
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
@@ -18,11 +16,13 @@ import com.agaperra.weatherforecast.utils.Constants.snow_ids_range
 import com.agaperra.weatherforecast.utils.Constants.thunderstorm_ids_range
 import com.agaperra.weatherforecast.utils.LocationListener
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.Executors
@@ -35,6 +35,12 @@ import javax.inject.Inject
 class SharedViewModel @Inject constructor(
     readLaunchState: ReadLaunchState,
     saveLaunchState: UpdateLaunchState,
+    private val readWindSettings: ReadWindSettings,
+    private val uploadWindSettings:UpdateWindSettings,
+    private val readPressureSettings: ReadPressureSettings,
+    private val uploadPressureSettings:UpdatePressureSettings,
+    private val readTemperatureSettings: ReadTemperatureSettings,
+    private val uploadTemperatureSettings:UpdateTemperatureSettings,
     networkStatusListener: NetworkStatusListener,
     private val getWeeklyForecast: GetWeeklyForecast,
     private val locationListener: LocationListener
@@ -55,6 +61,15 @@ class SharedViewModel @Inject constructor(
 
     private val _weatherLastUpdate = MutableStateFlow(value = 0)
     val weatherLastUpdate = _weatherLastUpdate.asStateFlow()
+
+    private val _windSettings = MutableStateFlow(value = false)
+    val windSettings = _windSettings.asStateFlow()
+
+    private val _pressureSettings = MutableStateFlow(value = false)
+    val pressureSettings = _pressureSettings.asStateFlow()
+
+    private val _temperatureSettings = MutableStateFlow(value = false)
+    val temperatureSettings = _temperatureSettings.asStateFlow()
 
     private val scheduledExecutorService = Executors.newScheduledThreadPool(1)
     private var future: ScheduledFuture<*>? = null
@@ -130,6 +145,39 @@ class SharedViewModel @Inject constructor(
                 else -> AppThemes.SunnyTheme()
             }
         } else AppThemes.SunnyTheme()
+
+    fun readWindState() {
+        readWindSettings().onEach {
+            _windSettings.value = it
+        }.launchIn(viewModelScope)
+    }
+    fun saveWindState(windValue:Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            uploadWindSettings(windValue)
+        }
+    }
+
+    fun readPressureState() {
+        readPressureSettings().onEach {
+            _pressureSettings.value = it
+        }.launchIn(viewModelScope)
+    }
+    fun savePressureState(pressureValue:Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            uploadPressureSettings(pressureValue)
+        }
+    }
+
+    fun readTemperatureState() {
+        readTemperatureSettings().onEach {
+            _temperatureSettings.value = it
+        }.launchIn(viewModelScope)
+    }
+    fun saveTemperatureState(temperatureValue:Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            uploadTemperatureSettings(temperatureValue)
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()

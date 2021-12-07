@@ -15,11 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,16 +56,26 @@ fun PreferencesScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
             .background(color = secondaryPearlWhite)
             .systemBarsPadding()
     ) {
-        PreferencesContent(Color.Black)
+        PreferencesContent(Color.Black, sharedViewModel)
     }
 }
 
+
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
-fun PreferencesContent(textColor: Color) {
-    val windState = remember { mutableStateOf(false) }
-    val pressureState = remember { mutableStateOf(false) }
-    val temperatureState = remember { mutableStateOf(false) }
+fun PreferencesContent(textColor: Color, sharedViewModel: SharedViewModel) {
+    val windState by sharedViewModel.windSettings.collectAsState()
+    val pressureState by sharedViewModel.pressureSettings.collectAsState()
+    val temperatureState by sharedViewModel.temperatureSettings.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        sharedViewModel.readWindState()
+        sharedViewModel.readPressureState()
+        sharedViewModel.readTemperatureState()
+    }
+
+
 
     Column(
         horizontalAlignment = Alignment.Start, modifier = Modifier
@@ -84,7 +96,9 @@ fun PreferencesContent(textColor: Color) {
             textStart = R.string.wind_units_kilometer_per_hour,
             textEnd = R.string.wind_units_meter_per_sec,
             textColor = textColor,
-            onValueChange = { windState.value = !windState.value }
+            onValueChange = {
+                sharedViewModel.saveWindState(!windState)
+            }
         )
         PreferencesItem(
             mutableState = pressureState,
@@ -92,7 +106,9 @@ fun PreferencesContent(textColor: Color) {
             textStart = R.string.pressure_units_mm_hg,
             textEnd = R.string.pressure_units_pa,
             textColor = textColor,
-            onValueChange = { pressureState.value = !pressureState.value }
+            onValueChange = {
+                sharedViewModel.savePressureState(!pressureState)
+            }
         )
         PreferencesItem(
             mutableState = temperatureState,
@@ -100,7 +116,9 @@ fun PreferencesContent(textColor: Color) {
             textStart = R.string.temperature_units_celsius,
             textEnd = R.string.temperature_units_fahrenheit,
             textColor = textColor,
-            onValueChange = { temperatureState.value = !temperatureState.value }
+            onValueChange = {
+                sharedViewModel.saveTemperatureState(!temperatureState)
+            }
         )
     }
 }
@@ -108,7 +126,7 @@ fun PreferencesContent(textColor: Color) {
 @ExperimentalMaterialApi
 @Composable
 fun PreferencesItem(
-    mutableState: MutableState<Boolean>,
+    mutableState: Boolean,
     textRes: Int,
     textStart: Int,
     textEnd: Int,
@@ -119,20 +137,19 @@ fun PreferencesItem(
 
     val swipeableState =
         rememberSwipeableStateFor(
-            mutableState.value, onValueChange = { onValueChange() },
+            mutableState, onValueChange = { onValueChange() },
             animationSpec = animationSpec
         )
 
     val trackWidth = 300.dp
     val thumbWidth = 150.dp
-    val thumbHeight = 50.dp
     val thumbHeightMax = 60.dp
 
     val minBound = 0f
     val maxBound = with(LocalDensity.current) { thumbWidth.toPx() }
     val roundedShape = RoundedCornerShape(5.dp)
     val anchors = mapOf(minBound to false, maxBound to true)
-
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val texts = mapOf(true to textStart, false to textEnd)
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 
@@ -151,7 +168,7 @@ fun PreferencesItem(
             modifier = Modifier
                 .width(trackWidth)
                 .toggleable(
-                    value = mutableState.value,
+                    value = mutableState,
                     role = Role.Switch,
                     enabled = true,
                     interactionSource = interactionSource,
@@ -161,7 +178,10 @@ fun PreferencesItem(
                     state = swipeableState,
                     anchors = anchors,
                     thresholds = { _, _ -> FractionalThreshold(0.3f) },
-                    orientation = Orientation.Horizontal
+                    orientation = Orientation.Horizontal,
+                    reverseDirection = isRtl,
+                    interactionSource = interactionSource,
+                    resistance = null
                 )
                 .clip(shape = roundedShape),
             contentAlignment = Alignment.CenterStart
@@ -212,7 +232,7 @@ fun PreferencesItem(
                     fontWeight = FontWeight.Medium,
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
-                    text = stringResource(id = texts.getValue(!mutableState.value)),
+                    text = stringResource(id = texts.getValue(!mutableState)),
                 )
             }
 
