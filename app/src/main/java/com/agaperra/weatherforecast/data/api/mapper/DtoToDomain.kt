@@ -7,6 +7,7 @@ import com.agaperra.weatherforecast.domain.model.ForecastDay
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.domain.util.addTempPrefix
 import com.agaperra.weatherforecast.domain.util.capitalize
+import com.agaperra.weatherforecast.domain.util.toDateFormat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -41,7 +42,13 @@ class DtoToDomain @Inject constructor(@ApplicationContext private val context: C
                     "%.0f".format(day.temp.day).addTempPrefix()
                 else
                     "Undefine",
-                dayStatusId = if (day.weather.isNotEmpty()) day.weather[0].id.toInt() else 800
+                dayStatusId = if (day.weather.isNotEmpty()) day.weather[0].id.toInt() else 800,
+                sunrise = day.sunrise.toDateFormat(),
+                sunset = day.sunset.toDateFormat(),
+                tempFeelsLike = day.feels_like.day.toInt().toString(),
+                dayPressure = day.pressure.toString(),
+                dayHumidity = day.humidity.toString(),
+                dayWindSpeed = day.wind_speed.toString()
             )
         }
     )

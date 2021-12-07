@@ -57,8 +57,8 @@ fun HomeScreen(
         systemUiController.setStatusBarColor(darkIcons = true, color = Color.Transparent)
         systemUiController.setNavigationBarColor(
             color = Color.Transparent,
-            darkIcons = currentTheme.useDarkNavigationIcons
-        )
+
+            )
     }
     PermissionsRequest(
         permissions = Manifest.permission.ACCESS_FINE_LOCATION,
@@ -268,46 +268,46 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
                 fontWeight = FontWeight.Light,
                 fontSize = 60.sp
             )
-//            Column() {
-//                Row(verticalAlignment = Alignment.CenterVertically) {
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.wind),
-//                        contentDescription = stringResource(R.string.icon_wind),
-//                        tint = currentTheme.value.iconsTint,
-//                        modifier = Modifier
-//                            .size(40.dp)
-//                            .padding(start = 20.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-//                    )
-//                    Text(
-//                        modifier = Modifier
-//                            .padding(start = 5.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-//                        text = "${forecast.data?.currentWindSpeed}",
-//                        color = currentTheme.value.textColor,
-//                        fontFamily = ralewayFontFamily,
-//                        fontWeight = FontWeight.Light,
-//                        fontSize = 18.sp
-//                    )
-//                }
-//                Row(verticalAlignment = Alignment.CenterVertically) {
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.ic_drizzle),
-//                        contentDescription = stringResource(R.string.icon_humidity),
-//                        tint = currentTheme.value.iconsTint,
-//                        modifier = Modifier
-//                            .size(40.dp)
-//                            .padding(start = 20.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-//                    )
-//                    Text(
-//                        modifier = Modifier
-//                            .padding(start = 5.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-//                        text = "${forecast.data?.currentHumidity}",
-//                        color = currentTheme.value.textColor,
-//                        fontFamily = ralewayFontFamily,
-//                        fontWeight = FontWeight.Light,
-//                        fontSize = 18.sp
-//                    )
-//                }
-//            }
+            Column() {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_wind_icon),
+                        contentDescription = stringResource(R.string.icon_wind),
+                        tint = currentTheme.value.iconsTint,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 20.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 5.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                        text = "${forecast.data?.currentWindSpeed}",
+                        color = currentTheme.value.textColor,
+                        fontFamily = ralewayFontFamily,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 18.sp
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_drizzle),
+                        contentDescription = stringResource(R.string.icon_humidity),
+                        tint = currentTheme.value.iconsTint,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 20.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 5.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                        text = "${forecast.data?.currentHumidity}",
+                        color = currentTheme.value.textColor,
+                        fontFamily = ralewayFontFamily,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 18.sp
+                    )
+                }
+            }
         }
     }
 }
@@ -322,8 +322,6 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
 
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
-
-    var firstVisibleItem by remember { mutableStateOf(0) }
 
     LazyRow(
         modifier = Modifier
@@ -340,16 +338,9 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
         ) { currentIndex, day ->
             ForecastItem(forecastDay = day, appThemes = currentTheme, onClick = { cardFace ->
                 coroutineScope.launch {
-                    when (cardFace) {
-                        CardFace.Front -> {
-                            firstVisibleItem = listState.firstVisibleItemIndex
-                            delay(500)
-                            listState.animateScrollToItem(index = currentIndex)
-                        }
-                        CardFace.Back -> {
-                            delay(900)
-                            listState.animateScrollToItem(firstVisibleItem)
-                        }
+                    if (cardFace == CardFace.Front) {
+                        delay(500)
+                        listState.animateScrollToItem(index = currentIndex)
                     }
                 }
             })

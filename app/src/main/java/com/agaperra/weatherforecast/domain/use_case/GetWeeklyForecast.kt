@@ -32,6 +32,7 @@ class GetWeeklyForecast @Inject constructor(
             Timber.e(exception)
         } catch (exception: Exception) {
             emit(AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION))
+            Timber.e(exception)
         }
     }
 
