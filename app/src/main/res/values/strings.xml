@@ -29,4 +29,5 @@
     <string name="pressure_units_pa">Pa</string>
     <string name="temperature_units_celsius">Celsius</string>
     <string name="temperature_units_fahrenheit">Fahrenheit</string>
+    <string name="sunrise_icon" translatable="false">Sunrise icon</string>
 </resources>

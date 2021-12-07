@@ -1,5 +1,6 @@
 package com.agaperra.weatherforecast.presentation.screens.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -34,7 +35,7 @@ fun ForecastItem(
     var cardFace by remember { mutableStateOf(CardFace.Front) }
 
     FlipCard(
-        modifier = modifier,
+        modifier = modifier.height(170.dp),
         cardFace = cardFace,
         backgroundColor = appThemes.primaryColor,
         onClick = {
@@ -96,7 +97,132 @@ fun ForecastMainInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
 
 @Composable
 fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
-
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(170.dp)
+            .background(currentTheme.primaryColor)
+            .padding(10.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(modifier = Modifier.weight(1f)) {
+                Text(text = forecastDay.dayName, fontSize = 12.sp)
+            }
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_sunrise),
+                    contentDescription = stringResource(R.string.sunrise_icon),
+                    tint = currentTheme.iconsTint
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(text = forecastDay.sunrise, color = Color.Black, fontSize = 12.sp)
+            }
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_sunset),
+                    contentDescription = stringResource(R.string.sunrise_icon),
+                    tint = currentTheme.iconsTint
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(text = forecastDay.sunset, color = Color.Black, fontSize = 12.sp)
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_humidity),
+                    contentDescription = stringResource(R.string.sunrise_icon),
+                    tint = currentTheme.iconsTint
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(text = "${forecastDay.dayHumidity}%", color = Color.Black, fontSize = 12.sp)
+            }
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_wind_icon),
+                    contentDescription = stringResource(R.string.sunrise_icon),
+                    tint = currentTheme.iconsTint
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(text = forecastDay.dayWindSpeed, color = Color.Black, fontSize = 12.sp)
+            }
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_pressure),
+                    contentDescription = stringResource(R.string.sunrise_icon),
+                    tint = currentTheme.iconsTint
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(text = forecastDay.dayPressure, color = Color.Black, fontSize = 12.sp)
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_termometer),
+                    contentDescription = stringResource(R.string.sunrise_icon),
+                    tint = currentTheme.iconsTint
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(text = "${forecastDay.dayTemp}C", color = Color.Black, fontSize = 12.sp)
+            }
+            Icon(
+                painter = painterResource(id = R.drawable.ic_tilda),
+                contentDescription = "Tilda Icon",
+                modifier = Modifier
+                    .width(10.dp)
+                    .height(5.dp)
+                    .weight(1f),
+                tint = currentTheme.iconsTint
+            )
+            Text(
+                text = "${forecastDay.tempFeelsLike}C",
+                modifier = Modifier.weight(1f),
+                color = Color.Black,
+                fontSize = 12.sp
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true)
@@ -104,50 +230,24 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
 fun ForecastAdditionalInfoPreview() {
 
     val forecastDay = ForecastDay(
-        dayName = "Today",
+        dayName = "Today\n5/12",
         dayStatus = "Heavy snow with tornado",
         dayTemp = "-2",
-        dayIcon = R.drawable.ic_windy
+        dayIcon = R.drawable.ic_windy,
+        dayWindSpeed = "3.5",
+        dayPressure = "750",
+        dayHumidity = "81",
+        sunrise = "9:00",
+        sunset = "17:50",
+        tempFeelsLike = "-5"
     )
 
     Box(
         modifier = Modifier
             .width(300.dp)
-            .height(150.dp),
+            .height(170.dp),
         contentAlignment = Alignment.Center
     ) {
         ForecastAdditionalInfo(forecastDay = forecastDay, currentTheme = AppThemes.SnowTheme())
     }
-}
-
-@ExperimentalMaterialApi
-@Preview
-@Composable
-fun ForecastCardPreview() {
-    var cardFace by remember { mutableStateOf(CardFace.Front) }
-
-    val forecastDay = ForecastDay(
-        dayName = "Today",
-        dayStatus = "Heavy snow with tornado",
-        dayTemp = "-2",
-        dayIcon = R.drawable.ic_windy
-    )
-
-    FlipCard(
-        cardFace = cardFace,
-        backgroundColor = Color.White,
-        onClick = { cardFace = cardFace.next },
-        back = {
-            ForecastAdditionalInfo(
-                forecastDay = forecastDay,
-                currentTheme = AppThemes.SnowTheme()
-            )
-        },
-        front = {
-            ForecastMainInfo(
-                forecastDay = forecastDay,
-                currentTheme = AppThemes.SnowTheme()
-            )
-        }
-    )
 }

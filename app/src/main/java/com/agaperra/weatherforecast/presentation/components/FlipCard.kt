@@ -59,8 +59,7 @@ fun FlipCard(
                     rotationY = rotation
                     cameraDistance = 12f * density
                 }
-                .width(cardWidth)
-                .height(150.dp),
+                .width(cardWidth),
             backgroundColor = backgroundColor,
             border = BorderStroke(width = 1.dp, color = Color.LightGray)
         ) {
