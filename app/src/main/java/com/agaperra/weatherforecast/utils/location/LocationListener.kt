@@ -57,6 +57,12 @@ class LocationListener @Inject constructor(
                 10f,
                 locationListener
             )
+            locationManager?.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                10_000,
+                10f,
+                locationListener
+            )
             Timber.d("Location requested")
         }
 

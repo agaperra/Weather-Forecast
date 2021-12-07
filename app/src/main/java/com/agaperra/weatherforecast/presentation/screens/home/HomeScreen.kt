@@ -290,11 +290,11 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_drizzle),
+                        painter = painterResource(id = R.drawable.ic_humidity),
                         contentDescription = stringResource(R.string.icon_humidity),
                         tint = currentTheme.value.iconsTint,
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(30.dp)
                             .padding(start = 20.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
                     )
                     Text(

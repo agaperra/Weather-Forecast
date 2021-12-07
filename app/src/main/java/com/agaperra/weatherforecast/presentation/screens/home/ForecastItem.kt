@@ -52,10 +52,10 @@ fun ForecastMainInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         modifier = Modifier
-            .padding(10.dp)
-            .wrapContentSize()
+            .padding(2.dp)
+            .width(180.dp)
     ) {
         Text(
             text = forecastDay.dayName,
@@ -67,7 +67,7 @@ fun ForecastMainInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
             painter = painterResource(id = forecastDay.dayIcon),
             contentDescription = stringResource(R.string.icon_weather),
             modifier = Modifier
-                .padding(5.dp)
+                .padding(2.dp)
                 .size(40.dp),
             tint = if (currentTheme.primaryColor == Color.White)
                 Color.Unspecified
@@ -100,7 +100,7 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(170.dp)
+            .height(180.dp)
             .background(currentTheme.primaryColor)
             .padding(10.dp)
     ) {
@@ -183,7 +183,7 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = forecastDay.dayPressure, color = Color.Black, fontSize = 12.sp)
+                Text(text = "%.0f".format(forecastDay.dayPressure.toFloat() / 1.333) , color = Color.Black, fontSize = 12.sp)
             }
         }
         Row(
@@ -204,7 +204,7 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = "${forecastDay.dayTemp}C", color = Color.Black, fontSize = 12.sp)
+                Text(text = "${forecastDay.dayTemp}°", color = Color.Black, fontSize = 12.sp)
             }
             Icon(
                 painter = painterResource(id = R.drawable.ic_tilda),
@@ -216,7 +216,7 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                 tint = currentTheme.iconsTint
             )
             Text(
-                text = "${forecastDay.tempFeelsLike}C",
+                text = "${forecastDay.tempFeelsLike}°",
                 modifier = Modifier.weight(1f),
                 color = Color.Black,
                 fontSize = 12.sp
@@ -245,7 +245,7 @@ fun ForecastAdditionalInfoPreview() {
     Box(
         modifier = Modifier
             .width(300.dp)
-            .height(170.dp),
+            .height(180.dp),
         contentAlignment = Alignment.Center
     ) {
         ForecastAdditionalInfo(forecastDay = forecastDay, currentTheme = AppThemes.SnowTheme())
