@@ -89,6 +89,7 @@ class SharedViewModel @Inject constructor(
             is AppState.Loading -> _isForecastLoading.value = true
             is AppState.Success -> {
                 locationResult.data?.let { coordinates ->
+                    if (coordinates.compare(_currentLocation.value)) return@let
                     _currentLocation.value = coordinates
                     getWeatherForecast()
                 }
@@ -152,4 +153,8 @@ class SharedViewModel @Inject constructor(
         super.onCleared()
         future?.cancel(false)
     }
+}
+
+private fun <A, B> Pair<A, B>.compare(value: Pair<A, B>): Boolean {
+    return this.first == value.first && this.second == value.second
 }
