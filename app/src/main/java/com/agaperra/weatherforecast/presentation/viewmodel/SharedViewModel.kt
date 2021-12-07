@@ -7,8 +7,6 @@ import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.domain.use_case.GetWeeklyForecast
 import com.agaperra.weatherforecast.domain.use_case.ReadLaunchState
 import com.agaperra.weatherforecast.domain.use_case.UpdateLaunchState
-import com.agaperra.weatherforecast.utils.network.ConnectionState
-import com.agaperra.weatherforecast.utils.network.NetworkStatusListener
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import com.agaperra.weatherforecast.utils.Constants.atmosphere_ids_range
 import com.agaperra.weatherforecast.utils.Constants.clouds_ids_range
@@ -17,6 +15,8 @@ import com.agaperra.weatherforecast.utils.Constants.rain_ids_range
 import com.agaperra.weatherforecast.utils.Constants.snow_ids_range
 import com.agaperra.weatherforecast.utils.Constants.thunderstorm_ids_range
 import com.agaperra.weatherforecast.utils.location.LocationListener
+import com.agaperra.weatherforecast.utils.network.ConnectionState
+import com.agaperra.weatherforecast.utils.network.NetworkStatusListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
