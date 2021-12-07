@@ -17,7 +17,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import timber.log.Timber
 import javax.inject.Inject
 
 @SuppressLint("MissingPermission")
@@ -53,7 +52,7 @@ class LocationListener @Inject constructor(
             trySend(AppState.Error(ErrorState.NO_LOCATION_AVAILABLE))
         } else {
             chooseLocationProvider(locationListener)
-            Timber.d("Location requested")
+            trySend(AppState.Loading())
         }
 
         awaitClose {

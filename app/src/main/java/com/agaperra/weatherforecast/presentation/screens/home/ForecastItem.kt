@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.agaperra.weatherforecast.R
@@ -110,8 +109,14 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                 .weight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(modifier = Modifier.weight(1f)) {
-                Text(text = forecastDay.dayName, fontSize = 12.sp)
+            Row(
+                modifier = Modifier.weight(1f),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = forecastDay.dayName.replace("\n", " "),
+                    fontSize = 12.sp
+                )
             }
             Row(
                 modifier = Modifier.weight(1f),
@@ -124,7 +129,7 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = forecastDay.sunrise, color = Color.Black, fontSize = 12.sp)
+                Text(text = forecastDay.sunrise, color = currentTheme.textColor, fontSize = 12.sp)
             }
             Row(
                 modifier = Modifier.weight(1f),
@@ -137,7 +142,7 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = forecastDay.sunset, color = Color.Black, fontSize = 12.sp)
+                Text(text = forecastDay.sunset, color = currentTheme.textColor, fontSize = 12.sp)
             }
         }
         Row(
@@ -157,7 +162,11 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = "${forecastDay.dayHumidity}%", color = Color.Black, fontSize = 12.sp)
+                Text(
+                    text = "${forecastDay.dayHumidity}%",
+                    color = currentTheme.textColor,
+                    fontSize = 12.sp
+                )
             }
             Row(
                 modifier = Modifier.weight(1f),
@@ -170,7 +179,11 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = forecastDay.dayWindSpeed, color = Color.Black, fontSize = 12.sp)
+                Text(
+                    text = forecastDay.dayWindSpeed,
+                    color = currentTheme.textColor,
+                    fontSize = 12.sp
+                )
             }
             Row(
                 modifier = Modifier.weight(1f),
@@ -183,7 +196,11 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = forecastDay.dayPressure, color = Color.Black, fontSize = 12.sp)
+                Text(
+                    text = forecastDay.dayPressure,
+                    color = currentTheme.textColor,
+                    fontSize = 12.sp
+                )
             }
         }
         Row(
@@ -204,7 +221,11 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = "${forecastDay.dayTemp}C", color = Color.Black, fontSize = 12.sp)
+                Text(
+                    text = "${forecastDay.dayTemp}C",
+                    color = currentTheme.textColor,
+                    fontSize = 12.sp
+                )
             }
             Icon(
                 painter = painterResource(id = R.drawable.ic_tilda),
@@ -218,36 +239,9 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
             Text(
                 text = "${forecastDay.tempFeelsLike}C",
                 modifier = Modifier.weight(1f),
-                color = Color.Black,
+                color = currentTheme.textColor,
                 fontSize = 12.sp
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ForecastAdditionalInfoPreview() {
-
-    val forecastDay = ForecastDay(
-        dayName = "Today\n5/12",
-        dayStatus = "Heavy snow with tornado",
-        dayTemp = "-2",
-        dayIcon = R.drawable.ic_windy,
-        dayWindSpeed = "3.5",
-        dayPressure = "750",
-        dayHumidity = "81",
-        sunrise = "9:00",
-        sunset = "17:50",
-        tempFeelsLike = "-5"
-    )
-
-    Box(
-        modifier = Modifier
-            .width(300.dp)
-            .height(170.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        ForecastAdditionalInfo(forecastDay = forecastDay, currentTheme = AppThemes.SnowTheme())
     }
 }
