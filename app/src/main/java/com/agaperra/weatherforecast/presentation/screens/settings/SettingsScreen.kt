@@ -68,7 +68,7 @@ fun PreferencesContent(textColor: Color, sharedViewModel: SharedViewModel = hilt
             modifier = Modifier.padding(bottom = 20.dp)
         )
         SettingsItem(
-            state = unitsState == UnitsType.METRIC,
+            state = unitsState == UnitsType.IMPERIAL,
             settingName = R.string.units,
             firstOption = R.string.metric,
             secondOption = R.string.imperial,

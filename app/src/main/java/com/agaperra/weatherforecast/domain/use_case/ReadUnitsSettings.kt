@@ -9,6 +9,6 @@ class ReadUnitsSettings @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ) {
     operator fun invoke() = dataStoreRepository.readUnitsSettings.map {
-        UnitsType.valueOf(it)
+        UnitsType.valueOf(it.uppercase())
     }
 }

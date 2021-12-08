@@ -20,3 +20,7 @@ fun Double.toDateFormat(): String {
     val date = Date(currentDate)
     return SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)
 }
+
+fun <A, B> Pair<A, B>.compare(value: Pair<A, B>): Boolean {
+    return this.first == value.first && this.second == value.second
+}

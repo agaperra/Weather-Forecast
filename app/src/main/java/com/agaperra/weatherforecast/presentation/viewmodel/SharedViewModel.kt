@@ -6,12 +6,8 @@ import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.ErrorState
 import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
-import com.agaperra.weatherforecast.domain.use_case.GetWeeklyForecast
-import com.agaperra.weatherforecast.domain.use_case.ReadLaunchState
-import com.agaperra.weatherforecast.domain.use_case.UpdateLaunchState
 import com.agaperra.weatherforecast.domain.use_case.*
-import com.agaperra.weatherforecast.presentation.network.ConnectionState
-import com.agaperra.weatherforecast.presentation.network.NetworkStatusListener
+import com.agaperra.weatherforecast.domain.util.compare
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import com.agaperra.weatherforecast.utils.Constants.atmosphere_ids_range
 import com.agaperra.weatherforecast.utils.Constants.clouds_ids_range
@@ -25,10 +21,8 @@ import com.agaperra.weatherforecast.utils.network.NetworkStatusListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -93,7 +87,12 @@ class SharedViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
 
-        readUnitsSettings().onEach { unit -> _unitsSettings.value = unit }.launchIn(viewModelScope)
+        readUnitsSettings().onEach { unit ->
+            _unitsSettings.value = unit
+            if (!_isForecastLoading.value) {
+                getWeatherForecast()
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun observeCurrentLocation() = locationListener.currentLocation.onEach { locationResult ->
@@ -118,7 +117,7 @@ class SharedViewModel @Inject constructor(
         getWeeklyForecast(
             lat = _currentLocation.value.first,
             lon = _currentLocation.value.second,
-            units = "metric",
+            units = _unitsSettings.value,
             lang = Locale.getDefault().language
         ).onEach { result ->
 
@@ -141,7 +140,6 @@ class SharedViewModel @Inject constructor(
                     _isForecastLoading.value = false
                 }
             }
-            _weatherForecast.value = result
         }.launchIn(viewModelScope)
     }
 
@@ -172,8 +170,4 @@ class SharedViewModel @Inject constructor(
         super.onCleared()
         future?.cancel(false)
     }
-}
-
-private fun <A, B> Pair<A, B>.compare(value: Pair<A, B>): Boolean {
-    return this.first == value.first && this.second == value.second
 }
