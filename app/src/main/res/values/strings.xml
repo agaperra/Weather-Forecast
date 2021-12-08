@@ -27,4 +27,7 @@
     <string name="pressure_units_pa">Pa</string>
     <string name="temperature_units_celsius">Celsius</string>
     <string name="temperature_units_fahrenheit">Fahrenheit</string>
+    <string name="settings">Settings</string>
+    <string name="metric">Metric</string>
+    <string name="imperial">Imperial</string>
 </resources>

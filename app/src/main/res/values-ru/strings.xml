@@ -28,4 +28,7 @@
     <string name="temperature_units_fahrenheit">Фаренгейт</string>
     <string name="no_internet_connection">Похоже, у вас отсутствует интернет-соединение.</string>
     <string name="no_internet_connection_action">Понятно</string>
+    <string name="settings">Настройки</string>
+    <string name="metric">Метрическая</string>
+    <string name="imperial">Королевская</string>
 </resources>

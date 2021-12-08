@@ -4,13 +4,12 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
+import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.domain.repository.DataStoreRepository
 import com.agaperra.weatherforecast.domain.util.Constants.FIRST_LAUNCH_PREFERENCE_KEY
 import com.agaperra.weatherforecast.domain.util.Constants.LOCATION_PREFERENCE_KEY
 import com.agaperra.weatherforecast.domain.util.Constants.PREFERENCE_NAME
-import com.agaperra.weatherforecast.domain.util.Constants.PRESSURE_PREFERENCE_KEY
-import com.agaperra.weatherforecast.domain.util.Constants.TEMPERATURE_PREFERENCE_KEY
-import com.agaperra.weatherforecast.domain.util.Constants.WIND_PREFERENCE_KEY
+import com.agaperra.weatherforecast.domain.util.Constants.UNITS_PREFERENCE_KEY
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
@@ -29,9 +28,7 @@ class DataStoreRepositoryImpl @Inject constructor(
     private object PreferencesKeys {
         val locationKey = stringPreferencesKey(name = LOCATION_PREFERENCE_KEY)
         val firstLaunchKey = booleanPreferencesKey(name = FIRST_LAUNCH_PREFERENCE_KEY)
-        val windKey = booleanPreferencesKey(name = WIND_PREFERENCE_KEY)
-        val pressureKey = booleanPreferencesKey(name = PRESSURE_PREFERENCE_KEY)
-        val temperatureKey = booleanPreferencesKey(name = TEMPERATURE_PREFERENCE_KEY)
+        val unitsKey = stringPreferencesKey(name = UNITS_PREFERENCE_KEY)
     }
 
     private val dataStore = context.dataStore
@@ -48,21 +45,9 @@ class DataStoreRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun persistWindSettings(windValue:Boolean) {
+    override suspend fun persistUnitsSettings(unitsType: String) {
         dataStore.edit { preference ->
-            preference[PreferencesKeys.windKey] = windValue
-        }
-    }
-
-    override suspend fun persistPressureSettings(pressureValue:Boolean) {
-        dataStore.edit { preference ->
-            preference[PreferencesKeys.pressureKey] = pressureValue
-        }
-    }
-
-    override suspend fun persistTemperatureSettings(temperatureValue:Boolean) {
-        dataStore.edit { preference ->
-            preference[PreferencesKeys.temperatureKey] = temperatureValue
+            preference[PreferencesKeys.unitsKey] = unitsType
         }
     }
 
@@ -82,27 +67,11 @@ class DataStoreRepositoryImpl @Inject constructor(
             preferences[PreferencesKeys.locationKey] ?: ""
         }
 
-    override val readWindSettings: Flow<Boolean> = dataStore.data
+    override val readUnitsSettings: Flow<String> = dataStore.data
         .catch { exception ->
             if (exception is IOException) emit(emptyPreferences()) else throw exception
-        }
-        .map { preferences ->
-            preferences[PreferencesKeys.windKey] ?: false
+        }.map { preferences ->
+            preferences[PreferencesKeys.unitsKey] ?: "metric"
         }
 
-    override val readPressureSettings: Flow<Boolean> = dataStore.data
-        .catch { exception ->
-            if (exception is IOException) emit(emptyPreferences()) else throw exception
-        }
-        .map { preferences ->
-            preferences[PreferencesKeys.pressureKey] ?: false
-        }
-
-    override val readTemperatureSettings: Flow<Boolean> = dataStore.data
-        .catch { exception ->
-            if (exception is IOException) emit(emptyPreferences()) else throw exception
-        }
-        .map { preferences ->
-            preferences[PreferencesKeys.temperatureKey] ?: false
-        }
 }
