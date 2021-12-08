@@ -3,8 +3,12 @@ package com.agaperra.weatherforecast.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.agaperra.weatherforecast.domain.model.AppState
+import com.agaperra.weatherforecast.domain.model.ErrorState
 import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
+import com.agaperra.weatherforecast.domain.use_case.GetWeeklyForecast
+import com.agaperra.weatherforecast.domain.use_case.ReadLaunchState
+import com.agaperra.weatherforecast.domain.use_case.UpdateLaunchState
 import com.agaperra.weatherforecast.domain.use_case.*
 import com.agaperra.weatherforecast.presentation.network.ConnectionState
 import com.agaperra.weatherforecast.presentation.network.NetworkStatusListener
@@ -15,7 +19,9 @@ import com.agaperra.weatherforecast.utils.Constants.drizzle_ids_range
 import com.agaperra.weatherforecast.utils.Constants.rain_ids_range
 import com.agaperra.weatherforecast.utils.Constants.snow_ids_range
 import com.agaperra.weatherforecast.utils.Constants.thunderstorm_ids_range
-import com.agaperra.weatherforecast.utils.LocationListener
+import com.agaperra.weatherforecast.utils.location.LocationListener
+import com.agaperra.weatherforecast.utils.network.ConnectionState
+import com.agaperra.weatherforecast.utils.network.NetworkStatusListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,14 +53,22 @@ class SharedViewModel @Inject constructor(
         const val WEATHER_UPDATE_TIMER_PERIOD = 5L
     }
 
+    private val _currentLocation = MutableStateFlow(Pair(-200.0, -200.0))
+
     private val _currentTheme = MutableStateFlow<AppThemes>(AppThemes.SunnyTheme())
     val currentTheme = _currentTheme.asStateFlow()
 
     private val _isFirstLaunch = MutableStateFlow(value = true)
     val isFirstLaunch = _isFirstLaunch.asStateFlow()
 
-    private val _weatherForecast = MutableStateFlow<AppState<WeatherForecast>>(AppState.Loading())
+    private val _weatherForecast = MutableStateFlow(WeatherForecast())
     val weatherForecast = _weatherForecast.asStateFlow()
+
+    private val _isForecastLoading = MutableStateFlow(true)
+    val isForecastLoading = _isForecastLoading.asStateFlow()
+
+    private val _error = MutableStateFlow(ErrorState.NO_ERROR)
+    val error = _error.asStateFlow()
 
     private val _weatherLastUpdate = MutableStateFlow(value = 0)
     val weatherLastUpdate = _weatherLastUpdate.asStateFlow()
@@ -73,8 +87,9 @@ class SharedViewModel @Inject constructor(
 
         networkStatusListener.networkStatus.onEach { status ->
             when (status) {
-                ConnectionState.Available -> Timber.d("Network is Available")
-                ConnectionState.Unavailable -> Timber.d("Network is Unavailable")
+                ConnectionState.Available -> if (_error.value == ErrorState.NO_INTERNET_CONNECTION)
+                    _error.value = ErrorState.NO_ERROR
+                ConnectionState.Unavailable -> _error.value = ErrorState.NO_INTERNET_CONNECTION
             }
         }.launchIn(viewModelScope)
 
@@ -84,10 +99,12 @@ class SharedViewModel @Inject constructor(
     fun observeCurrentLocation() = locationListener.currentLocation.onEach { locationResult ->
         when (locationResult) {
             is AppState.Error -> Timber.e(locationResult.message?.name)
-            is AppState.Loading -> Timber.d("Location loading")
+            is AppState.Loading -> _isForecastLoading.value = true
             is AppState.Success -> {
                 locationResult.data?.let { coordinates ->
-                    getWeatherForecast(lat = coordinates.first, lon = coordinates.second)
+                    if (coordinates.compare(_currentLocation.value)) return@let
+                    _currentLocation.value = coordinates
+                    getWeatherForecast()
                 }
             }
         }
@@ -97,10 +114,10 @@ class SharedViewModel @Inject constructor(
         updateUnitsSettings(currentUnits = _unitsSettings.value)
     }
 
-    private fun getWeatherForecast(lat: Double, lon: Double) {
+    fun getWeatherForecast() {
         getWeeklyForecast(
-            lat = lat,
-            lon = lon,
+            lat = _currentLocation.value.first,
+            lon = _currentLocation.value.second,
             units = "metric",
             lang = Locale.getDefault().language
         ).onEach { result ->
@@ -110,12 +127,19 @@ class SharedViewModel @Inject constructor(
                     _currentTheme.value =
                         selectTheme(result.data?.currentWeatherStatusId)
                     startForecastUpdateTimer()
+                    result.data?.let { _weatherForecast.value = it }
+                    _isForecastLoading.value = false
                 }
                 is AppState.Loading -> {
                     if (future?.isCancelled == false) future?.cancel(false)
                     _weatherLastUpdate.value = 0
+                    _isForecastLoading.value = true
                 }
-                is AppState.Error -> Timber.e(result.message?.name)
+                is AppState.Error -> {
+                    Timber.e(result.message?.name)
+                    _error.value = result.message ?: ErrorState.NO_FORECAST_LOADED
+                    _isForecastLoading.value = false
+                }
             }
             _weatherForecast.value = result
         }.launchIn(viewModelScope)
@@ -148,4 +172,8 @@ class SharedViewModel @Inject constructor(
         super.onCleared()
         future?.cancel(false)
     }
+}
+
+private fun <A, B> Pair<A, B>.compare(value: Pair<A, B>): Boolean {
+    return this.first == value.first && this.second == value.second
 }

@@ -1,4 +1,4 @@
-package com.agaperra.weatherforecast.presentation.network
+package com.agaperra.weatherforecast.utils.network
 
 sealed class ConnectionState {
     object Available : ConnectionState()

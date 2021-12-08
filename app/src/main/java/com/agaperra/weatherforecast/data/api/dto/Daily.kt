@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class Daily(
     @SerializedName("dt") val dt: Double,
-    @SerializedName("sunrise") val sunrise: Double,
-    @SerializedName("sunset") val sunset: Double,
+    @SerializedName("sunrise") val sunrise: Long,
+    @SerializedName("sunset") val sunset: Long,
     @SerializedName("moonrise") val moonrise: Double,
     @SerializedName("moonset") val moonset: Double,
     @SerializedName("moon_phase") val moon_phase: Double,

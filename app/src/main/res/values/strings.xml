@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Weather Forecast</string>
     <string name="icon_location">Location icon</string>
+    <string name="icon_wind">Wind icon</string>
+    <string name="icon_humidity">Humidity icon</string>
     <string name="icon_settings">Settings icon</string>
     <string name="icon_weather">Weather Icon</string>
     <string name="weather_background">Weather Background</string>
@@ -27,6 +29,8 @@
     <string name="pressure_units_pa">Pa</string>
     <string name="temperature_units_celsius">Celsius</string>
     <string name="temperature_units_fahrenheit">Fahrenheit</string>
+    <string name="sunrise_icon" translatable="false">Sunrise icon</string>
+    <string name="refresh_icon">Refresh Icon</string>
     <string name="settings">Settings</string>
     <string name="metric">Metric</string>
     <string name="imperial">Imperial</string>
