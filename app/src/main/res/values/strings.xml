@@ -30,8 +30,10 @@
     <string name="temperature_units_celsius">Celsius</string>
     <string name="temperature_units_fahrenheit">Fahrenheit</string>
     <string name="sunrise_icon" translatable="false">Sunrise icon</string>
-    <string name="refresh_icon">Refresh Icon</string>
+    <string name="refresh_icon" translatable="false">Refresh Icon</string>
     <string name="settings">Settings</string>
     <string name="metric">Metric</string>
     <string name="imperial">Imperial</string>
+    <string name="m_s">m/s</string>
+    <string name="f_s">f/s</string>
 </resources>

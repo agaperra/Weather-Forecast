@@ -16,22 +16,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.domain.model.ForecastDay
+import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.presentation.components.CardFace
 import com.agaperra.weatherforecast.presentation.components.FlipCard
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
+import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
 fun ForecastItem(
-    forecastDay: ForecastDay,
     modifier: Modifier = Modifier,
+    sharedViewModel: SharedViewModel = hiltViewModel(),
+    forecastDay: ForecastDay,
     appThemes: AppThemes,
     onClick: (CardFace) -> Unit
 ) {
     var cardFace by remember { mutableStateOf(CardFace.Front) }
+
 
     FlipCard(
         modifier = modifier.height(170.dp),
@@ -41,13 +48,20 @@ fun ForecastItem(
             onClick(cardFace)
             cardFace = cardFace.next
         },
-        back = { ForecastAdditionalInfo(forecastDay = forecastDay, currentTheme = appThemes) },
-        front = { ForecastMainInfo(forecastDay = forecastDay, currentTheme = appThemes) }
+        back = { ForecastAdditionalInfo(sharedViewModel = sharedViewModel, forecastDay = forecastDay, currentTheme = appThemes) },
+        front = { ForecastMainInfo(sharedViewModel = sharedViewModel, forecastDay = forecastDay, currentTheme = appThemes) }
     )
 }
 
+@ExperimentalCoroutinesApi
 @Composable
-fun ForecastMainInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
+fun ForecastMainInfo(
+    sharedViewModel: SharedViewModel,
+    forecastDay: ForecastDay,
+    currentTheme: AppThemes
+) {
+
+    val unitsState by sharedViewModel.unitsSettings.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -74,7 +88,10 @@ fun ForecastMainInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                 currentTheme.iconsTint,
         )
         Text(
-            text = forecastDay.dayTemp,
+            text = forecastDay.dayTemp + when (unitsState) {
+                UnitsType.METRIC -> "°"
+                else -> "°F"
+            },
             color = currentTheme.textColor,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Medium,
@@ -94,8 +111,16 @@ fun ForecastMainInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
     }
 }
 
+@ExperimentalCoroutinesApi
 @Composable
-fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
+fun ForecastAdditionalInfo(
+    sharedViewModel: SharedViewModel,
+    forecastDay: ForecastDay,
+    currentTheme: AppThemes
+) {
+
+    val unitsState by sharedViewModel.unitsSettings.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -180,7 +205,9 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = forecastDay.dayWindSpeed,
+                    text = forecastDay.dayWindSpeed + when(unitsState) {
+                        UnitsType.METRIC -> stringResource(id = R.string.m_s)
+                        else -> stringResource(id = R.string.f_s)},
                     color = currentTheme.textColor,
                     fontSize = 12.sp
                 )
@@ -197,7 +224,7 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = forecastDay.dayPressure,
+                    text = "%.0f".format(forecastDay.dayPressure.toDouble() / 1.333),
                     color = currentTheme.textColor,
                     fontSize = 12.sp
                 )
@@ -222,7 +249,10 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "${forecastDay.dayTemp}C",
+                    text = forecastDay.dayTemp + when (unitsState) {
+                        UnitsType.METRIC -> "°"
+                        else -> "°F"
+                    },
                     color = currentTheme.textColor,
                     fontSize = 12.sp
                 )
@@ -237,7 +267,10 @@ fun ForecastAdditionalInfo(forecastDay: ForecastDay, currentTheme: AppThemes) {
                 tint = currentTheme.iconsTint
             )
             Text(
-                text = "${forecastDay.tempFeelsLike}°",
+                text = forecastDay.tempFeelsLike + when (unitsState) {
+                    UnitsType.METRIC -> "°"
+                    else -> "°F"
+                },
                 modifier = Modifier.weight(1f),
                 color = currentTheme.textColor,
                 fontSize = 12.sp

@@ -33,4 +33,6 @@
     <string name="settings">Настройки</string>
     <string name="metric">Метрическая</string>
     <string name="imperial">Королевская</string>
+    <string name="m_s">м/с</string>
+    <string name="f_s">ф/с</string>
 </resources>
