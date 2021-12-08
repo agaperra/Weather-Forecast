@@ -4,6 +4,7 @@ import com.agaperra.weatherforecast.domain.interactor.WeatherIconsInteractor
 import com.agaperra.weatherforecast.domain.repository.ForecastRepository
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.ErrorState
+import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.utils.Constants
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -17,12 +18,13 @@ class GetWeeklyForecast @Inject constructor(
     operator fun invoke(
         lat: Double,
         lon: Double,
-        units: String,
+        units: UnitsType,
         lang: String,
     ) = flow {
         emit(AppState.Loading())
         try {
-            val response = forecastRepository.getWeeklyForecast(lat, lon, units, lang)
+            val response =
+                forecastRepository.getWeeklyForecast(lat, lon, units.name.lowercase(), lang)
             response.forecastDays.map {
                 it.dayIcon = selectWeatherStatusIcon(it.dayStatusId)
             }
@@ -32,6 +34,7 @@ class GetWeeklyForecast @Inject constructor(
             Timber.e(exception)
         } catch (exception: Exception) {
             emit(AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION))
+            Timber.e(exception)
         }
     }
 
