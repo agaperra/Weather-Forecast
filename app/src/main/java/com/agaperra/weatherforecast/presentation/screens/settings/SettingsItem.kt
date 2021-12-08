@@ -47,7 +47,7 @@ fun SettingsItem(
         )
 
     val trackWidth = 350.dp
-    val thumbWidth = 175.dp
+    val thumbWidth = 176.dp
     val thumbHeightMax = 60.dp
 
     val minBound = 0f

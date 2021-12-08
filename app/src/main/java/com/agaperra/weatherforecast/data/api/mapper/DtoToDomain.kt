@@ -22,7 +22,7 @@ class DtoToDomain @Inject constructor(@ApplicationContext private val context: C
     fun map(weekForecast: ForecastResponse) = WeatherForecast(
         location = getLocationName(lat = weekForecast.lat, lon = weekForecast.lon),
         currentWeather = "%.0f".format(weekForecast.current.temp).addTempPrefix(),
-        currentWindSpeed = "${"%.0f".format(weekForecast.current.wind_speed)}м/с",
+        currentWindSpeed = "%.0f".format(weekForecast.current.wind_speed),
         currentHumidity = "${"%.0f".format(weekForecast.current.humidity)}%",
         currentWeatherStatus = if (weekForecast.current.weather.isNotEmpty())
             weekForecast.current.weather[0].description.capitalize()
@@ -49,7 +49,7 @@ class DtoToDomain @Inject constructor(@ApplicationContext private val context: C
                 dayStatusId = if (day.weather.isNotEmpty()) day.weather[0].id.toInt() else 800,
                 sunrise = SimpleDateFormat("HH:mm").format((day.sunrise.toString()+"000").toLong()),
                 sunset = SimpleDateFormat("HH:mm").format((day.sunset.toString()+"000").toLong()),
-                tempFeelsLike = day.feels_like.day.toInt().toString(),
+                tempFeelsLike = "%.0f".format(day.feels_like.day).addTempPrefix(),
                 dayPressure = day.pressure.toString(),
                 dayHumidity = day.humidity.toString(),
                 dayWindSpeed = day.wind_speed.toString()
