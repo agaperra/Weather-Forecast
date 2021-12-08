@@ -46,8 +46,8 @@ fun SettingsItem(
             animationSpec = animationSpec
         )
 
-    val trackWidth = 300.dp
-    val thumbWidth = 150.dp
+    val trackWidth = 350.dp
+    val thumbWidth = 175.dp
     val thumbHeightMax = 60.dp
 
     val minBound = 0f
@@ -94,9 +94,10 @@ fun SettingsItem(
 
             Row(
                 modifier = Modifier
-                    .width(300.dp)
+                    .width(350.dp)
                     .height(50.dp)
-                    .background(Color.DarkGray.copy(0.8f)),
+                    .background(Color.DarkGray.copy(0.8f))
+                    .padding(10.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
