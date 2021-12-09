@@ -362,7 +362,7 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
         verticalAlignment = Alignment.Bottom
     ) {
         itemsIndexed(items = forecast.forecastDays) { currentIndex, day ->
-            ForecastItem(sharedViewModel = sharedViewModel, forecastDay = day, appThemes = currentTheme, onClick = { cardFace ->
+            ForecastItem(forecastDay = day, appThemes = currentTheme, onClick = { cardFace ->
                 coroutineScope.launch {
                     if (cardFace == CardFace.Front) {
                         delay(500)
