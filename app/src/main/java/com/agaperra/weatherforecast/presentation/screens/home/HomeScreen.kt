@@ -285,7 +285,7 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
                     fontWeight = FontWeight.Light,
                     fontSize = 60.sp
                         )
-                        Column() {
+                        Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_wind_icon),
