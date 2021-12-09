@@ -13,5 +13,5 @@ data class ForecastDay(
     val dayPressure: String = "",
     val dayHumidity: String = "",
     val dayWindSpeed: String = "",
-    @DrawableRes var dayIcon: Int = 0,
+    @DrawableRes val dayIcon: Int = 0,
 )
