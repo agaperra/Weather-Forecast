@@ -103,12 +103,13 @@ fun WeatherScreen(
             }
             Column(modifier = Modifier.fillMaxSize()) {
                 Row(modifier = Modifier
-                    .weight(.5f)
+                    .weight(weight = .5f)
                     .fillMaxWidth(),
-                    content = {})
+                    content = {}
+                )
                 Column(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(weight = 1f)
                         .fillMaxSize()
                 ) {
                     LocationContent()
@@ -277,69 +278,71 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = forecast.currentWeather + when(unitsState) {
+                text = forecast.currentWeather + when (unitsState) {
                     UnitsType.METRIC -> "°"
-                    else -> "°F"},
-                    color = currentTheme.textColor,
-                    fontFamily = ralewayFontFamily,
-                    fontWeight = FontWeight.Light,
-                    fontSize = 60.sp
-                        )
-                        Column {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_wind_icon),
-                                    contentDescription = stringResource(R.string.icon_wind),
-                                    tint = currentTheme.iconsTint,
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .padding(
-                                            start = 20.dp,
-                                            top = 0.dp,
-                                            end = 0.dp,
-                                            bottom = 0.dp
-                                        ),
-                                )
-                                Text(
-                                    modifier = Modifier
-                                        .padding(start = 5.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-                                    text = forecast.currentWindSpeed + when(unitsState) {
-                                        UnitsType.METRIC -> stringResource(id = R.string.m_s)
-                                        else -> stringResource(id = R.string.f_s)},
-                                    color = currentTheme.textColor,
-                                    fontFamily = ralewayFontFamily,
-                                    fontWeight = FontWeight.Light,
-                                    fontSize = 18.sp
-                                )
-                            }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_humidity),
-                                    contentDescription = stringResource(R.string.icon_humidity),
-                                    tint = currentTheme.iconsTint,
-                                    modifier = Modifier
-                                        .size(30.dp)
-                                        .padding(
-                                            start = 20.dp,
-                                            top = 0.dp,
-                                            end = 0.dp,
-                                            bottom = 0.dp
-                                        ),
-                                )
-                                Text(
-                                    modifier = Modifier
-                                        .padding(start = 5.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
-                                    text = forecast.currentHumidity,
-                                    color = currentTheme.textColor,
-                                    fontFamily = ralewayFontFamily,
-                                    fontWeight = FontWeight.Light,
-                                    fontSize = 18.sp
-                                )
-                            }
-                        }
+                    else -> "°F"
+                },
+                color = currentTheme.textColor,
+                fontFamily = ralewayFontFamily,
+                fontWeight = FontWeight.Light,
+                fontSize = 60.sp
+            )
+            Column {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_wind_icon),
+                        contentDescription = stringResource(R.string.icon_wind),
+                        tint = currentTheme.iconsTint,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(
+                                start = 20.dp,
+                                top = 0.dp,
+                                end = 0.dp,
+                                bottom = 0.dp
+                            ),
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 5.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                        text = forecast.currentWindSpeed + when (unitsState) {
+                            UnitsType.METRIC -> stringResource(id = R.string.m_s)
+                            else -> stringResource(id = R.string.f_s)
+                        },
+                        color = currentTheme.textColor,
+                        fontFamily = ralewayFontFamily,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 18.sp
+                    )
                 }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_humidity),
+                        contentDescription = stringResource(R.string.icon_humidity),
+                        tint = currentTheme.iconsTint,
+                        modifier = Modifier
+                            .size(30.dp)
+                            .padding(
+                                start = 20.dp,
+                                top = 0.dp,
+                                end = 0.dp,
+                                bottom = 0.dp
+                            ),
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 5.dp, top = 0.dp, end = 0.dp, bottom = 0.dp),
+                        text = forecast.currentHumidity,
+                        color = currentTheme.textColor,
+                        fontFamily = ralewayFontFamily,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 18.sp
+                    )
+                }
+            }
         }
     }
+}
 
 @ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
@@ -355,7 +358,7 @@ fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) 
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .weight(1.9f)
+            .weight(weight = 1.9f)
             .padding(bottom = 10.dp),
         contentPadding = PaddingValues(horizontal = 5.dp),
         state = listState,

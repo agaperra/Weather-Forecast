@@ -29,11 +29,18 @@
     <string name="pressure_units_pa">Pa</string>
     <string name="temperature_units_celsius">Celsius</string>
     <string name="temperature_units_fahrenheit">Fahrenheit</string>
-    <string name="sunrise_icon" translatable="false">Sunrise icon</string>
-    <string name="refresh_icon" translatable="false">Refresh Icon</string>
     <string name="settings">Settings</string>
     <string name="metric">Metric</string>
     <string name="imperial">Imperial</string>
     <string name="m_s">m/s</string>
     <string name="f_s">f/s</string>
+
+    <string name="sunrise_icon" translatable="false">Sunrise icon</string>
+    <string name="refresh_icon" translatable="false">Refresh Icon</string>
+    <string name="sunset_icon" translatable="false">Sunset icon</string>
+    <string name="humidity_icon" translatable="false">Humidity icon</string>
+    <string name="day_wind_icon" translatable="false">Day wind icon</string>
+    <string name="day_pressure_icon" translatable="false">Day pressure icon</string>
+    <string name="termometer_icon" translatable="false">Termometer icon</string>
+    <string name="tilda_icon" translatable="false">Tilda Icon</string>
 </resources>

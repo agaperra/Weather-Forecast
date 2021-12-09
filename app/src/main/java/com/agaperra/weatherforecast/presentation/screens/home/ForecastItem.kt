@@ -175,7 +175,7 @@ fun ForecastAdditionalInfo(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_sunset),
-                    contentDescription = stringResource(R.string.sunrise_icon),
+                    contentDescription = stringResource(R.string.sunset_icon),
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -195,7 +195,7 @@ fun ForecastAdditionalInfo(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_humidity),
-                    contentDescription = stringResource(R.string.sunrise_icon),
+                    contentDescription = stringResource(R.string.humidity_icon),
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -212,7 +212,7 @@ fun ForecastAdditionalInfo(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_wind_icon),
-                    contentDescription = stringResource(R.string.sunrise_icon),
+                    contentDescription = stringResource(R.string.day_wind_icon),
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -232,7 +232,7 @@ fun ForecastAdditionalInfo(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_pressure),
-                    contentDescription = stringResource(R.string.sunrise_icon),
+                    contentDescription = stringResource(R.string.day_pressure_icon),
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -257,7 +257,7 @@ fun ForecastAdditionalInfo(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_termometer),
-                    contentDescription = stringResource(R.string.sunrise_icon),
+                    contentDescription = stringResource(R.string.termometer_icon),
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -272,7 +272,7 @@ fun ForecastAdditionalInfo(
             }
             Icon(
                 painter = painterResource(id = R.drawable.ic_tilda),
-                contentDescription = "Tilda Icon",
+                contentDescription = stringResource(R.string.tilda_icon),
                 modifier = Modifier
                     .width(10.dp)
                     .height(5.dp)
