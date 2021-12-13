@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ma météo</string>
+    <string name="icon_location">Icône de localisation</string>
+    <string name="icon_wind">Icône de vent</string>
+    <string name="icon_humidity">Icône d\'humidité</string>
+    <string name="icon_settings">Icône Paramètres</string>
+    <string name="icon_weather">Icône météo</string>
+    <string name="weather_background">Contexte météo</string>
+    <string name="unavailable_feature">Fonction non disponible</string>
+    <string name="location_rationale">L\'accès à la localisation est important pour cette application. Veuillez donner la permission.</string>
+    <string name="ok">D\'accord</string>
+    <string name="nope">Pas</string>
+    <string name="permission_denied_message">Autorisation de localisation refusée. Veuillez nous donner accès à l\'écran des paramètres.</string>
+    <string name="open_settings">Ouvrir les paramètres</string>
+    <string name="splash_screen_background">Économiseurs d\'écran en arrière-plan</string>
+    <string name="today">Aujourd\'hui</string>
+    <string name="just_updated">Récemment mis à jour</string>
+    <string name="updated_time">Mis à jour il y a %1$d minutes</string>
+    <string name="units">Unités</string>
+    <string name="preferences">Réglages</string>
+    <string name="wind">Vent</string>
+    <string name="pressure">Pression</string>
+    <string name="temperature">Température</string>
+    <string name="wind_units_meter_per_sec">m/s</string>
+    <string name="wind_units_kilometer_per_hour">kilomètres par heure</string>
+    <string name="pressure_units_mm_hg">mmHg.</string>
+    <string name="pressure_units_pa">Pa</string>
+    <string name="temperature_units_celsius">Celsius</string>
+    <string name="temperature_units_fahrenheit">Fahrenheit</string>
+    <string name="no_internet_connection">Il semble que vous n\'ayez pas de connexion Internet.</string>
+    <string name="no_internet_connection_action">Dégager</string>
+    <string name="settings">Réglages</string>
+    <string name="metric">Métrique</string>
+    <string name="imperial">Royal</string>
+    <string name="m_s">m/s</string>
+    <string name="f_s">f/s</string>
+</resources>
