@@ -35,4 +35,5 @@
     <string name="imperial">Royal</string>
     <string name="m_s">m/s</string>
     <string name="f_s">f/s</string>
+    <string name="unknown">inconnue</string>
 </resources>

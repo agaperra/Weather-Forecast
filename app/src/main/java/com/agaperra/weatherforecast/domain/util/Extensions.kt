@@ -1,6 +1,5 @@
 package com.agaperra.weatherforecast.domain.util
 
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 
@@ -13,12 +12,6 @@ fun String.addTempPrefix() = when {
     toInt() > 0 -> "+$this"
     abs(toInt()) == 0 -> "${this.toInt()}"
     else -> this
-}
-
-fun Double.toDateFormat(): String {
-    val currentDate = System.currentTimeMillis() + toLong()
-    val date = Date(currentDate)
-    return SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)
 }
 
 fun <A, B> Pair<A, B>.compare(value: Pair<A, B>): Boolean {

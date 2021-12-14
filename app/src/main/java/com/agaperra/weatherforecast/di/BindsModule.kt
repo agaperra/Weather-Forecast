@@ -3,9 +3,11 @@ package com.agaperra.weatherforecast.di
 import com.agaperra.weatherforecast.data.repository.DataStoreRepositoryImpl
 import com.agaperra.weatherforecast.data.repository.ForecastRepositoryImpl
 import com.agaperra.weatherforecast.domain.interactor.WeatherIconsInteractor
+import com.agaperra.weatherforecast.domain.interactor.WeatherStringsInteractor
 import com.agaperra.weatherforecast.domain.repository.DataStoreRepository
 import com.agaperra.weatherforecast.domain.repository.ForecastRepository
 import com.agaperra.weatherforecast.presentation.interactor.WeatherIconsInteractorImpl
+import com.agaperra.weatherforecast.presentation.interactor.WeatherStringsInteractorImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -25,5 +27,8 @@ interface BindsModule {
 
     @Binds
     fun bindIconsInteractor(weatherIconsInteractorImpl: WeatherIconsInteractorImpl): WeatherIconsInteractor
+
+    @Binds
+    fun bindWeatherStringsInteractor(weatherStringsInteractorImpl: WeatherStringsInteractorImpl): WeatherStringsInteractor
 
 }
