@@ -25,15 +25,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
-fun PreferencesScreen(sharedViewModel: SharedViewModel = hiltViewModel()) {
-    val currentTheme by sharedViewModel.currentTheme.collectAsState()
+fun PreferencesScreen() {
     val systemUiController = rememberSystemUiController()
 
     SideEffect {
         systemUiController.setStatusBarColor(darkIcons = true, color = Color.Transparent)
         systemUiController.setNavigationBarColor(
-            color = Color.Transparent,
-            darkIcons = currentTheme.useDarkNavigationIcons
+            color = secondaryPearlWhite,
+            darkIcons = true
         )
     }
 
