@@ -54,12 +54,6 @@ class DataStoreRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun persistLanguage(language: String) {
-        dataStore.edit { preference ->
-            preference[PreferencesKeys.languageKey] = language
-        }
-    }
-
     override val readLaunchState: Flow<Boolean> = dataStore.data
         .catch { exception ->
             if (exception is IOException) emit(emptyPreferences()) else throw exception
@@ -81,13 +75,6 @@ class DataStoreRepositoryImpl @Inject constructor(
             if (exception is IOException) emit(emptyPreferences()) else throw exception
         }.map { preferences ->
             preferences[PreferencesKeys.unitsKey] ?: UnitsType.METRIC.name.lowercase()
-        }
-
-    override val readLanguageSettings: Flow<String> = dataStore.data
-        .catch { exception ->
-            if (exception is IOException) emit(emptyPreferences()) else throw exception
-        }.map { preferences ->
-            preferences[PreferencesKeys.languageKey] ?: Locale.ENGLISH.toLanguageTag()
         }
 
 }

@@ -37,8 +37,6 @@ class SharedViewModel @Inject constructor(
     saveLaunchState: UpdateLaunchState,
     networkStatusListener: NetworkStatusListener,
     readUnitsSettings: ReadUnitsSettings,
-    readAppLanguage: ReadAppLanguage,
-    private val saveAppLanguage: SaveAppLanguage,
     private val updateUnitsSettings: UpdateUnitsSettings,
     private val getWeeklyForecast: GetWeeklyForecast,
     private val locationListener: LocationListener
@@ -71,9 +69,6 @@ class SharedViewModel @Inject constructor(
     private val _unitsSettings = MutableStateFlow(UnitsType.METRIC)
     val unitsSettings = _unitsSettings.asStateFlow()
 
-    private val _appLanguage = MutableStateFlow(Locale.getDefault())
-    val appLanguage = _appLanguage.asStateFlow()
-
     private val scheduledExecutorService = Executors.newScheduledThreadPool(1)
     private var future: ScheduledFuture<*>? = null
 
@@ -97,8 +92,6 @@ class SharedViewModel @Inject constructor(
                 getWeatherForecast()
             }
         }.launchIn(viewModelScope)
-
-        readAppLanguage().onEach { _appLanguage.value = it }
     }
 
     fun observeCurrentLocation() = locationListener.currentLocation.onEach { locationResult ->
@@ -147,10 +140,6 @@ class SharedViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
-    }
-
-    fun saveLanguageSettings(language: Locale) = viewModelScope.launch(Dispatchers.IO) {
-        saveAppLanguage(language = language)
     }
 
     private fun startForecastUpdateTimer() {
