@@ -32,13 +32,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @Composable
 fun ForecastItem(
     modifier: Modifier = Modifier,
-    sharedViewModel: SharedViewModel = hiltViewModel(),
     forecastDay: ForecastDay,
     appThemes: AppThemes,
     onClick: (CardFace) -> Unit
 ) {
     var cardFace by remember { mutableStateOf(CardFace.Front) }
-
 
     FlipCard(
         modifier = modifier.height(170.dp),
@@ -48,15 +46,25 @@ fun ForecastItem(
             onClick(cardFace)
             cardFace = cardFace.next
         },
-        back = { ForecastAdditionalInfo(sharedViewModel = sharedViewModel, forecastDay = forecastDay, currentTheme = appThemes) },
-        front = { ForecastMainInfo(sharedViewModel = sharedViewModel, forecastDay = forecastDay, currentTheme = appThemes) }
+        back = {
+            ForecastAdditionalInfo(
+                forecastDay = forecastDay,
+                currentTheme = appThemes
+            )
+        },
+        front = {
+            ForecastMainInfo(
+                forecastDay = forecastDay,
+                currentTheme = appThemes
+            )
+        }
     )
 }
 
 @ExperimentalCoroutinesApi
 @Composable
 fun ForecastMainInfo(
-    sharedViewModel: SharedViewModel,
+    sharedViewModel: SharedViewModel = hiltViewModel(),
     forecastDay: ForecastDay,
     currentTheme: AppThemes
 ) {
@@ -67,11 +75,12 @@ fun ForecastMainInfo(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
         modifier = Modifier
-            .padding(2.dp)
-            .width(180.dp)
+            .wrapContentWidth()
+            .padding(10.dp)
     ) {
         Text(
             text = forecastDay.dayName,
+            modifier = Modifier.weight(weight = 1f),
             color = currentTheme.textColor,
             fontWeight = FontWeight.Medium,
             fontSize = 15.sp
@@ -81,7 +90,8 @@ fun ForecastMainInfo(
             contentDescription = stringResource(R.string.icon_weather),
             modifier = Modifier
                 .padding(2.dp)
-                .size(40.dp),
+                .size(40.dp)
+                .weight(weight = 1f),
             tint = if (currentTheme.primaryColor == Color.White)
                 Color.Unspecified
             else
@@ -98,8 +108,10 @@ fun ForecastMainInfo(
             fontSize = 20.sp
         )
         Text(
-            modifier = Modifier.width(100.dp),
             text = forecastDay.dayStatus,
+            modifier = Modifier
+                .width(100.dp)
+                .weight(weight = 1f),
             textAlign = TextAlign.Center,
             color = currentTheme.textColor,
             fontFamily = ralewayFontFamily,
@@ -114,7 +126,7 @@ fun ForecastMainInfo(
 @ExperimentalCoroutinesApi
 @Composable
 fun ForecastAdditionalInfo(
-    sharedViewModel: SharedViewModel,
+    sharedViewModel: SharedViewModel = hiltViewModel(),
     forecastDay: ForecastDay,
     currentTheme: AppThemes
 ) {
@@ -163,7 +175,7 @@ fun ForecastAdditionalInfo(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_sunset),
-                    contentDescription = stringResource(R.string.sunrise_icon),
+                    contentDescription = stringResource(R.string.sunset_icon),
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -183,7 +195,7 @@ fun ForecastAdditionalInfo(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_humidity),
-                    contentDescription = stringResource(R.string.sunrise_icon),
+                    contentDescription = stringResource(R.string.humidity_icon),
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -200,14 +212,15 @@ fun ForecastAdditionalInfo(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_wind_icon),
-                    contentDescription = stringResource(R.string.sunrise_icon),
+                    contentDescription = stringResource(R.string.day_wind_icon),
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = forecastDay.dayWindSpeed + when(unitsState) {
+                    text = forecastDay.dayWindSpeed + when (unitsState) {
                         UnitsType.METRIC -> stringResource(id = R.string.m_s)
-                        else -> stringResource(id = R.string.f_s)},
+                        else -> stringResource(id = R.string.f_s)
+                    },
                     color = currentTheme.textColor,
                     fontSize = 12.sp
                 )
@@ -219,7 +232,7 @@ fun ForecastAdditionalInfo(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_pressure),
-                    contentDescription = stringResource(R.string.sunrise_icon),
+                    contentDescription = stringResource(R.string.day_pressure_icon),
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -244,7 +257,7 @@ fun ForecastAdditionalInfo(
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_termometer),
-                    contentDescription = stringResource(R.string.sunrise_icon),
+                    contentDescription = stringResource(R.string.termometer_icon),
                     tint = currentTheme.iconsTint
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -259,7 +272,7 @@ fun ForecastAdditionalInfo(
             }
             Icon(
                 painter = painterResource(id = R.drawable.ic_tilda),
-                contentDescription = "Tilda Icon",
+                contentDescription = stringResource(R.string.tilda_icon),
                 modifier = Modifier
                     .width(10.dp)
                     .height(5.dp)

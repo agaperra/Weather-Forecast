@@ -1,7 +1,7 @@
 package com.agaperra.weatherforecast.domain.repository
 
-import com.agaperra.weatherforecast.domain.model.UnitsType
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
 interface DataStoreRepository {
 

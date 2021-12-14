@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mein Wetter</string>
+    <string name="icon_location">Standort-Symbol</string>
+    <string name="icon_wind">Wind-Symbol</string>
+    <string name="icon_humidity">Feuchtigkeit-Symbol</string>
+    <string name="icon_settings">Icon Einstellungen</string>
+    <string name="icon_weather">Wetter-Symbol</string>
+    <string name="weather_background">Wetter Hintergrund</string>
+    <string name="unavailable_feature">Die Funktion ist nicht verfügbar</string>
+    <string name="location_rationale">Der Zugriff auf den Standort ist für diese App wichtig. Bitte geben Sie mir die Erlaubnis.</string>
+    <string name="ok">Ok</string>
+    <string name="nope">Nein</string>
+    <string name="permission_denied_message">Die Standortberechtigung wurde verweigert. Bitte geben Sie uns Zugriff auf den Einstellungsbildschirm.</string>
+    <string name="open_settings">Einstellungen öffnen</string>
+    <string name="splash_screen_background">Bildschirmschoner Hintergrund</string>
+    <string name="today">Heute</string>
+    <string name="just_updated">Kürzlich aktualisiert</string>
+    <string name="updated_time">Aktualisiert vor %1$d Minuten</string>
+    <string name="units">Maßeinheit</string>
+    <string name="preferences">Die Einstellungen</string>
+    <string name="wind">Der Wind</string>
+    <string name="pressure">Druck</string>
+    <string name="temperature">Temperatur</string>
+    <string name="wind_units_meter_per_sec">m/s</string>
+    <string name="wind_units_kilometer_per_hour">km/h</string>
+    <string name="pressure_units_mm_hg">mm.Hg.El.</string>
+    <string name="pressure_units_pa">Pa</string>
+    <string name="temperature_units_celsius">Celsius</string>
+    <string name="temperature_units_fahrenheit">Fahrenheit</string>
+    <string name="no_internet_connection">Es sieht so aus, als ob Sie keine Internetverbindung haben.</string>
+    <string name="no_internet_connection_action">Verständlich</string>
+    <string name="settings">Einstellungen</string>
+    <string name="metric">Metrisch</string>
+    <string name="imperial">Königlich</string>
+    <string name="m_s">m/s</string>
+    <string name="f_s">f/s</string>
+</resources>

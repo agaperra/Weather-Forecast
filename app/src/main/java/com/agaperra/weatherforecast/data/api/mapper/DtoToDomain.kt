@@ -3,20 +3,30 @@ package com.agaperra.weatherforecast.data.api.mapper
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
-import android.util.Log
+import com.agaperra.weatherforecast.data.api.dto.Daily
 import com.agaperra.weatherforecast.data.api.dto.ForecastResponse
+import com.agaperra.weatherforecast.domain.interactor.WeatherIconsInteractor
 import com.agaperra.weatherforecast.domain.model.ForecastDay
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.domain.util.addTempPrefix
 import com.agaperra.weatherforecast.domain.util.capitalize
+import com.agaperra.weatherforecast.utils.Constants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
-import java.lang.System.currentTimeMillis
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class DtoToDomain @Inject constructor(@ApplicationContext private val context: Context) {
+class DtoToDomain @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val weatherIconsInteractor: WeatherIconsInteractor
+) {
+
+    companion object {
+        private const val TIME_FORMAT = "HH:mm"
+    }
+
+    private val timeFormatter = SimpleDateFormat(TIME_FORMAT, Locale.getDefault())
 
     @SuppressLint("SimpleDateFormat")
     fun map(weekForecast: ForecastResponse) = WeatherForecast(
@@ -32,30 +42,30 @@ class DtoToDomain @Inject constructor(@ApplicationContext private val context: C
             weekForecast.current.weather[0].id.toInt()
         else
             800,
-        forecastDays = weekForecast.daily.mapIndexed { index, day ->
-            Timber.e(day.sunset.toString() + " " + day.sunrise.toString() + " " + currentTimeMillis())
-            ForecastDay(
-                dayName = getDayName(index),
-                dayStatus =
-                if (day.weather.isNotEmpty())
-                    day.weather[0].description
-                else
-                    "Unknown",
-                dayTemp =
-                if (day.weather.isNotEmpty())
-                    "%.0f".format(day.temp.day).addTempPrefix()
-                else
-                    "Undefine",
-                dayStatusId = if (day.weather.isNotEmpty()) day.weather[0].id.toInt() else 800,
-                sunrise = SimpleDateFormat("HH:mm").format((day.sunrise.toString()+"000").toLong()),
-                sunset = SimpleDateFormat("HH:mm").format((day.sunset.toString()+"000").toLong()),
-                tempFeelsLike = "%.0f".format(day.feels_like.day).addTempPrefix(),
-                dayPressure = day.pressure.toString(),
-                dayHumidity = day.humidity.toString(),
-                dayWindSpeed = day.wind_speed.toString()
-            )
-        }
+        forecastDays = weekForecast.daily.map(),
     )
+
+    private fun List<Daily>.map() = mapIndexed { index, day ->
+        ForecastDay(
+            dayName = getDayName(index),
+            dayStatus = if (day.weather.isNotEmpty())
+                day.weather[0].description
+            else
+                "Unknown",
+            dayTemp = if (day.weather.isNotEmpty())
+                "%.0f".format(day.temp.day).addTempPrefix()
+            else
+                "Undefine",
+            dayStatusId = if (day.weather.isNotEmpty()) day.weather.first().id.toInt() else 800,
+            sunrise = timeFormatter.format((day.sunrise.toString() + "000").toLong()),
+            sunset = timeFormatter.format((day.sunset.toString() + "000").toLong()),
+            tempFeelsLike = "%.0f".format(day.feels_like.day).addTempPrefix(),
+            dayPressure = day.pressure.toString(),
+            dayHumidity = day.humidity.toString(),
+            dayWindSpeed = day.wind_speed.toString(),
+            dayIcon = selectWeatherStatusIcon(day.weather.first().id.toInt())
+        )
+    }
 
     private fun getLocationName(
         lat: Double,
@@ -64,9 +74,9 @@ class DtoToDomain @Inject constructor(@ApplicationContext private val context: C
         val geocoder = Geocoder(context, Locale.getDefault())
         return try {
             val addresses = geocoder.getFromLocation(lat, lon, 1)
-            addresses.first().subAdminArea ?: addresses.first().adminArea
-        } catch (e: NullPointerException) {
-            getLocationName(lat = lat, lon = lon)
+            addresses.first().subAdminArea
+                ?: addresses.first().adminArea
+                ?: addresses.first().locality
         } catch (e: Exception) {
             Timber.e(e)
             "Unknown"
@@ -83,5 +93,15 @@ class DtoToDomain @Inject constructor(@ApplicationContext private val context: C
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DATE, dayIndex)
         SimpleDateFormat("EEE\nd/M", Locale.getDefault()).format(calendar.time).capitalize()
+    }
+
+    private fun selectWeatherStatusIcon(weatherStatusId: Int) = when (weatherStatusId) {
+        in Constants.rain_ids_range -> weatherIconsInteractor.rainIcon
+        in Constants.clouds_ids_range -> weatherIconsInteractor.cloudsIcon
+        in Constants.atmosphere_ids_range -> weatherIconsInteractor.foggyIcon
+        in Constants.snow_ids_range -> weatherIconsInteractor.snowIcon
+        in Constants.drizzle_ids_range -> weatherIconsInteractor.drizzleIcon
+        in Constants.thunderstorm_ids_range -> weatherIconsInteractor.thunderstormIcon
+        else -> weatherIconsInteractor.sunIcon
     }
 }

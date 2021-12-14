@@ -30,7 +30,7 @@ import kotlin.math.roundToInt
 
 @ExperimentalMaterialApi
 @Composable
-fun SettingsItem(
+fun SettingSwitcher(
     state: Boolean,
     settingName: Int,
     firstOption: Int,

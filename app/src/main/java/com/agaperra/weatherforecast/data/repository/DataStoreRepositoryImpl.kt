@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.domain.repository.DataStoreRepository
 import com.agaperra.weatherforecast.domain.util.Constants.FIRST_LAUNCH_PREFERENCE_KEY
+import com.agaperra.weatherforecast.domain.util.Constants.LANGUAGE_PREFERENCE_KEY
 import com.agaperra.weatherforecast.domain.util.Constants.LOCATION_PREFERENCE_KEY
 import com.agaperra.weatherforecast.domain.util.Constants.PREFERENCE_NAME
 import com.agaperra.weatherforecast.domain.util.Constants.UNITS_PREFERENCE_KEY
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
+import java.util.*
 import javax.inject.Inject
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = PREFERENCE_NAME)
@@ -29,6 +31,7 @@ class DataStoreRepositoryImpl @Inject constructor(
         val locationKey = stringPreferencesKey(name = LOCATION_PREFERENCE_KEY)
         val firstLaunchKey = booleanPreferencesKey(name = FIRST_LAUNCH_PREFERENCE_KEY)
         val unitsKey = stringPreferencesKey(name = UNITS_PREFERENCE_KEY)
+        val languageKey = stringPreferencesKey(name = LANGUAGE_PREFERENCE_KEY)
     }
 
     private val dataStore = context.dataStore
@@ -71,7 +74,7 @@ class DataStoreRepositoryImpl @Inject constructor(
         .catch { exception ->
             if (exception is IOException) emit(emptyPreferences()) else throw exception
         }.map { preferences ->
-            preferences[PreferencesKeys.unitsKey] ?: "metric"
+            preferences[PreferencesKeys.unitsKey] ?: UnitsType.METRIC.name.lowercase()
         }
 
 }
