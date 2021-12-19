@@ -9,7 +9,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class GetCityList @Inject constructor(
-    private val ciryRepository: CityRepository
+    private val cityRepository: CityRepository
 ) {
     operator fun invoke(
         namePrefix: String,
@@ -18,7 +18,7 @@ class GetCityList @Inject constructor(
         emit(AppState.Loading())
         try {
             val response =
-                ciryRepository.getCities(namePrefix, languageCode)
+                cityRepository.getCities(namePrefix, languageCode)
             emit(AppState.Success(data = response))
         } catch (exception: HttpException) {
             emit(AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION))

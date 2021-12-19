@@ -1,9 +1,11 @@
 package com.agaperra.weatherforecast.di
 
+import com.agaperra.weatherforecast.data.repository.CityRepositoryImpl
 import com.agaperra.weatherforecast.data.repository.DataStoreRepositoryImpl
 import com.agaperra.weatherforecast.data.repository.ForecastRepositoryImpl
 import com.agaperra.weatherforecast.domain.interactor.WeatherIconsInteractor
 import com.agaperra.weatherforecast.domain.interactor.WeatherStringsInteractor
+import com.agaperra.weatherforecast.domain.repository.CityRepository
 import com.agaperra.weatherforecast.domain.repository.DataStoreRepository
 import com.agaperra.weatherforecast.domain.repository.ForecastRepository
 import com.agaperra.weatherforecast.presentation.interactor.WeatherIconsInteractorImpl
@@ -21,6 +23,9 @@ interface BindsModule {
 
     @Binds
     fun bindForecastRepository(forecastRepositoryImpl: ForecastRepositoryImpl): ForecastRepository
+
+    @Binds
+    fun bindCityRepository(cityRepositoryImpl: CityRepositoryImpl): CityRepository
 
     @Binds
     fun bindDataStoreRepository(dataStoreRepositoryImpl: DataStoreRepositoryImpl): DataStoreRepository
