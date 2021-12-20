@@ -35,7 +35,7 @@ import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.presentation.components.CardFace
 import com.agaperra.weatherforecast.presentation.components.PermissionsRequest
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
-import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
+import com.agaperra.weatherforecast.presentation.viewmodel.MainViewModel
 import com.agaperra.weatherforecast.utils.Constants.HOME_SCREEN_BACKGROUND_ANIMATION_DURATION
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
@@ -50,12 +50,12 @@ import kotlinx.coroutines.launch
 @ExperimentalPermissionsApi
 @Composable
 fun HomeScreen(
-    sharedViewmodel: SharedViewModel = hiltViewModel(),
+    mainViewmodel: MainViewModel = hiltViewModel(),
     navigateToPreferencesScreen: () -> Unit
 ) {
     val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
-    val currentTheme by sharedViewmodel.currentTheme.collectAsState()
+    val currentTheme by mainViewmodel.currentTheme.collectAsState()
 
     LaunchedEffect(key1 = currentTheme) {
         systemUiController.setStatusBarColor(darkIcons = true, color = Color.Transparent)
@@ -70,7 +70,7 @@ fun HomeScreen(
         navigateToSettingsScreen = { context.startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS)) },
         content = {
             LaunchedEffect(key1 = true) {
-                sharedViewmodel.observeCurrentLocation()
+                mainViewmodel.observeCurrentLocation()
             }
             WeatherScreen(navigateToPreferencesScreen = navigateToPreferencesScreen)
         })
@@ -80,10 +80,10 @@ fun HomeScreen(
 @ExperimentalCoroutinesApi
 @Composable
 fun WeatherScreen(
-    sharedViewModel: SharedViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel(),
     navigateToPreferencesScreen: () -> Unit
 ) {
-    val weatherTheme by sharedViewModel.currentTheme.collectAsState()
+    val weatherTheme by mainViewModel.currentTheme.collectAsState()
 
     val scaffoldState = rememberScaffoldState()
 
@@ -139,9 +139,9 @@ fun WeatherScreen(
 
 @ExperimentalCoroutinesApi
 @Composable
-fun ErrorContent(scaffoldState: ScaffoldState, sharedViewModel: SharedViewModel = hiltViewModel()) {
+fun ErrorContent(scaffoldState: ScaffoldState, mainViewModel: MainViewModel = hiltViewModel()) {
     val scope = rememberCoroutineScope()
-    val errorState by sharedViewModel.error.collectAsState()
+    val errorState by mainViewModel.error.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(key1 = errorState) {
@@ -164,12 +164,12 @@ fun ErrorContent(scaffoldState: ScaffoldState, sharedViewModel: SharedViewModel 
 @ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.LocationContent(
-    sharedViewModel: SharedViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel()
 ) {
 
-    val currentTheme by sharedViewModel.currentTheme.collectAsState()
-    val forecast by sharedViewModel.weatherForecast.collectAsState()
-    val forecastUpdateTime by sharedViewModel.weatherLastUpdate.collectAsState()
+    val currentTheme by mainViewModel.currentTheme.collectAsState()
+    val forecast by mainViewModel.weatherForecast.collectAsState()
+    val forecastUpdateTime by mainViewModel.weatherLastUpdate.collectAsState()
 
     Row(
         modifier = Modifier
@@ -213,12 +213,12 @@ fun ColumnScope.LocationContent(
 
 @ExperimentalCoroutinesApi
 @Composable
-fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltViewModel()) {
+fun ColumnScope.CurrentWeatherContent(mainViewModel: MainViewModel = hiltViewModel()) {
 
-    val unitsState by sharedViewModel.unitsSettings.collectAsState()
-    val currentTheme by sharedViewModel.currentTheme.collectAsState()
-    val forecast by sharedViewModel.weatherForecast.collectAsState()
-    val isForecastLoading by sharedViewModel.isForecastLoading.collectAsState()
+    val unitsState by mainViewModel.unitsSettings.collectAsState()
+    val currentTheme by mainViewModel.currentTheme.collectAsState()
+    val forecast by mainViewModel.weatherForecast.collectAsState()
+    val isForecastLoading by mainViewModel.isForecastLoading.collectAsState()
 
     var currentRotationAngle by remember { mutableStateOf(0f) }
     val rotation = remember { Animatable(currentRotationAngle) }
@@ -269,7 +269,7 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
                     .rotate(rotation.value)
                     .clickable {
                         if (!rotation.isRunning)
-                            sharedViewModel.getWeatherForecast()
+                            mainViewModel.getWeatherForecast()
                     },
                 tint = currentTheme.iconsTint
             )
@@ -347,10 +347,10 @@ fun ColumnScope.CurrentWeatherContent(sharedViewModel: SharedViewModel = hiltVie
 @ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
-fun ColumnScope.WeatherList(sharedViewModel: SharedViewModel = hiltViewModel()) {
+fun ColumnScope.WeatherList(mainViewModel: MainViewModel = hiltViewModel()) {
 
-    val forecast by sharedViewModel.weatherForecast.collectAsState()
-    val currentTheme by sharedViewModel.currentTheme.collectAsState()
+    val forecast by mainViewModel.weatherForecast.collectAsState()
+    val currentTheme by mainViewModel.currentTheme.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()

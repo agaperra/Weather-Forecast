@@ -24,7 +24,7 @@ import com.agaperra.weatherforecast.presentation.components.CardFace
 import com.agaperra.weatherforecast.presentation.components.FlipCard
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
-import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
+import com.agaperra.weatherforecast.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -64,12 +64,12 @@ fun ForecastItem(
 @ExperimentalCoroutinesApi
 @Composable
 fun ForecastMainInfo(
-    sharedViewModel: SharedViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel(),
     forecastDay: ForecastDay,
     currentTheme: AppThemes
 ) {
 
-    val unitsState by sharedViewModel.unitsSettings.collectAsState()
+    val unitsState by mainViewModel.unitsSettings.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -126,12 +126,12 @@ fun ForecastMainInfo(
 @ExperimentalCoroutinesApi
 @Composable
 fun ForecastAdditionalInfo(
-    sharedViewModel: SharedViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel(),
     forecastDay: ForecastDay,
     currentTheme: AppThemes
 ) {
 
-    val unitsState by sharedViewModel.unitsSettings.collectAsState()
+    val unitsState by mainViewModel.unitsSettings.collectAsState()
 
     Column(
         modifier = Modifier

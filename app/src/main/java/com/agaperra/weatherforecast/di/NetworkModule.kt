@@ -1,7 +1,9 @@
 package com.agaperra.weatherforecast.di
 
 import android.content.Context
+import com.agaperra.weatherforecast.data.api.CityApi
 import com.agaperra.weatherforecast.data.api.ForecastApi
+import com.agaperra.weatherforecast.domain.util.Constants.CITY_API_URL
 import com.agaperra.weatherforecast.utils.network.NetworkStatusListener
 import com.agaperra.weatherforecast.domain.util.Constants.WEATHER_API_URL
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
@@ -39,6 +41,16 @@ object NetworkModule {
         .addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
         .build()
         .create(ForecastApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideCityApiService(client: OkHttpClient): CityApi = Retrofit.Builder()
+        .client(client)
+        .baseUrl(CITY_API_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
+        .build()
+        .create(CityApi::class.java)
 
     @ExperimentalCoroutinesApi
     @Singleton

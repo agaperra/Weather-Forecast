@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @HiltViewModel
-class SharedViewModel @Inject constructor(
+class MainViewModel @Inject constructor(
     readLaunchState: ReadLaunchState,
     saveLaunchState: UpdateLaunchState,
     networkStatusListener: NetworkStatusListener,
