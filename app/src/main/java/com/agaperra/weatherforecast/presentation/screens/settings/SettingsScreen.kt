@@ -17,7 +17,7 @@ import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.theme.secondaryPearlWhite
-import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
+import com.agaperra.weatherforecast.presentation.viewmodel.MainViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -50,8 +50,8 @@ fun PreferencesScreen() {
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @Composable
-fun PreferencesContent(textColor: Color, sharedViewModel: SharedViewModel = hiltViewModel()) {
-    val unitsState by sharedViewModel.unitsSettings.collectAsState()
+fun PreferencesContent(textColor: Color, mainViewModel: MainViewModel = hiltViewModel()) {
+    val unitsState by mainViewModel.unitsSettings.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.Start, modifier = Modifier
@@ -73,7 +73,7 @@ fun PreferencesContent(textColor: Color, sharedViewModel: SharedViewModel = hilt
             secondOption = R.string.imperial,
             textColor = textColor
         ) {
-            sharedViewModel.updateUnitsSetting()
+            mainViewModel.updateUnitsSetting()
         }
     }
 }

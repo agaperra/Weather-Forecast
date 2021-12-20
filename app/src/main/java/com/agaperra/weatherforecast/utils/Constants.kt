@@ -1,7 +1,11 @@
 package com.agaperra.weatherforecast.utils
 
+import androidx.compose.ui.unit.dp
+
 object Constants {
     const val HOME_SCREEN_BACKGROUND_ANIMATION_DURATION = 1000
+
+    val TOP_APPBAR_HEIGHT = 56.dp
 
     val thunderstorm_ids_range = 200..232
     val drizzle_ids_range = 300..321

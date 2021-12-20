@@ -2,10 +2,12 @@ package com.agaperra.weatherforecast.data.api.mapper
 
 import android.content.Context
 import android.location.Geocoder
+import com.agaperra.weatherforecast.data.api.dto.CityResponse
 import com.agaperra.weatherforecast.data.api.dto.Daily
 import com.agaperra.weatherforecast.data.api.dto.ForecastResponse
 import com.agaperra.weatherforecast.domain.interactor.WeatherIconsInteractor
 import com.agaperra.weatherforecast.domain.interactor.WeatherStringsInteractor
+import com.agaperra.weatherforecast.domain.model.City
 import com.agaperra.weatherforecast.domain.model.ForecastDay
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.domain.util.addTempPrefix
@@ -109,4 +111,8 @@ class DtoToDomain @Inject constructor(
         in Constants.thunderstorm_ids_range -> weatherIconsInteractor.thunderstormIcon
         else -> weatherIconsInteractor.sunIcon
     }
+}
+
+fun List<CityResponse>.toDomain(): List<City> = map { response ->
+    City(name = response.name, longitude = response.longitude, latitude = response.latitude)
 }

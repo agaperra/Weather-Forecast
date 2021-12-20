@@ -2,8 +2,9 @@ package com.agaperra.weatherforecast.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
-val black = Color(0xFF000000)
-val white = Color(0xFFFFFFFF)
+val Black = Color(0xFF000000)
+val White = Color(0xFFFFFFFF)
+val MediumGray = Color(0xFF9C9C9C)
 
 //UI colors
 val firstGrayBlue = Color(0xFF393E5B)

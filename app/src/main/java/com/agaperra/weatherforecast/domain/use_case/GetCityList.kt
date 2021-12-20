@@ -12,13 +12,13 @@ class GetCityList @Inject constructor(
     private val cityRepository: CityRepository
 ) {
     operator fun invoke(
-        namePrefix: String,
+        cityName: String,
         languageCode: String
     ) = flow {
         emit(AppState.Loading())
         try {
             val response =
-                cityRepository.getCities(namePrefix, languageCode)
+                cityRepository.getCities(cityName, languageCode)
             emit(AppState.Success(data = response))
         } catch (exception: HttpException) {
             emit(AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION))
