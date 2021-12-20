@@ -153,10 +153,10 @@ fun ErrorContent(scaffoldState: ScaffoldState, sharedViewModel: SharedViewModel 
                     duration = SnackbarDuration.Indefinite
                 )
             }
-            ErrorState.LOCATION_NOT_FOUND -> TODO()
-            ErrorState.NO_FORECAST_LOADED -> TODO()
-            ErrorState.NO_LOCATION_AVAILABLE -> TODO()
-            ErrorState.NO_ERROR -> Unit
+            ErrorState.LOCATION_NOT_FOUND -> Unit
+            ErrorState.NO_FORECAST_LOADED -> Unit
+            ErrorState.NO_LOCATION_AVAILABLE -> Unit
+            ErrorState.NO_ERROR -> scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
         }
     }
 }

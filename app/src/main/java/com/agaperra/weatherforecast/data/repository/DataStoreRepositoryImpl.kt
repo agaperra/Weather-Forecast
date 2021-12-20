@@ -28,10 +28,8 @@ class DataStoreRepositoryImpl @Inject constructor(
 ) : DataStoreRepository {
 
     private object PreferencesKeys {
-        val locationKey = stringPreferencesKey(name = LOCATION_PREFERENCE_KEY)
         val firstLaunchKey = booleanPreferencesKey(name = FIRST_LAUNCH_PREFERENCE_KEY)
         val unitsKey = stringPreferencesKey(name = UNITS_PREFERENCE_KEY)
-        val languageKey = stringPreferencesKey(name = LANGUAGE_PREFERENCE_KEY)
     }
 
     private val dataStore = context.dataStore
@@ -39,12 +37,6 @@ class DataStoreRepositoryImpl @Inject constructor(
     override suspend fun persistLaunchState() {
         dataStore.edit { preference ->
             preference[PreferencesKeys.firstLaunchKey] = false
-        }
-    }
-
-    override suspend fun persistLocationName(newLocation: String) {
-        dataStore.edit { preference ->
-            preference[PreferencesKeys.locationKey] = newLocation
         }
     }
 
@@ -60,14 +52,6 @@ class DataStoreRepositoryImpl @Inject constructor(
         }
         .map { preferences ->
             preferences[PreferencesKeys.firstLaunchKey] ?: true
-        }
-
-    override val readLocationState: Flow<String> = dataStore.data
-        .catch { exception ->
-            if (exception is IOException) emit(emptyPreferences()) else throw exception
-        }
-        .map { preferences ->
-            preferences[PreferencesKeys.locationKey] ?: ""
         }
 
     override val readUnitsSettings: Flow<String> = dataStore.data
