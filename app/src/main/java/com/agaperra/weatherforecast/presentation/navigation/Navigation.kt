@@ -28,7 +28,7 @@ fun SetupNavigation(navHostController: NavHostController) {
             navigateToPreferencesScreen = screens.preferences,
             navigateToSearchScreen = screens.search
         )
-        preferencesComposable()
         searchComposable()
+        preferencesComposable()
     }
 }

@@ -4,9 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -15,6 +13,7 @@ import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.presentation.theme.secondOrangeDawn
 import com.agaperra.weatherforecast.presentation.viewmodel.SearchViewModel
 import com.google.accompanist.insets.systemBarsPadding
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @ExperimentalMaterialApi
 @Composable
@@ -22,8 +21,12 @@ fun SearchScreen(
     searchViewModel: SearchViewModel = hiltViewModel()
 ) {
     val scaffoldState = rememberScaffoldState()
-
+    val systemUiController = rememberSystemUiController()
     val searchedTextState by searchViewModel.searchTextState.collectAsState()
+
+    SideEffect() {
+        systemUiController.setStatusBarColor(darkIcons = true, color = secondOrangeDawn)
+    }
 
     Box(modifier = Modifier.systemBarsPadding()) {
         Scaffold(

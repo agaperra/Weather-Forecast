@@ -80,7 +80,7 @@ fun ForecastMainInfo(
     ) {
         Text(
             text = forecastDay.dayName,
-            modifier = Modifier.weight(weight = 1f),
+            modifier = Modifier.weight(weight = 1.2f),
             color = currentTheme.textColor,
             fontWeight = FontWeight.Medium,
             fontSize = 15.sp

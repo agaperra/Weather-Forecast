@@ -184,15 +184,19 @@ fun ColumnScope.LocationContent(
             .weight(weight = 1.5f),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_location),
-            contentDescription = stringResource(R.string.icon_location),
-            tint = currentTheme.iconsTint,
-            modifier = Modifier
-                .size(45.dp)
-                .padding(end = 10.dp)
-                .clickable { navigateToSearchScreen() }
-        )
+        IconButton(
+            onClick = {
+                navigateToSearchScreen()
+            }
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_location),
+                contentDescription = stringResource(R.string.icon_location),
+                tint = currentTheme.iconsTint,
+                modifier = Modifier
+                    .size(45.dp)
+            )
+        }
         Column(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center
