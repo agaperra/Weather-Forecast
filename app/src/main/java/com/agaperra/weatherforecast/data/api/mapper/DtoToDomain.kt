@@ -2,9 +2,10 @@ package com.agaperra.weatherforecast.data.api.mapper
 
 import android.content.Context
 import android.location.Geocoder
-import com.agaperra.weatherforecast.data.api.dto.CityResponse
-import com.agaperra.weatherforecast.data.api.dto.Daily
-import com.agaperra.weatherforecast.data.api.dto.ForecastResponse
+import com.agaperra.weatherforecast.data.api.dto.city_search.CitiesResponse
+import com.agaperra.weatherforecast.data.api.dto.day_forecast.DayForecastResponse
+import com.agaperra.weatherforecast.data.api.dto.week_forecast.Daily
+import com.agaperra.weatherforecast.data.api.dto.week_forecast.ForecastResponse
 import com.agaperra.weatherforecast.domain.interactor.WeatherIconsInteractor
 import com.agaperra.weatherforecast.domain.interactor.WeatherStringsInteractor
 import com.agaperra.weatherforecast.domain.model.City
@@ -51,6 +52,18 @@ class DtoToDomain @Inject constructor(
         forecastDays = weekForecast.daily.map(),
     )
 
+    fun map(dayForecastResponse: DayForecastResponse) = ForecastDay(
+        dayName = getTodayDate(),
+        dayStatus = dayForecastResponse.weather.first().main,
+        dayIcon = selectWeatherStatusIcon(dayForecastResponse.weather.first().id),
+        dayTemp = dayForecastResponse.main.temp.toString(),
+        dayPressure = dayForecastResponse.main.pressure.toString(),
+        dayHumidity = dayForecastResponse.main.humidity.toString(),
+        dayWindSpeed = dayForecastResponse.wind.speed.toString(),
+        sunrise = timeFormatter.format("${dayForecastResponse.sys.sunrise}000".toLong()),
+        sunset = timeFormatter.format("${dayForecastResponse.sys.sunset}000".toLong())
+    )
+
     private fun List<Daily>.map() = mapIndexed { index, day ->
         ForecastDay(
             dayName = getDayName(index),
@@ -63,8 +76,8 @@ class DtoToDomain @Inject constructor(
             else
                 weatherStringsInteractor.unknown,
             dayStatusId = if (day.weather.isNotEmpty()) day.weather.first().id.toInt() else 800,
-            sunrise = timeFormatter.format((day.sunrise.toString() + "000").toLong()),
-            sunset = timeFormatter.format((day.sunset.toString() + "000").toLong()),
+            sunrise = timeFormatter.format("${day.sunrise}000".toLong()),
+            sunset = timeFormatter.format("${day.sunset}000".toLong()),
             tempFeelsLike = DOUBLE_NUMBERS_FORMAT.format(day.feels_like.day).addTempPrefix(),
             dayPressure = day.pressure.toString(),
             dayHumidity = day.humidity.toString(),
@@ -102,6 +115,11 @@ class DtoToDomain @Inject constructor(
             SimpleDateFormat(DATE_FORMAT, Locale.getDefault()).format(calendar.time).capitalize()
         }
 
+    private fun getTodayDate() = SimpleDateFormat(
+        TODAY_DATE_FORMAT,
+        Locale.getDefault()
+    ).format(Calendar.getInstance().time)
+
     private fun selectWeatherStatusIcon(weatherStatusId: Int) = when (weatherStatusId) {
         in Constants.rain_ids_range -> weatherIconsInteractor.rainIcon
         in Constants.clouds_ids_range -> weatherIconsInteractor.cloudsIcon
@@ -113,6 +131,6 @@ class DtoToDomain @Inject constructor(
     }
 }
 
-fun List<CityResponse>.toDomain(): List<City> = map { response ->
-    City(name = response.name, longitude = response.longitude, latitude = response.latitude)
+fun CitiesResponse.toDomain(): List<City> = data.map { city ->
+    City(name = "${city.name}, ${city.country}", longitude = city.longitude, latitude = city.latitude)
 }

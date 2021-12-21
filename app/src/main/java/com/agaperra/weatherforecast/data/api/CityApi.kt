@@ -1,6 +1,6 @@
 package com.agaperra.weatherforecast.data.api
 
-import com.agaperra.weatherforecast.data.api.dto.CityResponse
+import com.agaperra.weatherforecast.data.api.dto.city_search.CitiesResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 import javax.inject.Singleton
@@ -12,5 +12,5 @@ interface CityApi {
     suspend fun getCityList(
         @Query("namePrefix") namePrefix: String,
         @Query("languageCode") languageCode: String
-    ): List<CityResponse>
+    ): CitiesResponse
 }

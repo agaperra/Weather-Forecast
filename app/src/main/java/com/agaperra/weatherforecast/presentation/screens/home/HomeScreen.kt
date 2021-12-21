@@ -51,7 +51,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     mainViewmodel: MainViewModel = hiltViewModel(),
-    navigateToPreferencesScreen: () -> Unit
+    navigateToPreferencesScreen: () -> Unit,
+    navigateToSearchScreen: () -> Unit
 ) {
     val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
@@ -72,7 +73,10 @@ fun HomeScreen(
             LaunchedEffect(key1 = true) {
                 mainViewmodel.observeCurrentLocation()
             }
-            WeatherScreen(navigateToPreferencesScreen = navigateToPreferencesScreen)
+            WeatherScreen(
+                navigateToPreferencesScreen = navigateToPreferencesScreen,
+                navigateToSearchScreen = navigateToSearchScreen
+            )
         })
 }
 
@@ -81,7 +85,8 @@ fun HomeScreen(
 @Composable
 fun WeatherScreen(
     mainViewModel: MainViewModel = hiltViewModel(),
-    navigateToPreferencesScreen: () -> Unit
+    navigateToPreferencesScreen: () -> Unit,
+    navigateToSearchScreen: () -> Unit
 ) {
     val weatherTheme by mainViewModel.currentTheme.collectAsState()
 
@@ -112,7 +117,7 @@ fun WeatherScreen(
                         .weight(weight = 1f)
                         .fillMaxSize()
                 ) {
-                    LocationContent()
+                    LocationContent(navigateToSearchScreen = navigateToSearchScreen)
                     CurrentWeatherContent()
                     WeatherList()
                     ErrorContent(scaffoldState = scaffoldState)
@@ -164,7 +169,8 @@ fun ErrorContent(scaffoldState: ScaffoldState, mainViewModel: MainViewModel = hi
 @ExperimentalCoroutinesApi
 @Composable
 fun ColumnScope.LocationContent(
-    mainViewModel: MainViewModel = hiltViewModel()
+    mainViewModel: MainViewModel = hiltViewModel(),
+    navigateToSearchScreen: () -> Unit
 ) {
 
     val currentTheme by mainViewModel.currentTheme.collectAsState()
@@ -185,6 +191,7 @@ fun ColumnScope.LocationContent(
             modifier = Modifier
                 .size(45.dp)
                 .padding(end = 10.dp)
+                .clickable { navigateToSearchScreen() }
         )
         Column(
             horizontalAlignment = Alignment.Start,

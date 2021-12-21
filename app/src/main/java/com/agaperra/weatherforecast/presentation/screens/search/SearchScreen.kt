@@ -1,38 +1,49 @@
 package com.agaperra.weatherforecast.presentation.screens.search
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import com.agaperra.weatherforecast.domain.model.City
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.presentation.theme.secondOrangeDawn
-import timber.log.Timber
+import com.agaperra.weatherforecast.presentation.viewmodel.SearchViewModel
+import com.google.accompanist.insets.systemBarsPadding
 
+@ExperimentalMaterialApi
 @Composable
-fun SearchScreen() {
-
+fun SearchScreen(
+    searchViewModel: SearchViewModel = hiltViewModel()
+) {
     val scaffoldState = rememberScaffoldState()
 
-    var searchedTextState by remember { mutableStateOf("") }
-    var searchedCities by remember { mutableStateOf(listOf<City>()) }
+    val searchedTextState by searchViewModel.searchTextState.collectAsState()
 
-    Scaffold(
-        scaffoldState = scaffoldState,
-        topBar = {
-            SearchAppBar(
-                searchedTextState = searchedTextState,
-                onTextChange = { searchedTextState = it },
-                onSearchClicked = {})
-        },
-        content = {
-            SearchScreenContent(cities = searchedCities, onCityClicked = { coordinates ->
-                Timber.d(coordinates.toString())
-            })
-        },
-        floatingActionButton = { SearchCityFab(onSearchClicked = {}) }
-    )
+    Box(modifier = Modifier.systemBarsPadding()) {
+        Scaffold(
+            scaffoldState = scaffoldState,
+            topBar = {
+                SearchAppBar(
+                    searchedTextState = searchedTextState,
+                    onTextChange = { searchViewModel.updateTextState(it) },
+                    onSearchClicked = { searchViewModel.getCitiesList() })
+            },
+            content = {
+                SearchScreenContent(onCityClicked = { coordinates ->
+                    searchViewModel.getForecast(coordinates = coordinates)
+                })
+            },
+            floatingActionButton = {
+                SearchCityFab(onSearchClicked = searchViewModel::getCitiesList)
+            }
+        )
+    }
 }
 
 @Composable
@@ -43,14 +54,8 @@ fun SearchCityFab(onSearchClicked: () -> Unit) {
     ) {
         Icon(
             imageVector = Icons.Filled.Search,
-            contentDescription = "Search Icon",
+            contentDescription = stringResource(R.string.search_icon),
             tint = Color.White
         )
     }
-}
-
-@Preview
-@Composable
-fun SearchScreenPreview() {
-    SearchScreen()
 }

@@ -1,8 +1,8 @@
-package com.agaperra.weatherforecast.data.api.dto
+package com.agaperra.weatherforecast.data.api.dto.city_search
 
 import com.google.gson.annotations.SerializedName
 
-data class CityResponse(
+data class Data(
     @SerializedName("city")
     val city: String,
     @SerializedName("country")

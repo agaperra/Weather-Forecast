@@ -6,19 +6,17 @@ import com.agaperra.weatherforecast.domain.repository.CityRepository
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 class GetCityList @Inject constructor(
     private val cityRepository: CityRepository
 ) {
-    operator fun invoke(
-        cityName: String,
-        languageCode: String
-    ) = flow {
+    operator fun invoke(cityName: String) = flow {
         emit(AppState.Loading())
         try {
             val response =
-                cityRepository.getCities(cityName, languageCode)
+                cityRepository.getCities(cityName, Locale.getDefault().language)
             emit(AppState.Success(data = response))
         } catch (exception: HttpException) {
             emit(AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION))

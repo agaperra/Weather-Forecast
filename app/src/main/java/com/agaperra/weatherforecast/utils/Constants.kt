@@ -7,6 +7,11 @@ object Constants {
 
     val TOP_APPBAR_HEIGHT = 56.dp
 
+    const val SPLASH_SCREEN = "splash"
+    const val HOME_SCREEN = "home"
+    const val PREFERENCES_SCREEN = "preferences"
+    const val SEARCH_SCREEN = "search"
+
     val thunderstorm_ids_range = 200..232
     val drizzle_ids_range = 300..321
     val rain_ids_range = 500..531

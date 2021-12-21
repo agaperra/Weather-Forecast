@@ -7,8 +7,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.domain.repository.DataStoreRepository
 import com.agaperra.weatherforecast.domain.util.Constants.FIRST_LAUNCH_PREFERENCE_KEY
-import com.agaperra.weatherforecast.domain.util.Constants.LANGUAGE_PREFERENCE_KEY
-import com.agaperra.weatherforecast.domain.util.Constants.LOCATION_PREFERENCE_KEY
 import com.agaperra.weatherforecast.domain.util.Constants.PREFERENCE_NAME
 import com.agaperra.weatherforecast.domain.util.Constants.UNITS_PREFERENCE_KEY
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -17,7 +15,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
-import java.util.*
 import javax.inject.Inject
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = PREFERENCE_NAME)
