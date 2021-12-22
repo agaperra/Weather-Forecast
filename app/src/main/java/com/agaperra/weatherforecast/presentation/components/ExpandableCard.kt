@@ -19,12 +19,14 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.agaperra.weatherforecast.presentation.theme.Shapes
+import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 
 @ExperimentalMaterialApi
 @Composable
@@ -32,6 +34,7 @@ fun ExpandableCard(
     title: String,
     titleFontSize: TextUnit = MaterialTheme.typography.h6.fontSize,
     textFontWeight: FontWeight = FontWeight.Bold,
+    textFontFamily: FontFamily = ralewayFontFamily,
     shape: Shape = Shapes.medium,
     padding: Dp = 12.dp,
     isExpanded: Boolean,
@@ -68,7 +71,8 @@ fun ExpandableCard(
                     fontWeight = textFontWeight,
                     fontSize = titleFontSize,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    fontFamily = textFontFamily
                 )
                 IconButton(
                     modifier = Modifier

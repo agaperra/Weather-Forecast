@@ -97,7 +97,8 @@ fun CityItem(
                 is AppState.Success -> dayForecast.data?.let { CityDayForecast(dayForecast = it) }
             }
         },
-        isExpanded = isExpanded
+        isExpanded = isExpanded,
+        textFontFamily = ralewayFontFamily
     )
 }
 
@@ -133,14 +134,15 @@ fun CityDayForecast(
             .onGloballyPositioned { size = it.size }
     ) {
         Column(
-            modifier = Modifier.weight(1.4f),
+            modifier = Modifier.weight(1.4f).fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
+                modifier = Modifier.padding(bottom = 10.dp),
                 text = dayForecast.dayName,
                 color = Color.Black,
                 fontFamily = ralewayFontFamily,
-                fontSize = 17.sp
+                fontSize = 18.sp
             )
             Icon(
                 painter = painterResource(id = dayForecast.dayIcon),
