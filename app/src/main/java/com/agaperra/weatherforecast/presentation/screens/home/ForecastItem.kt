@@ -202,7 +202,8 @@ fun ForecastAdditionalInfo(
                 Text(
                     text = "${forecastDay.dayHumidity}%",
                     color = currentTheme.textColor,
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
+                    fontFamily = ralewayFontFamily
                 )
             }
             Row(
@@ -222,7 +223,8 @@ fun ForecastAdditionalInfo(
                         else -> stringResource(id = R.string.f_s)
                     },
                     color = currentTheme.textColor,
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
+                    fontFamily = ralewayFontFamily
                 )
             }
             Row(
@@ -237,9 +239,10 @@ fun ForecastAdditionalInfo(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "%.0f".format(forecastDay.dayPressure.toDouble() / 1.333),
+                    text = "%.0f".format(forecastDay.dayPressure.toDouble() / 1.333) +" "+ stringResource(id = R.string.pressure_units_mm_hg),
                     color = currentTheme.textColor,
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
+                    fontFamily = ralewayFontFamily
                 )
             }
         }

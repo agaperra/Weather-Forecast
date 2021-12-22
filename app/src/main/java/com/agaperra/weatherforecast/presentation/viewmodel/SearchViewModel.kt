@@ -6,6 +6,7 @@ import com.agaperra.weatherforecast.domain.model.*
 import com.agaperra.weatherforecast.domain.use_case.GetCityList
 import com.agaperra.weatherforecast.domain.use_case.GetDayForecast
 import com.agaperra.weatherforecast.domain.use_case.ReadUnitsSettings
+import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +24,10 @@ class SearchViewModel @Inject constructor(
     private val _searchTextState = MutableStateFlow("")
     val searchTextState = _searchTextState.asStateFlow()
 
-    private var unitsSettings = UnitsType.METRIC
+    private val _unitsSettings = MutableStateFlow(UnitsType.METRIC)
+    val unitsSettings = _unitsSettings.asStateFlow()
+
+//    private var unitsSettings = UnitsType.METRIC
 
     private val _dayForecast = MutableStateFlow<AppState<ForecastDay>>(AppState.Loading())
     val dayForecast = _dayForecast.asStateFlow()
@@ -31,8 +35,13 @@ class SearchViewModel @Inject constructor(
     private val _citiesList = MutableStateFlow<AppState<List<City>>>(AppState.Loading())
     val citiesList = _citiesList.asStateFlow()
 
+    private val _currentTheme = MutableStateFlow<AppThemes>(AppThemes.SunnyTheme())
+    val currentTheme = _currentTheme.asStateFlow()
+
     init {
-        readUnitsSettings().onEach { unitsSettings = it }.launchIn(viewModelScope)
+        readUnitsSettings().onEach { unit ->
+            _unitsSettings.value = unit
+        }.launchIn(viewModelScope)
     }
 
     fun getCitiesList() = getCityList(searchTextState.value).onEach { result ->

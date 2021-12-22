@@ -25,6 +25,7 @@ import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.City
 import com.agaperra.weatherforecast.domain.model.ForecastDay
+import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.presentation.components.ExpandableCard
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.SearchViewModel
@@ -117,8 +118,11 @@ fun DayForecastError() {
 }
 
 @Composable
-fun CityDayForecast(dayForecast: ForecastDay) {
+fun CityDayForecast(
+    searchViewModel: SearchViewModel = hiltViewModel(),
+    dayForecast: ForecastDay) {
 
+    val unitsState by searchViewModel.unitsSettings.collectAsState()
     var size by remember { mutableStateOf(IntSize.Zero) }
 
     Row(
@@ -129,7 +133,7 @@ fun CityDayForecast(dayForecast: ForecastDay) {
             .onGloballyPositioned { size = it.size }
     ) {
         Column(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1.4f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -145,7 +149,10 @@ fun CityDayForecast(dayForecast: ForecastDay) {
                 tint = Color.Unspecified
             )
             Text(
-                text = dayForecast.dayTemp,
+                text = dayForecast.dayTemp + when (unitsState) {
+                    UnitsType.METRIC -> "°"
+                    else -> "°F"
+                },
                 color = Color.Black,
                 fontFamily = ralewayFontFamily,
                 fontWeight = FontWeight.Medium,
@@ -244,7 +251,10 @@ fun CityDayForecast(dayForecast: ForecastDay) {
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = dayForecast.dayWindSpeed,
+                            text = dayForecast.dayWindSpeed + when (unitsState) {
+                                UnitsType.METRIC -> stringResource(id = R.string.m_s)
+                                else -> stringResource(id = R.string.f_s)
+                            },
                             color = Color.Black,
                             fontFamily = ralewayFontFamily,
                             fontWeight = FontWeight.Medium
@@ -262,7 +272,8 @@ fun CityDayForecast(dayForecast: ForecastDay) {
                     contentDescription = stringResource(id = R.string.day_pressure_icon)
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = dayForecast.dayPressure)
+                Text(text = dayForecast.dayPressure +" "+ stringResource(id = R.string.pressure_units_mm_hg),
+                    fontFamily = ralewayFontFamily)
             }
         }
     }

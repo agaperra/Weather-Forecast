@@ -20,12 +20,17 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 fun SearchScreen(
     searchViewModel: SearchViewModel = hiltViewModel()
 ) {
+    val currentTheme by searchViewModel.currentTheme.collectAsState()
     val scaffoldState = rememberScaffoldState()
     val systemUiController = rememberSystemUiController()
     val searchedTextState by searchViewModel.searchTextState.collectAsState()
 
     SideEffect() {
         systemUiController.setStatusBarColor(darkIcons = true, color = secondOrangeDawn)
+        systemUiController.setNavigationBarColor(
+            color = secondOrangeDawn,
+            darkIcons = currentTheme.useDarkNavigationIcons
+        )
     }
 
     Box(modifier = Modifier.systemBarsPadding()) {
