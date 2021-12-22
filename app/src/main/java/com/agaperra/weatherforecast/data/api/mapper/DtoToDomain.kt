@@ -59,7 +59,7 @@ class DtoToDomain @Inject constructor(
         dayTemp = DOUBLE_NUMBERS_FORMAT.format(dayForecastResponse.main.temp),
         dayPressure = DOUBLE_NUMBERS_FORMAT.format(dayForecastResponse.main.pressure / 1.333),
         dayHumidity = "${dayForecastResponse.main.humidity}%",
-        dayWindSpeed =  DOUBLE_NUMBERS_FORMAT.format(dayForecastResponse.wind.speed),
+        dayWindSpeed = DOUBLE_NUMBERS_FORMAT.format(dayForecastResponse.wind.speed),
         sunrise = timeFormatter.format("${dayForecastResponse.sys.sunrise}000".toLong()),
         sunset = timeFormatter.format("${dayForecastResponse.sys.sunset}000".toLong())
     )
@@ -132,5 +132,9 @@ class DtoToDomain @Inject constructor(
 }
 
 fun CitiesResponse.toDomain(): List<City> = data.map { city ->
-    City(name = "${city.name}, ${city.country}", longitude = city.longitude, latitude = city.latitude)
-}
+    City(
+        name = "${city.name}, ${city.country}",
+        longitude = city.longitude,
+        latitude = city.latitude
+    )
+}.distinctBy { it.name }

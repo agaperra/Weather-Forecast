@@ -13,7 +13,6 @@ class GetDayForecast @Inject constructor(
     private val forecastRepository: ForecastRepository
 ) {
     operator fun invoke(lat: Double, lon: Double, units: UnitsType) = flow {
-        emit(AppState.Loading())
         try {
             val dayForecast = forecastRepository.getDayForecast(
                 lat = lat,

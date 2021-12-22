@@ -28,6 +28,7 @@ import com.agaperra.weatherforecast.domain.model.ForecastDay
 import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.presentation.components.ExpandableCard
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
+import com.agaperra.weatherforecast.presentation.theme.secondOrangeDawn
 import com.agaperra.weatherforecast.presentation.viewmodel.SearchViewModel
 
 @ExperimentalMaterialApi
@@ -40,13 +41,20 @@ fun SearchScreenContent(
 
     when (searchedCities) {
         is AppState.Error -> EmptyContent()
-        is AppState.Loading -> EmptyContent()
+        is AppState.Loading -> CitiesLoading()
         is AppState.Success -> searchedCities.data?.let { cities ->
             DisplayCities(
                 cities = cities,
                 onCityClicked = { onCityClicked(it) }
             )
         }
+    }
+}
+
+@Composable
+fun CitiesLoading() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(modifier = Modifier.size(30.dp), color = secondOrangeDawn)
     }
 }
 
@@ -121,7 +129,8 @@ fun DayForecastError() {
 @Composable
 fun CityDayForecast(
     searchViewModel: SearchViewModel = hiltViewModel(),
-    dayForecast: ForecastDay) {
+    dayForecast: ForecastDay
+) {
 
     val unitsState by searchViewModel.unitsSettings.collectAsState()
     var size by remember { mutableStateOf(IntSize.Zero) }
@@ -134,7 +143,9 @@ fun CityDayForecast(
             .onGloballyPositioned { size = it.size }
     ) {
         Column(
-            modifier = Modifier.weight(1.4f).fillMaxHeight(),
+            modifier = Modifier
+                .weight(1.4f)
+                .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -274,8 +285,10 @@ fun CityDayForecast(
                     contentDescription = stringResource(id = R.string.day_pressure_icon)
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = dayForecast.dayPressure +" "+ stringResource(id = R.string.pressure_units_mm_hg),
-                    fontFamily = ralewayFontFamily)
+                Text(
+                    text = dayForecast.dayPressure + " " + stringResource(id = R.string.pressure_units_mm_hg),
+                    fontFamily = ralewayFontFamily
+                )
             }
         }
     }

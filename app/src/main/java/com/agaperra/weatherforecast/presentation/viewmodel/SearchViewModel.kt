@@ -7,7 +7,9 @@ import com.agaperra.weatherforecast.domain.use_case.GetCityList
 import com.agaperra.weatherforecast.domain.use_case.GetDayForecast
 import com.agaperra.weatherforecast.domain.use_case.ReadUnitsSettings
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
+import com.agaperra.weatherforecast.utils.Constants.CITY_CARD_ANIMATION_DURATION
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -27,16 +29,11 @@ class SearchViewModel @Inject constructor(
     private val _unitsSettings = MutableStateFlow(UnitsType.METRIC)
     val unitsSettings = _unitsSettings.asStateFlow()
 
-//    private var unitsSettings = UnitsType.METRIC
-
     private val _dayForecast = MutableStateFlow<AppState<ForecastDay>>(AppState.Loading())
     val dayForecast = _dayForecast.asStateFlow()
 
-    private val _citiesList = MutableStateFlow<AppState<List<City>>>(AppState.Loading())
+    private val _citiesList = MutableStateFlow<AppState<List<City>>>(AppState.Success(listOf()))
     val citiesList = _citiesList.asStateFlow()
-
-    private val _currentTheme = MutableStateFlow<AppThemes>(AppThemes.SunnyTheme())
-    val currentTheme = _currentTheme.asStateFlow()
 
     init {
         readUnitsSettings().onEach { unit ->
@@ -48,13 +45,17 @@ class SearchViewModel @Inject constructor(
         _citiesList.value = result
     }.launchIn(viewModelScope)
 
-    fun getForecast(coordinates: Pair<Double, Double>) = getDayForecast(
-        coordinates.first,
-        coordinates.second,
-        units = UnitsType.METRIC
-    ).onEach { result ->
-        _dayForecast.value = result
-    }.launchIn(viewModelScope)
+    fun getForecast(coordinates: Pair<Double, Double>) {
+        _dayForecast.value = AppState.Loading()
+        getDayForecast(
+            coordinates.first,
+            coordinates.second,
+            units = UnitsType.METRIC
+        ).onEach { result ->
+            delay(CITY_CARD_ANIMATION_DURATION)
+            _dayForecast.value = result
+        }.launchIn(viewModelScope)
+    }
 
     fun updateTextState(text: String) {
         _searchTextState.value = text

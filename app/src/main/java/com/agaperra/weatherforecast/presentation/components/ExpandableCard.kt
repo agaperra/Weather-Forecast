@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.agaperra.weatherforecast.presentation.theme.Shapes
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
+import com.agaperra.weatherforecast.utils.Constants.CITY_CARD_ANIMATION_DURATION
 
 @ExperimentalMaterialApi
 @Composable
@@ -38,6 +39,7 @@ fun ExpandableCard(
     shape: Shape = Shapes.medium,
     padding: Dp = 12.dp,
     isExpanded: Boolean,
+    animationDuration: Int = CITY_CARD_ANIMATION_DURATION.toInt(),
     onCardClick: () -> Unit,
     descriptionBlock: @Composable () -> Unit,
 ) {
@@ -50,7 +52,7 @@ fun ExpandableCard(
             .fillMaxWidth()
             .animateContentSize(
                 animationSpec = tween(
-                    durationMillis = 300,
+                    durationMillis = animationDuration,
                     easing = LinearOutSlowInEasing
                 )
             ),

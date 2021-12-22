@@ -4,6 +4,7 @@ import androidx.compose.ui.unit.dp
 
 object Constants {
     const val HOME_SCREEN_BACKGROUND_ANIMATION_DURATION = 1000
+    const val CITY_CARD_ANIMATION_DURATION = 300L
 
     val TOP_APPBAR_HEIGHT = 56.dp
 

@@ -17,7 +17,8 @@ class GetCityList @Inject constructor(
         try {
             val response =
                 cityRepository.getCities(cityName, Locale.getDefault().language)
-            emit(AppState.Success(data = response))
+            if (response.isNullOrEmpty()) emit(AppState.Error(error = ErrorState.EMPTY_RESULT))
+            else emit(AppState.Success(data = response))
         } catch (exception: HttpException) {
             emit(AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION))
             Timber.e(exception)
