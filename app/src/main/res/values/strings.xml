@@ -44,4 +44,6 @@
     <string name="day_pressure_icon" translatable="false">Day pressure icon</string>
     <string name="termometer_icon" translatable="false">Termometer icon</string>
     <string name="tilda_icon" translatable="false">Tilda Icon</string>
+    <string name="day_status_icon" translatable="false">Day status icon</string>
+    <string name="search_icon" translatable="false">Search Icon</string>
 </resources>

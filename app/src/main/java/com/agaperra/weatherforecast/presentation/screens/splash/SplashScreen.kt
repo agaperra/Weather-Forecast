@@ -15,7 +15,7 @@ import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.domain.util.Constants.SPLASH_SCREEN_FIRST_LAUNCH_DELAY
 import com.agaperra.weatherforecast.domain.util.Constants.SPLASH_SCREEN_NORMAL
 import com.agaperra.weatherforecast.presentation.theme.firstGrayBlue
-import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
+import com.agaperra.weatherforecast.presentation.viewmodel.MainViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -23,10 +23,10 @@ import kotlinx.coroutines.delay
 @ExperimentalCoroutinesApi
 @Composable
 fun SplashScreen(
-    sharedViewModel: SharedViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel(),
     navigateToHomeScreen: () -> Unit,
 ) {
-    val isFirstLaunch by sharedViewModel.isFirstLaunch.collectAsState()
+    val isFirstLaunch by mainViewModel.isFirstLaunch.collectAsState()
 
     LaunchedEffect(key1 = isFirstLaunch) {
         delay(

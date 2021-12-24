@@ -63,8 +63,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
 
     // Compose
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.ui:ui:1.1.0-rc01"
+    implementation "androidx.compose.material:material:1.1.0-rc01"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation 'androidx.activity:activity-compose:1.4.0'
 
@@ -92,7 +92,7 @@ dependencies {
     def hilt_version = '2.40.5'
     implementation "com.google.dagger:hilt-android:$hilt_version"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-beta01'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-rc01'
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     // Retrofit
@@ -102,12 +102,11 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3'
 
     // Location
-    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
 
     // Navigation
-    implementation "androidx.navigation:navigation-compose:2.4.0-beta02"
     implementation 'com.google.accompanist:accompanist-navigation-animation:0.21.4-beta'
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-beta01'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-rc01'
 
     // Timber Logging
     implementation 'com.jakewharton.timber:timber:5.0.1'

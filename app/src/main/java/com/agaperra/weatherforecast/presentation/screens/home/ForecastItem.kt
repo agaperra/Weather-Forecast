@@ -24,7 +24,7 @@ import com.agaperra.weatherforecast.presentation.components.CardFace
 import com.agaperra.weatherforecast.presentation.components.FlipCard
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
-import com.agaperra.weatherforecast.presentation.viewmodel.SharedViewModel
+import com.agaperra.weatherforecast.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -64,12 +64,12 @@ fun ForecastItem(
 @ExperimentalCoroutinesApi
 @Composable
 fun ForecastMainInfo(
-    sharedViewModel: SharedViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel(),
     forecastDay: ForecastDay,
     currentTheme: AppThemes
 ) {
 
-    val unitsState by sharedViewModel.unitsSettings.collectAsState()
+    val unitsState by mainViewModel.unitsSettings.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -80,7 +80,7 @@ fun ForecastMainInfo(
     ) {
         Text(
             text = forecastDay.dayName,
-            modifier = Modifier.weight(weight = 1f),
+            modifier = Modifier.weight(weight = 1.2f),
             color = currentTheme.textColor,
             fontWeight = FontWeight.Medium,
             fontSize = 15.sp
@@ -126,12 +126,12 @@ fun ForecastMainInfo(
 @ExperimentalCoroutinesApi
 @Composable
 fun ForecastAdditionalInfo(
-    sharedViewModel: SharedViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel(),
     forecastDay: ForecastDay,
     currentTheme: AppThemes
 ) {
 
-    val unitsState by sharedViewModel.unitsSettings.collectAsState()
+    val unitsState by mainViewModel.unitsSettings.collectAsState()
 
     Column(
         modifier = Modifier
@@ -202,7 +202,8 @@ fun ForecastAdditionalInfo(
                 Text(
                     text = "${forecastDay.dayHumidity}%",
                     color = currentTheme.textColor,
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
+                    fontFamily = ralewayFontFamily
                 )
             }
             Row(
@@ -222,7 +223,8 @@ fun ForecastAdditionalInfo(
                         else -> stringResource(id = R.string.f_s)
                     },
                     color = currentTheme.textColor,
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
+                    fontFamily = ralewayFontFamily
                 )
             }
             Row(
@@ -237,9 +239,10 @@ fun ForecastAdditionalInfo(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "%.0f".format(forecastDay.dayPressure.toDouble() / 1.333),
+                    text = "%.0f".format(forecastDay.dayPressure.toDouble() / 1.333) +" "+ stringResource(id = R.string.pressure_units_mm_hg),
                     color = currentTheme.textColor,
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
+                    fontFamily = ralewayFontFamily
                 )
             }
         }

@@ -1,5 +1,6 @@
 package com.agaperra.weatherforecast.domain.repository
 
+import com.agaperra.weatherforecast.domain.model.ForecastDay
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
 
 interface ForecastRepository {
@@ -10,5 +11,12 @@ interface ForecastRepository {
         units: String,
         lang: String,
     ): WeatherForecast
+
+    suspend fun getDayForecast(
+        lat: Double,
+        lon: Double,
+        units: String,
+        lang: String,
+    ) : ForecastDay
 
 }

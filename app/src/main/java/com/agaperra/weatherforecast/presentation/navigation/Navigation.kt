@@ -5,10 +5,11 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
-import com.agaperra.weatherforecast.domain.util.Constants.SPLASH_SCREEN
 import com.agaperra.weatherforecast.presentation.navigation.destinations.homeComposable
 import com.agaperra.weatherforecast.presentation.navigation.destinations.preferencesComposable
+import com.agaperra.weatherforecast.presentation.navigation.destinations.searchComposable
 import com.agaperra.weatherforecast.presentation.navigation.destinations.splashComposable
+import com.agaperra.weatherforecast.utils.Constants.SPLASH_SCREEN
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,7 +24,11 @@ fun SetupNavigation(navHostController: NavHostController) {
 
     AnimatedNavHost(navController = navHostController, startDestination = SPLASH_SCREEN) {
         splashComposable(navigateToHomeScreen = screens.splash)
-        homeComposable(navigateToPreferencesScreen = screens.preferences)
+        homeComposable(
+            navigateToPreferencesScreen = screens.preferences,
+            navigateToSearchScreen = screens.search
+        )
+        searchComposable()
         preferencesComposable()
     }
 }
