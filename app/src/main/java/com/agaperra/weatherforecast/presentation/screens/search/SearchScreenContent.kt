@@ -6,7 +6,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,7 +41,6 @@ import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.theme.secondOrangeDawn
 import com.agaperra.weatherforecast.presentation.viewmodel.SearchViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
 @Composable
@@ -154,8 +152,7 @@ fun CityItem(
     val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
 
     if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
-        val scope = rememberCoroutineScope()
-        scope.launch {
+        LaunchedEffect(key1 = Unit) {
             delay(300)
             onRemoveCityFromFavoriteClicked()
         }
@@ -171,14 +168,14 @@ fun CityItem(
     Box(modifier = Modifier.onGloballyPositioned { parentSize = it.size }) {
         if (city.isFavorite) {
             AnimatedVisibility(
-                visible = itemAppear,
+                visible = itemAppear && !isDismissed,
                 enter = expandVertically(animationSpec = tween(durationMillis = 300)),
                 exit = shrinkVertically(animationSpec = tween(durationMillis = 300))
             ) {
                 SwipeToDismiss(
                     state = dismissState,
                     directions = setOf(DismissDirection.EndToStart),
-                    dismissThresholds = { FractionalThreshold(fraction = 0.2f) },
+                    dismissThresholds = { FractionalThreshold(fraction = 1f) },
                     background = { RedBackground(degrees = degrees) }
                 ) {
                     ExpandableCard(
@@ -190,9 +187,7 @@ fun CityItem(
                                 is AppState.Error -> DayForecastError()
                                 is AppState.Loading -> DayForecastLoading()
                                 is AppState.Success -> dayForecast.data?.let {
-                                    CityDayForecast(
-                                        dayForecast = it
-                                    )
+                                    CityDayForecast(dayForecast = it)
                                 }
                             }
                         },
@@ -211,7 +206,9 @@ fun CityItem(
                     when (dayForecast) {
                         is AppState.Error -> DayForecastError()
                         is AppState.Loading -> DayForecastLoading()
-                        is AppState.Success -> dayForecast.data?.let { CityDayForecast(dayForecast = it) }
+                        is AppState.Success -> dayForecast.data?.let {
+                            CityDayForecast(dayForecast = it)
+                        }
                     }
                 },
                 isExpanded = isExpanded,
