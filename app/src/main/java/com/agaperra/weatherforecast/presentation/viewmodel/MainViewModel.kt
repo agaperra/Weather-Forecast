@@ -7,6 +7,11 @@ import com.agaperra.weatherforecast.domain.model.ErrorState
 import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.domain.use_case.*
+import com.agaperra.weatherforecast.domain.use_case.forecast.GetWeeklyForecast
+import com.agaperra.weatherforecast.domain.use_case.preferences.ReadLaunchState
+import com.agaperra.weatherforecast.domain.use_case.preferences.ReadUnitsSettings
+import com.agaperra.weatherforecast.domain.use_case.preferences.UpdateLaunchState
+import com.agaperra.weatherforecast.domain.use_case.preferences.UpdateUnitsSettings
 import com.agaperra.weatherforecast.domain.util.compare
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import com.agaperra.weatherforecast.utils.Constants.atmosphere_ids_range

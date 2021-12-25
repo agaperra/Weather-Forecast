@@ -1,11 +1,11 @@
 package com.agaperra.weatherforecast.di
 
-import com.agaperra.weatherforecast.data.repository.CityRepositoryImpl
+import com.agaperra.weatherforecast.data.repository.CitiesRepositoryImpl
 import com.agaperra.weatherforecast.data.repository.DataStoreRepositoryImpl
 import com.agaperra.weatherforecast.data.repository.ForecastRepositoryImpl
 import com.agaperra.weatherforecast.domain.interactor.WeatherIconsInteractor
 import com.agaperra.weatherforecast.domain.interactor.WeatherStringsInteractor
-import com.agaperra.weatherforecast.domain.repository.CityRepository
+import com.agaperra.weatherforecast.domain.repository.CitiesRepository
 import com.agaperra.weatherforecast.domain.repository.DataStoreRepository
 import com.agaperra.weatherforecast.domain.repository.ForecastRepository
 import com.agaperra.weatherforecast.presentation.interactor.WeatherIconsInteractorImpl
@@ -13,9 +13,7 @@ import com.agaperra.weatherforecast.presentation.interactor.WeatherStringsIntera
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -25,7 +23,7 @@ interface BindsModule {
     fun bindForecastRepository(forecastRepositoryImpl: ForecastRepositoryImpl): ForecastRepository
 
     @Binds
-    fun bindCityRepository(cityRepositoryImpl: CityRepositoryImpl): CityRepository
+    fun bindCityRepository(cityRepositoryImpl: CitiesRepositoryImpl): CitiesRepository
 
     @Binds
     fun bindDataStoreRepository(dataStoreRepositoryImpl: DataStoreRepositoryImpl): DataStoreRepository

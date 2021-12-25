@@ -10,9 +10,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,12 +23,15 @@ import com.agaperra.weatherforecast.utils.Constants
 import com.agaperra.weatherforecast.utils.Constants.TOP_APPBAR_HEIGHT
 import com.google.accompanist.insets.statusBarsPadding
 
+@ExperimentalComposeUiApi
 @Composable
 fun SearchAppBar(
     searchedTextState: String,
     onTextChange: (String) -> Unit,
     onSearchClicked: (String) -> Unit
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -71,7 +76,10 @@ fun SearchAppBar(
                     )
                 }
             },
-            keyboardActions = KeyboardActions(onSearch = { onSearchClicked(searchedTextState) }),
+            keyboardActions = KeyboardActions(onSearch = {
+                onSearchClicked(searchedTextState)
+                keyboardController?.hide()
+            }),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             colors = TextFieldDefaults.textFieldColors(
                 cursorColor = Color.White,

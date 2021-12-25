@@ -1,4 +1,4 @@
-package com.agaperra.weatherforecast.domain.use_case
+package com.agaperra.weatherforecast.domain.use_case.preferences
 
 import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.domain.repository.DataStoreRepository

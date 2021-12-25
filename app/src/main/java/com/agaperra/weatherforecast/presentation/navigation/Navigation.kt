@@ -1,6 +1,7 @@
 package com.agaperra.weatherforecast.presentation.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -14,6 +15,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalFoundationApi
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi

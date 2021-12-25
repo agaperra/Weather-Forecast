@@ -11,6 +11,9 @@ object Constants {
 
     const val WEATHER_API_URL = "https://api.openweathermap.org"
     const val CITY_API_URL = "http://geodb-free-service.wirefreethought.com/"
+
+    const val CITIES_DATABASE_NAME = "cities_database"
+
     const val MINIMUM_DISTANCE_FOR_UPDATES: Float = 10F // в метрах
     const val MINIMUM_TIME_BETWEEN_UPDATES: Long = 2000L // в мс
 

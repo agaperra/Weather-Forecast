@@ -5,6 +5,9 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +23,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,22 +38,23 @@ import com.agaperra.weatherforecast.utils.Constants.CITY_CARD_ANIMATION_DURATION
 @Composable
 fun ExpandableCard(
     title: String,
-    titleFontSize: TextUnit = MaterialTheme.typography.h6.fontSize,
+    descriptionBlock: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    showOptions: Boolean = true,
+    titleFontSize: TextUnit = MaterialTheme.typography.subtitle1.fontSize,
     textFontWeight: FontWeight = FontWeight.Bold,
     textFontFamily: FontFamily = ralewayFontFamily,
     shape: Shape = Shapes.medium,
     padding: Dp = 12.dp,
     isExpanded: Boolean,
     animationDuration: Int = CITY_CARD_ANIMATION_DURATION.toInt(),
-    onCardClick: () -> Unit,
-    descriptionBlock: @Composable () -> Unit,
+    onCardClick: () -> Unit = {},
+    onMoreButtonClicked: () -> Unit = {}
 ) {
-    val rotationState by animateFloatAsState(
-        targetValue = if (isExpanded) 180f else 0f
-    )
+    val rotationState by animateFloatAsState(targetValue = if (isExpanded) 180f else 0f)
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .animateContentSize(
                 animationSpec = tween(
@@ -79,7 +85,7 @@ fun ExpandableCard(
                 IconButton(
                     modifier = Modifier
                         .alpha(ContentAlpha.medium)
-                        .weight(1f)
+                        .weight(weight = 1f)
                         .rotate(rotationState),
                     onClick = { onCardClick() }) {
                     Icon(
@@ -87,6 +93,17 @@ fun ExpandableCard(
                         contentDescription = "Drop-Down Arrow"
                     )
                 }
+                if (showOptions)
+                    IconButton(
+                        modifier = Modifier
+                            .alpha(ContentAlpha.medium)
+                            .weight(weight = 1f),
+                        onClick = { onMoreButtonClicked() }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Options"
+                        )
+                    }
             }
             if (isExpanded) {
                 descriptionBlock()

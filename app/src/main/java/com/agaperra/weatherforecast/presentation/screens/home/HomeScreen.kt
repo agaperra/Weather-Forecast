@@ -162,6 +162,7 @@ fun ErrorContent(scaffoldState: ScaffoldState, mainViewModel: MainViewModel = hi
             ErrorState.NO_FORECAST_LOADED -> Unit
             ErrorState.NO_LOCATION_AVAILABLE -> Unit
             ErrorState.NO_ERROR -> scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
+            else -> Unit
         }
     }
 }
