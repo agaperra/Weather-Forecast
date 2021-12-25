@@ -175,7 +175,7 @@ fun CityItem(
                 SwipeToDismiss(
                     state = dismissState,
                     directions = setOf(DismissDirection.EndToStart),
-                    dismissThresholds = { FractionalThreshold(fraction = 1f) },
+                    dismissThresholds = { FractionalThreshold(fraction = .2f) },
                     background = { RedBackground(degrees = degrees) }
                 ) {
                     ExpandableCard(
