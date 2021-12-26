@@ -101,7 +101,11 @@ fun SearchScreenContent(
 
 @Composable
 fun CitiesLoading() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp), contentAlignment = Alignment.Center
+    ) {
         CircularProgressIndicator(modifier = Modifier.size(30.dp), color = secondOrangeDawn)
     }
 }
@@ -231,7 +235,10 @@ fun CityItem(
                     .width(with(LocalDensity.current) { parentSize.width.toDp() })
                     .align(Alignment.BottomEnd)
             ) {
-                DropdownMenuItem(onClick = { onAddCityToFavoriteClicked() }) {
+                DropdownMenuItem(onClick = {
+                    onAddCityToFavoriteClicked()
+                    popupExpanded = false
+                }) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
                         contentDescription = "Add to favorite",
