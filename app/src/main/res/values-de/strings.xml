@@ -26,8 +26,6 @@
     <string name="wind_units_kilometer_per_hour">km/h</string>
     <string name="pressure_units_mm_hg">mm.Hg.El.</string>
     <string name="pressure_units_pa">Pa</string>
-    <string name="temperature_units_celsius">Celsius</string>
-    <string name="temperature_units_fahrenheit">Fahrenheit</string>
     <string name="no_internet_connection">Es sieht so aus, als ob Sie keine Internetverbindung haben.</string>
     <string name="no_internet_connection_action">Verständlich</string>
     <string name="settings">Einstellungen</string>
@@ -36,4 +34,8 @@
     <string name="m_s">m/s</string>
     <string name="f_s">f/s</string>
     <string name="unknown">Unbekannt</string>
+    <string name="add_to_favorite">Zu den Favoriten hinzufügen</string>
+    <string name="favorite_cities">Lieblingsstädte</string>
+    <string name="load_error_message">" Vorhersage für diesen Standort kann nicht geladen werden"</string>
+    <string name="no_cities_message">Keine Städte gefunden</string>
 </resources>

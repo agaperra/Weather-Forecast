@@ -26,8 +26,6 @@
     <string name="wind_units_kilometer_per_hour">kilomètres par heure</string>
     <string name="pressure_units_mm_hg">mmHg.</string>
     <string name="pressure_units_pa">Pa</string>
-    <string name="temperature_units_celsius">Celsius</string>
-    <string name="temperature_units_fahrenheit">Fahrenheit</string>
     <string name="no_internet_connection">Il semble que vous n\'ayez pas de connexion Internet.</string>
     <string name="no_internet_connection_action">Dégager</string>
     <string name="settings">Réglages</string>
@@ -36,4 +34,8 @@
     <string name="m_s">m/s</string>
     <string name="f_s">f/s</string>
     <string name="unknown">inconnue</string>
+    <string name="add_to_favorite">Ajouter aux Favoris</string>
+    <string name="favorite_cities">Villes préférées</string>
+    <string name="load_error_message">Impossible de charger les prévisions pour cet emplacement</string>
+    <string name="no_cities_message">" Aucune ville trouvée"</string>
 </resources>

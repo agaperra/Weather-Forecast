@@ -2,7 +2,6 @@ package com.agaperra.weatherforecast.presentation.screens.search
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -15,13 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
+import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.presentation.theme.secondOrangeDawn
-import com.agaperra.weatherforecast.utils.Constants
 import com.agaperra.weatherforecast.utils.Constants.TOP_APPBAR_HEIGHT
-import com.google.accompanist.insets.statusBarsPadding
 
 @ExperimentalComposeUiApi
 @Composable
@@ -62,7 +60,7 @@ fun SearchAppBar(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Search,
-                        contentDescription = "Search Icon",
+                        contentDescription = stringResource(id = R.string.search_icon),
                         tint = Color.White
                     )
                 }
@@ -71,7 +69,7 @@ fun SearchAppBar(
                 IconButton(onClick = { onTextChange("") }) {
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = "Close Icon",
+                        contentDescription = stringResource(id = R.string.close_icon),
                         tint = Color.White
                     )
                 }

@@ -61,7 +61,7 @@ fun SearchScreenContent(
     ) {
         if (favoriteCities is AppState.Success) favoriteCities.data?.let { favoriteCities ->
             Text(
-                text = "Favorite Cities",
+                text = stringResource(R.string.favorite_cities),
                 color = Color.Black,
                 modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 5.dp),
                 fontFamily = ralewayFontFamily,
@@ -241,12 +241,12 @@ fun CityItem(
                 }) {
                     Icon(
                         imageVector = Icons.Default.Favorite,
-                        contentDescription = "Add to favorite",
+                        contentDescription = stringResource(R.string.add_to_favorite),
                         modifier = Modifier.align(CenterVertically)
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = "Add to favorite",
+                        text = stringResource(R.string.add_to_favorite),
                         fontFamily = ralewayFontFamily,
                         modifier = Modifier.align(CenterVertically)
                     )
@@ -274,7 +274,7 @@ fun DayForecastError() {
             .height(100.dp)
     ) {
         Text(
-            text = "Can not load forecast for this location",
+            text = stringResource(R.string.load_error_message),
             color = secondOrangeDawn,
             fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Bold,
@@ -296,7 +296,7 @@ fun RedBackground(degrees: Float) {
         Icon(
             modifier = Modifier.rotate(degrees = degrees),
             imageVector = Icons.Filled.Delete,
-            contentDescription = "Delete Icon",
+            contentDescription = stringResource(R.string.delete_icon),
             tint = Color.White
         )
     }
@@ -339,8 +339,8 @@ fun CityDayForecast(
             )
             Text(
                 text = dayForecast.dayTemp + when (unitsState) {
-                    UnitsType.METRIC -> "°"
-                    else -> "°F"
+                    UnitsType.METRIC -> stringResource(id = R.string.temperature_units_celsius)
+                    else -> stringResource(id = R.string.temperature_units_fahrenheit)
                 },
                 color = Color.Black,
                 fontFamily = ralewayFontFamily,

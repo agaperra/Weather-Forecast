@@ -28,8 +28,8 @@
     <string name="wind_units_kilometer_per_hour">kilometer/hour</string>
     <string name="pressure_units_mm_hg">mm Hg</string>
     <string name="pressure_units_pa">Pa</string>
-    <string name="temperature_units_celsius">Celsius</string>
-    <string name="temperature_units_fahrenheit">Fahrenheit</string>
+    <string name="temperature_units_celsius" translatable="false">°</string>
+    <string name="temperature_units_fahrenheit" translatable="false">°F</string>
     <string name="settings">Settings</string>
     <string name="metric">Metric</string>
     <string name="imperial">Imperial</string>
@@ -46,4 +46,11 @@
     <string name="tilda_icon" translatable="false">Tilda Icon</string>
     <string name="day_status_icon" translatable="false">Day status icon</string>
     <string name="search_icon" translatable="false">Search Icon</string>
+    <string name="delete_icon" translatable="false">Delete Icon</string>
+    <string name="close_icon" translatable="false">Close Icon</string>
+    <string name="sad_face_icon" translatable="false">Sad Face Icon</string>
+    <string name="add_to_favorite">Add to favorite</string>
+    <string name="favorite_cities">Favorite Cities</string>
+    <string name="load_error_message">Can not load forecast for this location</string>
+    <string name="no_cities_message">No Cities Found</string>
 </resources>

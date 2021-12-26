@@ -18,7 +18,6 @@ import com.agaperra.weatherforecast.presentation.theme.secondOrangeDawn
 import com.agaperra.weatherforecast.presentation.viewmodel.SearchViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import timber.log.Timber
 
 @ExperimentalComposeUiApi
 @ExperimentalMaterialApi
