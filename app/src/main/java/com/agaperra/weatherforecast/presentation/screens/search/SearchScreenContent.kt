@@ -104,7 +104,8 @@ fun CitiesLoading() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp), contentAlignment = Alignment.Center
+            .padding(20.dp),
+        contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(modifier = Modifier.size(30.dp), color = secondOrangeDawn)
     }
@@ -122,7 +123,7 @@ fun DisplayCities(
     var lastExpandedItemPosition by remember { mutableStateOf(-1) }
 
     Column(modifier = Modifier.padding(horizontal = 15.dp)) {
-       cities.forEachIndexed { position, element   ->
+        cities.forEachIndexed { position, element ->
             CityItem(
                 city = element,
                 cityDayForecast = cityDayForecast,
@@ -136,8 +137,8 @@ fun DisplayCities(
                         } else -1
                 },
                 onAddCityToFavoriteClicked = { onAddCityToFavoriteClicked(element) },
-                onSwipeToRemove = { onSwipeToRemove(element) })
-
+                onSwipeToRemove = { onSwipeToRemove(element) }
+            )
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
