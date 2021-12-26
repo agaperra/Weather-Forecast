@@ -14,6 +14,7 @@
     <string name="open_settings">Open Settings</string>
     <string name="splash_screen_background">Splash Screen Background</string>
     <string name="today">Today</string>
+    <string name="search">Search</string>
     <string name="unknown">Unknown</string>
     <string name="just_updated">Just Updated</string>
     <string name="updated_time">Updated %1$d minutes ago</string>

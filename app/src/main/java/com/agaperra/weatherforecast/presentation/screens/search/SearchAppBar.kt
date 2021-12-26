@@ -43,7 +43,7 @@ fun SearchAppBar(
             onValueChange = { text -> onTextChange(text) },
             placeholder = {
                 Text(
-                    text = "Search",
+                    text = stringResource(id = R.string.search),
                     color = Color.White,
                     modifier = Modifier.alpha(ContentAlpha.medium)
                 )

@@ -1,5 +1,6 @@
 package com.agaperra.weatherforecast.data.db.dao
 
+
 import androidx.room.*
 import com.agaperra.weatherforecast.data.db.entities.CityEntity
 import kotlinx.coroutines.flow.Flow

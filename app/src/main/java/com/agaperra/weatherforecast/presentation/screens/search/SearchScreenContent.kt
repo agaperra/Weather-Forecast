@@ -122,12 +122,12 @@ fun DisplayCities(
     var lastExpandedItemPosition by remember { mutableStateOf(-1) }
 
     Column(modifier = Modifier.padding(horizontal = 15.dp)) {
-        repeat(cities.size) { position ->
+       cities.forEachIndexed { position, element   ->
             CityItem(
-                city = cities[position],
+                city = element,
                 cityDayForecast = cityDayForecast,
                 isExpanded = lastExpandedItemPosition != -1
-                        && cities[lastExpandedItemPosition] == cities[position],
+                        && cities[lastExpandedItemPosition] == element,
                 onCityClicked = {
                     lastExpandedItemPosition =
                         if (position != lastExpandedItemPosition) {
@@ -135,8 +135,8 @@ fun DisplayCities(
                             position
                         } else -1
                 },
-                onAddCityToFavoriteClicked = { onAddCityToFavoriteClicked(cities[position]) },
-                onSwipeToRemove = { onSwipeToRemove(cities[position]) })
+                onAddCityToFavoriteClicked = { onAddCityToFavoriteClicked(element) },
+                onSwipeToRemove = { onSwipeToRemove(element) })
 
             Spacer(modifier = Modifier.height(10.dp))
         }
