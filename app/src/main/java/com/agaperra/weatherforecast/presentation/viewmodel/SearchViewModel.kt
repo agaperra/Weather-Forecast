@@ -35,6 +35,9 @@ class SearchViewModel @Inject constructor(
     private val _dayForecast = MutableStateFlow<AppState<ForecastDay>>(AppState.Loading())
     val dayForecast = _dayForecast.asStateFlow()
 
+    private val _favoriteDayForecast = MutableStateFlow<AppState<ForecastDay>>(AppState.Loading())
+    val favoriteDayForecast = _favoriteDayForecast.asStateFlow()
+
     private val _searchedCitiesList =
         MutableStateFlow<AppState<List<CityItem>>>(AppState.Success(listOf()))
     val searchedCitiesList = _searchedCitiesList.asStateFlow()
@@ -62,10 +65,22 @@ class SearchViewModel @Inject constructor(
         getDayForecast(
             coordinates.first,
             coordinates.second,
-            units = UnitsType.METRIC
+            units = _unitsSettings.value
         ).onEach { result ->
             delay(CITY_CARD_ANIMATION_DURATION)
             _dayForecast.value = result
+        }.launchIn(viewModelScope)
+    }
+
+    fun getFavoriteCityForecast(coordinates: Pair<Double, Double>) {
+        _favoriteDayForecast.value = AppState.Loading()
+        getDayForecast(
+            coordinates.first,
+            coordinates.second,
+            units = _unitsSettings.value
+        ).onEach { result ->
+            delay(CITY_CARD_ANIMATION_DURATION)
+            _favoriteDayForecast.value = result
         }.launchIn(viewModelScope)
     }
 

@@ -48,13 +48,13 @@ fun SearchScreen(
                 SearchScreenContent(
                     onSearchedCityClicked = { coordinates ->
                         searchViewModel.getForecast(coordinates = coordinates)
-                    }, onFavoriteCityClicked = {
-                        Timber.d("OnFavoriteCityClicked()")
+                    }, onFavoriteCityClicked = { coordinates ->
+                        searchViewModel.getFavoriteCityForecast(coordinates = coordinates)
                     },
                     onAddCityToFavoriteClicked = { city ->
                         searchViewModel.addCityToFavorite(cityItem = city)
                     },
-                    onRemoveCityFromFavoriteClicked = { city ->
+                    onSwipeToRemove = { city ->
                         searchViewModel.removeCityFromFavorite(cityItem = city)
                     })
             },

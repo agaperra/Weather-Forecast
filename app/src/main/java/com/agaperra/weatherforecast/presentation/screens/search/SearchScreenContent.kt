@@ -1,6 +1,5 @@
 package com.agaperra.weatherforecast.presentation.screens.search
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -8,8 +7,8 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -48,13 +47,18 @@ fun SearchScreenContent(
     onSearchedCityClicked: (Pair<Double, Double>) -> Unit,
     onFavoriteCityClicked: (Pair<Double, Double>) -> Unit,
     onAddCityToFavoriteClicked: (CityItem) -> Unit,
-    onRemoveCityFromFavoriteClicked: (CityItem) -> Unit,
+    onSwipeToRemove: (CityItem) -> Unit,
     searchViewModel: SearchViewModel = hiltViewModel()
 ) {
     val searchedCities by searchViewModel.searchedCitiesList.collectAsState()
     val favoriteCities by searchViewModel.favoriteCitiesList.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    val favoriteCityDayForecast by searchViewModel.favoriteDayForecast.collectAsState()
+    val cityDayForecast by searchViewModel.dayForecast.collectAsState()
+
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState())
+    ) {
         if (favoriteCities is AppState.Success) favoriteCities.data?.let { favoriteCities ->
             Text(
                 text = "Favorite Cities",
@@ -66,13 +70,14 @@ fun SearchScreenContent(
             )
             DisplayCities(
                 cities = favoriteCities,
+                cityDayForecast = favoriteCityDayForecast,
                 onCityClicked = { onFavoriteCityClicked(it) },
                 onAddCityToFavoriteClicked = { onAddCityToFavoriteClicked(it) },
-                onRemoveCityFromFavoriteClicked = { onRemoveCityFromFavoriteClicked(it) }
+                onSwipeToRemove = { onSwipeToRemove(it) }
             )
             Spacer(
                 modifier = Modifier
-                    .fillMaxWidth(fraction = .8f)
+                    .fillMaxWidth(fraction = .9f)
                     .height(1.dp)
                     .background(Color.Black)
                     .align(CenterHorizontally)
@@ -82,8 +87,10 @@ fun SearchScreenContent(
             is AppState.Error -> EmptyContent()
             is AppState.Loading -> CitiesLoading()
             is AppState.Success -> searchedCities.data?.let { searchedCities ->
+                Spacer(modifier = Modifier.height(10.dp))
                 DisplayCities(
                     cities = searchedCities,
+                    cityDayForecast = cityDayForecast,
                     onCityClicked = { onSearchedCityClicked(it) },
                     onAddCityToFavoriteClicked = { onAddCityToFavoriteClicked(it) }
                 )
@@ -103,46 +110,45 @@ fun CitiesLoading() {
 @Composable
 fun DisplayCities(
     cities: List<CityItem>,
+    cityDayForecast: AppState<ForecastDay>,
     onCityClicked: (Pair<Double, Double>) -> Unit,
     onAddCityToFavoriteClicked: (CityItem) -> Unit,
-    onRemoveCityFromFavoriteClicked: (CityItem) -> Unit = {}
+    onSwipeToRemove: (CityItem) -> Unit = {}
 ) {
     var lastExpandedItemPosition by remember { mutableStateOf(-1) }
 
-    LazyColumn(contentPadding = PaddingValues(horizontal = 15.dp, vertical = 10.dp)) {
-        items(items = cities, key = { it.name }) { city ->
+    Column(modifier = Modifier.padding(horizontal = 15.dp)) {
+        repeat(cities.size) { position ->
             CityItem(
-                city = city,
+                city = cities[position],
+                cityDayForecast = cityDayForecast,
+                isExpanded = lastExpandedItemPosition != -1
+                        && cities[lastExpandedItemPosition] == cities[position],
                 onCityClicked = {
-                    val currentCityPosition = cities.indexOf(city)
                     lastExpandedItemPosition =
-                        if (currentCityPosition != lastExpandedItemPosition) {
+                        if (position != lastExpandedItemPosition) {
                             onCityClicked(it)
-                            currentCityPosition
+                            position
                         } else -1
                 },
-                isExpanded = lastExpandedItemPosition != -1 &&
-                        cities[lastExpandedItemPosition] == city,
-                onAddCityToFavoriteClicked = { onAddCityToFavoriteClicked(city) },
-                onRemoveCityFromFavoriteClicked = { onRemoveCityFromFavoriteClicked(city) }
-            )
+                onAddCityToFavoriteClicked = { onAddCityToFavoriteClicked(cities[position]) },
+                onSwipeToRemove = { onSwipeToRemove(cities[position]) })
+
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @ExperimentalMaterialApi
 @Composable
 fun CityItem(
     city: CityItem,
+    cityDayForecast: AppState<ForecastDay>,
     isExpanded: Boolean,
     onCityClicked: (Pair<Double, Double>) -> Unit,
     onAddCityToFavoriteClicked: () -> Unit,
-    onRemoveCityFromFavoriteClicked: () -> Unit,
-    searchViewModel: SearchViewModel = hiltViewModel(),
+    onSwipeToRemove: () -> Unit,
 ) {
-    val dayForecast by searchViewModel.dayForecast.collectAsState()
 
     var popupExpanded by remember { mutableStateOf(false) }
     var parentSize by remember { mutableStateOf(IntSize.Zero) }
@@ -153,8 +159,8 @@ fun CityItem(
 
     if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
         LaunchedEffect(key1 = Unit) {
-            delay(300)
-            onRemoveCityFromFavoriteClicked()
+            delay(timeMillis = 300)
+            onSwipeToRemove()
         }
     }
 
@@ -183,10 +189,10 @@ fun CityItem(
                         onCardClick = { onCityClicked(Pair(city.latitude, city.longitude)) },
                         onMoreButtonClicked = { if (!popupExpanded) popupExpanded = true },
                         descriptionBlock = {
-                            when (dayForecast) {
+                            when (cityDayForecast) {
                                 is AppState.Error -> DayForecastError()
                                 is AppState.Loading -> DayForecastLoading()
-                                is AppState.Success -> dayForecast.data?.let {
+                                is AppState.Success -> cityDayForecast.data?.let {
                                     CityDayForecast(dayForecast = it)
                                 }
                             }
@@ -203,10 +209,10 @@ fun CityItem(
                 onCardClick = { onCityClicked(Pair(city.latitude, city.longitude)) },
                 onMoreButtonClicked = { if (!popupExpanded) popupExpanded = true },
                 descriptionBlock = {
-                    when (dayForecast) {
+                    when (cityDayForecast) {
                         is AppState.Error -> DayForecastError()
                         is AppState.Loading -> DayForecastLoading()
-                        is AppState.Success -> dayForecast.data?.let {
+                        is AppState.Success -> cityDayForecast.data?.let {
                             CityDayForecast(dayForecast = it)
                         }
                     }
