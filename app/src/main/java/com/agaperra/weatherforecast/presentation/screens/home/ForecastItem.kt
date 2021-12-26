@@ -99,8 +99,8 @@ fun ForecastMainInfo(
         )
         Text(
             text = forecastDay.dayTemp + when (unitsState) {
-                UnitsType.METRIC -> "°"
-                else -> "°F"
+                UnitsType.METRIC -> stringResource(id = R.string.temperature_units_celsius)
+                else -> stringResource(id = R.string.temperature_units_fahrenheit)
             },
             color = currentTheme.textColor,
             fontFamily = ralewayFontFamily,
@@ -284,8 +284,8 @@ fun ForecastAdditionalInfo(
             )
             Text(
                 text = forecastDay.tempFeelsLike + when (unitsState) {
-                    UnitsType.METRIC -> "°"
-                    else -> "°F"
+                    UnitsType.METRIC -> stringResource(id = R.string.temperature_units_celsius)
+                    else -> stringResource(id = R.string.temperature_units_fahrenheit)
                 },
                 modifier = Modifier.weight(1f),
                 color = currentTheme.textColor,

@@ -1,28 +1,24 @@
-package com.agaperra.weatherforecast.domain.use_case
+package com.agaperra.weatherforecast.domain.use_case.cities
 
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.ErrorState
-import com.agaperra.weatherforecast.domain.model.UnitsType
-import com.agaperra.weatherforecast.domain.repository.ForecastRepository
+import com.agaperra.weatherforecast.domain.repository.CitiesRepository
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
-class GetWeeklyForecast @Inject constructor(
-    private val forecastRepository: ForecastRepository
+class GetCityList @Inject constructor(
+    private val citiesRepository: CitiesRepository
 ) {
-    operator fun invoke(
-        lat: Double,
-        lon: Double,
-        units: UnitsType,
-        lang: String,
-    ) = flow {
+    operator fun invoke(cityName: String) = flow {
         emit(AppState.Loading())
         try {
             val response =
-                forecastRepository.getWeeklyForecast(lat, lon, units.name.lowercase(), lang)
-            emit(AppState.Success(data = response))
+                citiesRepository.getCities(cityName, Locale.getDefault().language)
+            if (response.isNullOrEmpty()) emit(AppState.Error(error = ErrorState.EMPTY_RESULT))
+            else emit(AppState.Success(data = response))
         } catch (exception: HttpException) {
             emit(AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION))
             Timber.e(exception)

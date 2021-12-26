@@ -4,6 +4,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.NavHostController
 import com.agaperra.weatherforecast.presentation.navigation.destinations.homeComposable
 import com.agaperra.weatherforecast.presentation.navigation.destinations.preferencesComposable
@@ -14,6 +15,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalComposeUiApi
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi

@@ -8,7 +8,7 @@ import com.agaperra.weatherforecast.data.api.dto.week_forecast.Daily
 import com.agaperra.weatherforecast.data.api.dto.week_forecast.ForecastResponse
 import com.agaperra.weatherforecast.domain.interactor.WeatherIconsInteractor
 import com.agaperra.weatherforecast.domain.interactor.WeatherStringsInteractor
-import com.agaperra.weatherforecast.domain.model.City
+import com.agaperra.weatherforecast.domain.model.CityItem
 import com.agaperra.weatherforecast.domain.model.ForecastDay
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.domain.util.addTempPrefix
@@ -131,8 +131,8 @@ class DtoToDomain @Inject constructor(
     }
 }
 
-fun CitiesResponse.toDomain(): List<City> = data.map { city ->
-    City(
+fun CitiesResponse.toDomain(): List<CityItem> = data.map { city ->
+    CityItem(
         name = "${city.name}, ${city.country}",
         longitude = city.longitude,
         latitude = city.latitude

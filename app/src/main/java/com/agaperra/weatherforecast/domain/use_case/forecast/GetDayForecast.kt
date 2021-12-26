@@ -1,4 +1,4 @@
-package com.agaperra.weatherforecast.domain.use_case
+package com.agaperra.weatherforecast.domain.use_case.forecast
 
 import com.agaperra.weatherforecast.domain.model.AppState
 import com.agaperra.weatherforecast.domain.model.ErrorState

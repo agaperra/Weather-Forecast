@@ -15,6 +15,7 @@
     <string name="open_settings">Открыть настройки</string>
     <string name="splash_screen_background">Фон Заставки</string>
     <string name="today">Сегодня</string>
+    <string name="search">Поиск</string>
     <string name="just_updated">Недавно обновлено</string>
     <string name="updated_time">Обновлено %1$d минут назад</string>
     <string name="units">Единицы измерения</string>
@@ -26,8 +27,6 @@
     <string name="wind_units_kilometer_per_hour">км/ч</string>
     <string name="pressure_units_mm_hg">мм рт.ст.</string>
     <string name="pressure_units_pa">Па</string>
-    <string name="temperature_units_celsius">Цельсий</string>
-    <string name="temperature_units_fahrenheit">Фаренгейт</string>
     <string name="no_internet_connection">Похоже, у вас отсутствует интернет-соединение.</string>
     <string name="no_internet_connection_action">Понятно</string>
     <string name="settings">Настройки</string>
@@ -36,4 +35,8 @@
     <string name="m_s">м/с</string>
     <string name="f_s">ф/с</string>
     <string name="unknown">Неизвестно</string>
+    <string name="add_to_favorite">Добавить в избранное</string>
+    <string name="favorite_cities">Избранные города</string>
+    <string name="load_error_message">Невозможно загрузить прогноз для этого местоположения</string>
+    <string name="no_cities_message">Города не найдены</string>
 </resources>

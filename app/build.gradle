@@ -72,8 +72,9 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.google.accompanist:accompanist-systemuicontroller:0.21.4-beta'
-    implementation 'com.google.accompanist:accompanist-insets:0.21.4-beta'
-    implementation 'com.google.accompanist:accompanist-insets-ui:0.21.4-beta'
+    implementation 'com.google.accompanist:accompanist-insets:0.22.0-rc'
+    implementation 'com.google.accompanist:accompanist-insets-ui:0.22.0-rc'
+
 
     // Testing
     testImplementation 'junit:junit:4.13.2'
@@ -83,10 +84,17 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
     // Permissions
-    implementation 'com.google.accompanist:accompanist-permissions:0.21.4-beta'
+    implementation 'com.google.accompanist:accompanist-permissions:0.22.0-rc'
 
     // Preferences
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    // Room
+    def roomVersion = "2.4.0"
+    implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-common:$roomVersion"
 
     // Hilt
     def hilt_version = '2.40.5'

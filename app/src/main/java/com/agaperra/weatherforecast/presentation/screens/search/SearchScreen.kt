@@ -4,7 +4,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -15,6 +19,7 @@ import com.agaperra.weatherforecast.presentation.viewmodel.SearchViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+@ExperimentalComposeUiApi
 @ExperimentalMaterialApi
 @Composable
 fun SearchScreen(
@@ -39,9 +44,18 @@ fun SearchScreen(
                     onSearchClicked = { searchViewModel.getCitiesList() })
             },
             content = {
-                SearchScreenContent(onCityClicked = { coordinates ->
-                    searchViewModel.getForecast(coordinates = coordinates)
-                })
+                SearchScreenContent(
+                    onSearchedCityClicked = { coordinates ->
+                        searchViewModel.getForecast(coordinates = coordinates)
+                    }, onFavoriteCityClicked = { coordinates ->
+                        searchViewModel.getFavoriteCityForecast(coordinates = coordinates)
+                    },
+                    onAddCityToFavoriteClicked = { city ->
+                        searchViewModel.addCityToFavorite(cityItem = city)
+                    },
+                    onSwipeToRemove = { city ->
+                        searchViewModel.removeCityFromFavorite(cityItem = city)
+                    })
             },
             floatingActionButton = {
                 SearchCityFab(onSearchClicked = searchViewModel::getCitiesList)

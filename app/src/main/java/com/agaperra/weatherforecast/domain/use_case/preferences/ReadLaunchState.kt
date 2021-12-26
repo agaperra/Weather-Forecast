@@ -1,7 +1,6 @@
-package com.agaperra.weatherforecast.domain.use_case
+package com.agaperra.weatherforecast.domain.use_case.preferences
 
 import com.agaperra.weatherforecast.domain.repository.DataStoreRepository
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class ReadLaunchState @Inject constructor(
