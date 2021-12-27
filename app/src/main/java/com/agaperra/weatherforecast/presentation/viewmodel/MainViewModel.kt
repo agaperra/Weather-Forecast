@@ -82,8 +82,13 @@ class MainViewModel @Inject constructor(
 
         networkStatusListener.networkStatus.onEach { status ->
             when (status) {
-                ConnectionState.Available -> Timber.d(message = "Network Available")
-                ConnectionState.Unavailable -> Timber.e(message = "Network Unavailable")
+                ConnectionState.Available -> {
+                    if (_weatherForecast !is AppState.Loading<*>) getWeatherForecast()
+                }
+                ConnectionState.Unavailable -> {
+                    if (_weatherForecast.value.data != null) _weatherForecast.value =
+                        AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION)
+                }
             }
         }.launchIn(viewModelScope)
 
