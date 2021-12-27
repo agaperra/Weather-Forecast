@@ -8,10 +8,9 @@ sealed class AppState<T>(val data: T? = null, val message: ErrorState? = null) {
 
 enum class ErrorState {
     NO_INTERNET_CONNECTION,
-    LOCATION_NOT_FOUND,
     NO_FORECAST_LOADED,
     NO_LOCATION_AVAILABLE,
     EMPTY_RESULT,
     NO_SAVED_CITIES,
-    NO_ERROR
+    BAD_REQUEST
 }

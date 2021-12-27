@@ -27,7 +27,7 @@
     <string name="temperature">Temperature</string>
     <string name="wind_units_meter_per_sec">meter/sec</string>
     <string name="wind_units_kilometer_per_hour">kilometer/hour</string>
-    <string name="pressure_units_mm_hg">mm Hg</string>
+    <string name="pressure_units_mm_hg">%1$s mm Hg</string>
     <string name="pressure_units_pa">Pa</string>
     <string name="temperature_units_celsius" translatable="false">°</string>
     <string name="temperature_units_fahrenheit" translatable="false">°F</string>

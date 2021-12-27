@@ -25,7 +25,7 @@
     <string name="temperature">Température</string>
     <string name="wind_units_meter_per_sec">m/s</string>
     <string name="wind_units_kilometer_per_hour">kilomètres par heure</string>
-    <string name="pressure_units_mm_hg">mmHg.</string>
+    <string name="pressure_units_mm_hg">%1$s mmHg.</string>
     <string name="pressure_units_pa">Pa</string>
     <string name="no_internet_connection">Il semble que vous n\'ayez pas de connexion Internet.</string>
     <string name="no_internet_connection_action">Dégager</string>

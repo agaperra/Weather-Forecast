@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.presentation.theme.MediumGray
+import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 
 @Composable
 fun EmptyContent() {
@@ -36,6 +37,7 @@ fun EmptyContent() {
         Text(
             text = stringResource(id = R.string.no_cities_message),
             color = MediumGray,
+            fontFamily = ralewayFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = MaterialTheme.typography.h6.fontSize
         )
