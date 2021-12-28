@@ -463,7 +463,10 @@ fun CityDayForecast(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = dayForecast.dayPressure + " " + stringResource(id = R.string.pressure_units_mm_hg),
+                    text = String.format(
+                        stringResource(id = R.string.pressure_units_mm_hg),
+                        dayForecast.dayPressure
+                    ),
                     fontFamily = ralewayFontFamily
                 )
             }

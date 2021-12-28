@@ -25,7 +25,7 @@
     <string name="temperature">Температура</string>
     <string name="wind_units_meter_per_sec">м/с</string>
     <string name="wind_units_kilometer_per_hour">км/ч</string>
-    <string name="pressure_units_mm_hg">мм рт.ст.</string>
+    <string name="pressure_units_mm_hg">%1$s мм рт.ст.</string>
     <string name="pressure_units_pa">Па</string>
     <string name="no_internet_connection">Похоже, у вас отсутствует интернет-соединение.</string>
     <string name="no_internet_connection_action">Понятно</string>
@@ -39,4 +39,7 @@
     <string name="favorite_cities">Избранные города</string>
     <string name="load_error_message">Невозможно загрузить прогноз для этого местоположения</string>
     <string name="no_cities_message">Города не найдены</string>
+    <string name="connection_error">Извините, мы не можем загрузить прогноз для вас сейчас. Проверьте, правильно ли работают настройки вашего местоположения, и перезагрузите приложение</string>
+    <string name="location_error">Извините, мы не можем определить ваше местоположение. Пожалуйста, используйте функцию поиска, чтобы найти нужный вам прогноз.</string>
+    <string name="unknown_error">Произошла неизвестная ошибка</string>
 </resources>

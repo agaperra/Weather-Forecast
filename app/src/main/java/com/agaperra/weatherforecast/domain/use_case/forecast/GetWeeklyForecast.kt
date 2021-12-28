@@ -24,7 +24,8 @@ class GetWeeklyForecast @Inject constructor(
                 forecastRepository.getWeeklyForecast(lat, lon, units.name.lowercase(), lang)
             emit(AppState.Success(data = response))
         } catch (exception: HttpException) {
-            emit(AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION))
+            if (exception.code() != 400)
+                emit(AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION))
             Timber.e(exception)
         } catch (exception: Exception) {
             emit(AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION))

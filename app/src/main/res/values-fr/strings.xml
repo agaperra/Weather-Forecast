@@ -25,7 +25,7 @@
     <string name="temperature">Température</string>
     <string name="wind_units_meter_per_sec">m/s</string>
     <string name="wind_units_kilometer_per_hour">kilomètres par heure</string>
-    <string name="pressure_units_mm_hg">mmHg.</string>
+    <string name="pressure_units_mm_hg">%1$s mmHg.</string>
     <string name="pressure_units_pa">Pa</string>
     <string name="no_internet_connection">Il semble que vous n\'ayez pas de connexion Internet.</string>
     <string name="no_internet_connection_action">Dégager</string>
@@ -39,4 +39,7 @@
     <string name="favorite_cities">Villes préférées</string>
     <string name="load_error_message">Impossible de charger les prévisions pour cet emplacement</string>
     <string name="no_cities_message">" Aucune ville trouvée"</string>
+    <string name="connection_error">Désolé, nous ne pouvons pas charger les prévisions pour vous maintenant. Vérifiez si vos paramètres de localisation fonctionnent correctement et rechargez l\'application</string>
+    <string name="location_error">Désolé, nous ne pouvons pas reconnaître votre position. Veuillez utiliser l\'option de recherche pour trouver les prévisions dont vous avez besoin.</string>
+    <string name="unknown_error">Une Erreur inconnue S\'est produite</string>
 </resources>

@@ -53,20 +53,17 @@ class MainViewModel @Inject constructor(
 
     private val _currentLocation = MutableStateFlow(Pair(-200.0, -200.0))
 
+    private val _forecastLoading = MutableStateFlow(true)
+    val forecastLoading = _forecastLoading.asStateFlow()
+
     private val _currentTheme = MutableStateFlow<AppThemes>(AppThemes.SunnyTheme())
     val currentTheme = _currentTheme.asStateFlow()
 
     private val _isFirstLaunch = MutableStateFlow(value = true)
     val isFirstLaunch = _isFirstLaunch.asStateFlow()
 
-    private val _weatherForecast = MutableStateFlow(WeatherForecast())
+    private val _weatherForecast = MutableStateFlow<AppState<WeatherForecast>>(AppState.Loading())
     val weatherForecast = _weatherForecast.asStateFlow()
-
-    private val _isForecastLoading = MutableStateFlow(true)
-    val isForecastLoading = _isForecastLoading.asStateFlow()
-
-    private val _error = MutableStateFlow(ErrorState.NO_ERROR)
-    val error = _error.asStateFlow()
 
     private val _weatherLastUpdate = MutableStateFlow(value = 0)
     val weatherLastUpdate = _weatherLastUpdate.asStateFlow()
@@ -85,24 +82,32 @@ class MainViewModel @Inject constructor(
 
         networkStatusListener.networkStatus.onEach { status ->
             when (status) {
-                ConnectionState.Available -> if (_error.value == ErrorState.NO_INTERNET_CONNECTION)
-                    _error.value = ErrorState.NO_ERROR
-                ConnectionState.Unavailable -> _error.value = ErrorState.NO_INTERNET_CONNECTION
+                ConnectionState.Available -> {
+                    if (_weatherForecast !is AppState.Loading<*>) getWeatherForecast()
+                }
+                ConnectionState.Unavailable -> {
+                    if (_weatherForecast.value.data != null) _weatherForecast.value =
+                        AppState.Error(error = ErrorState.NO_INTERNET_CONNECTION)
+                }
             }
         }.launchIn(viewModelScope)
 
         readUnitsSettings().onEach { unit ->
             _unitsSettings.value = unit
-            if (!_isForecastLoading.value) {
-                getWeatherForecast()
-            }
+            getWeatherForecast()
         }.launchIn(viewModelScope)
     }
 
     fun observeCurrentLocation() = locationListener.currentLocation.onEach { locationResult ->
         when (locationResult) {
-            is AppState.Error -> Timber.e(locationResult.message?.name)
-            is AppState.Loading -> _isForecastLoading.value = true
+            is AppState.Error -> {
+                Timber.e(locationResult.message?.name)
+                if (_weatherForecast.value.data == null) {
+                    _weatherForecast.value =
+                        AppState.Error(error = ErrorState.NO_LOCATION_AVAILABLE)
+                }
+            }
+            is AppState.Loading -> Timber.d(message = "Location loading")
             is AppState.Success -> {
                 locationResult.data?.let { coordinates ->
                     if (coordinates.compare(_currentLocation.value)) return@let
@@ -124,24 +129,22 @@ class MainViewModel @Inject constructor(
             units = _unitsSettings.value,
             lang = Locale.getDefault().language
         ).onEach { result ->
-
             when (result) {
                 is AppState.Success -> {
-                    _currentTheme.value =
-                        selectTheme(result.data?.currentWeatherStatusId)
+                    _currentTheme.value = selectTheme(result.data?.currentWeatherStatusId)
+                    _weatherForecast.value = result
                     startForecastUpdateTimer()
-                    result.data?.let { _weatherForecast.value = it }
-                    _isForecastLoading.value = false
+                    _forecastLoading.value = false
                 }
                 is AppState.Loading -> {
+                    _forecastLoading.value = true
                     if (future?.isCancelled == false) future?.cancel(false)
                     _weatherLastUpdate.value = 0
-                    _isForecastLoading.value = true
                 }
                 is AppState.Error -> {
+                    _forecastLoading.value = false
+                    _weatherForecast.value = result
                     Timber.e(result.message?.name)
-                    _error.value = result.message ?: ErrorState.NO_FORECAST_LOADED
-                    _isForecastLoading.value = false
                 }
             }
         }.launchIn(viewModelScope)

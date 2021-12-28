@@ -2,6 +2,10 @@ package com.agaperra.weatherforecast.presentation.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -20,12 +24,48 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.domain.model.ForecastDay
 import com.agaperra.weatherforecast.domain.model.UnitsType
+import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.presentation.components.CardFace
 import com.agaperra.weatherforecast.presentation.components.FlipCard
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+@ExperimentalMaterialApi
+@ExperimentalCoroutinesApi
+@Composable
+fun ColumnScope.WeekForecastList(
+    weatherForecast: WeatherForecast,
+    currentTheme: AppThemes
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(weight = 1.9f)
+            .padding(bottom = 10.dp),
+        contentPadding = PaddingValues(horizontal = 15.dp),
+        state = listState,
+        verticalAlignment = Alignment.Bottom
+    ) {
+        itemsIndexed(items = weatherForecast.forecastDays) { currentIndex, day ->
+            ForecastItem(forecastDay = day, appThemes = currentTheme, onClick = { cardFace ->
+                coroutineScope.launch {
+                    if (cardFace == CardFace.Front) {
+                        delay(500)
+                        listState.animateScrollToItem(index = currentIndex)
+                    }
+                }
+            })
+            Spacer(modifier = Modifier.width(15.dp))
+        }
+    }
+}
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterialApi
@@ -239,7 +279,10 @@ fun ForecastAdditionalInfo(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "%.0f".format(forecastDay.dayPressure.toDouble() / 1.333) +" "+ stringResource(id = R.string.pressure_units_mm_hg),
+                    text = String.format(
+                        stringResource(id = R.string.pressure_units_mm_hg),
+                        forecastDay.dayPressure
+                    ),
                     color = currentTheme.textColor,
                     fontSize = 12.sp,
                     fontFamily = ralewayFontFamily

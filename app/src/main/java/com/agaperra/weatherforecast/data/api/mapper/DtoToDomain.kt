@@ -79,7 +79,7 @@ class DtoToDomain @Inject constructor(
             sunrise = timeFormatter.format("${day.sunrise}000".toLong()),
             sunset = timeFormatter.format("${day.sunset}000".toLong()),
             tempFeelsLike = DOUBLE_NUMBERS_FORMAT.format(day.feels_like.day).addTempPrefix(),
-            dayPressure = day.pressure.toString(),
+            dayPressure = DOUBLE_NUMBERS_FORMAT.format(day.pressure / 1.333),
             dayHumidity = day.humidity.toString(),
             dayWindSpeed = day.wind_speed.toString(),
             dayIcon = selectWeatherStatusIcon(day.weather.first().id.toInt())
