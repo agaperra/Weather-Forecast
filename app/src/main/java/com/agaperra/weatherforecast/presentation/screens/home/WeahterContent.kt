@@ -228,17 +228,19 @@ fun ColumnScope.CurrentWeatherContent(
                     animation = tween(500, easing = LinearEasing),
                     repeatMode = RepeatMode.Restart
                 )
-            )
+            ) {
+                currentRotationAngle = value
+            }
         } else {
             if (currentRotationAngle > 0f) {
                 rotation.animateTo(
-                    targetValue = currentRotationAngle + 50,
+                    targetValue = currentRotationAngle + 180f,
                     animationSpec = tween(
-                        durationMillis = 1250,
+                        durationMillis = 500,
                         easing = LinearOutSlowInEasing
                     )
                 ) {
-                    currentRotationAngle = 0f
+                    currentRotationAngle = value
                 }
             }
         }

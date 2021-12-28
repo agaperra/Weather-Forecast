@@ -129,11 +129,10 @@ class MainViewModel @Inject constructor(
             units = _unitsSettings.value,
             lang = Locale.getDefault().language
         ).onEach { result ->
-            _weatherForecast.value = result
-
             when (result) {
                 is AppState.Success -> {
                     _currentTheme.value = selectTheme(result.data?.currentWeatherStatusId)
+                    _weatherForecast.value = result
                     startForecastUpdateTimer()
                     _forecastLoading.value = false
                 }
@@ -144,6 +143,7 @@ class MainViewModel @Inject constructor(
                 }
                 is AppState.Error -> {
                     _forecastLoading.value = false
+                    _weatherForecast.value = result
                     Timber.e(result.message?.name)
                 }
             }
