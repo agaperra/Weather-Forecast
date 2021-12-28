@@ -39,4 +39,7 @@
     <string name="favorite_cities">Lieblingsstädte</string>
     <string name="load_error_message">" Vorhersage für diesen Standort kann nicht geladen werden"</string>
     <string name="no_cities_message">Keine Städte gefunden</string>
+    <string name="connection_error">Es tut uns leid, wir können jetzt keine Vorhersage für Sie laden. Überprüfen Sie, ob Ihre Standorteinstellungen korrekt funktionieren, und laden Sie die Anwendung neu</string>
+    <string name="location_error">Leider können wir Ihren Standort nicht erkennen. Bitte verwenden Sie die Suchoption, um die Prognose zu finden, die Sie benötigen.</string>
+    <string name="unknown_error">Unbekannter Fehler aufgetreten</string>
 </resources>

@@ -54,4 +54,7 @@
     <string name="favorite_cities">Favorite Cities</string>
     <string name="load_error_message">Can not load forecast for this location</string>
     <string name="no_cities_message">No Cities Found</string>
+    <string name="connection_error">Sorry, we can not load forecast for you now. Check if your location settings work correct and reload the application</string>
+    <string name="location_error">Sorry, we can not recognize your location. Please, use Search option to find forecast you need.</string>
+    <string name="unknown_error">Unknown Error Occurred</string>
 </resources>

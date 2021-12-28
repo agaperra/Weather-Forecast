@@ -39,4 +39,7 @@
     <string name="favorite_cities">Избранные города</string>
     <string name="load_error_message">Невозможно загрузить прогноз для этого местоположения</string>
     <string name="no_cities_message">Города не найдены</string>
+    <string name="connection_error">Извините, мы не можем загрузить прогноз для вас сейчас. Проверьте, правильно ли работают настройки вашего местоположения, и перезагрузите приложение</string>
+    <string name="location_error">Извините, мы не можем определить ваше местоположение. Пожалуйста, используйте функцию поиска, чтобы найти нужный вам прогноз.</string>
+    <string name="unknown_error">Произошла неизвестная ошибка</string>
 </resources>

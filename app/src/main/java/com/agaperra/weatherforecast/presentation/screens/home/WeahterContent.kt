@@ -147,9 +147,9 @@ fun ErrorContent(errorState: ErrorState) {
             modifier = Modifier.fillMaxWidth(fraction = .8f),
             text = when (errorState) {
                 ErrorState.NO_INTERNET_CONNECTION -> stringResource(id = R.string.no_internet_connection)
-                ErrorState.NO_FORECAST_LOADED -> "Sorry, we can not load forecast for you now. Check if your location settings work correct and reload the application"
-                ErrorState.NO_LOCATION_AVAILABLE -> "Sorry, we can not recognize your location. Please, use Search option to find forecast you need."
-                else -> "Unknown Error Occurred"
+                ErrorState.NO_FORECAST_LOADED -> stringResource(id = R.string.connection_error)
+                ErrorState.NO_LOCATION_AVAILABLE -> stringResource(id = R.string.location_error)
+                else -> stringResource(id = R.string.unknown_error)
             },
             color = Color.Black,
             fontFamily = ralewayFontFamily,
