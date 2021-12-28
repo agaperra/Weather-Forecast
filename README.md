@@ -11,8 +11,7 @@ The main component of dependency injection is Hilt (an add-on over Dagger).
 
 ## Functionality
 The main function of the application is to display the weather by the current location of the device. On the main screen, you can see the main current weather by location, as well as the weather forecast for the week with the ability to view in detail each of the days.
-<div align=center><img src="https://github.com/agaperra/Weather-Forecast/raw/readmeRefactoring/images/Screenshot_1640685725.png" width="300" /> <img src="https://github.com/agaperra/Weather-Forecast/raw/readmeRefactoring/imagesScreenshot_1640685889.png" width="300" /></div><br>
-
+![Image alt](https://github.com/agaperra/Weather-Forecast/raw/readmeRefactoring/images/Screenshot_1640687838.png)
 
 In addition to the above, the main screen also has the ability to update the weather by clicking on the corresponding update icon, and you can also switch to the settings screen and the search screen.
 
