@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,7 +29,6 @@ import com.agaperra.weatherforecast.domain.model.ErrorState
 import com.agaperra.weatherforecast.domain.model.UnitsType
 import com.agaperra.weatherforecast.domain.model.WeatherForecast
 import com.agaperra.weatherforecast.presentation.theme.AppThemes
-import com.agaperra.weatherforecast.presentation.theme.MediumGray
 import com.agaperra.weatherforecast.presentation.theme.ralewayFontFamily
 import com.agaperra.weatherforecast.presentation.viewmodel.MainViewModel
 import com.agaperra.weatherforecast.utils.Constants
@@ -149,11 +149,11 @@ fun ErrorContent(errorState: ErrorState) {
                 ErrorState.NO_INTERNET_CONNECTION -> stringResource(id = R.string.no_internet_connection)
                 ErrorState.NO_FORECAST_LOADED -> "Sorry, we can not load forecast for you now. Check if your location settings work correct and reload the application"
                 ErrorState.NO_LOCATION_AVAILABLE -> "Sorry, we can not recognize your location. Please, use Search option to find forecast you need."
-                else -> ""
+                else -> "Unknown Error Occurred"
             },
-            color = MediumGray,
+            color = Color.Black,
             fontFamily = ralewayFontFamily,
-            fontSize = MaterialTheme.typography.h6.fontSize,
+            fontSize = MaterialTheme.typography.h5.fontSize,
             textAlign = TextAlign.Center,
         )
     }

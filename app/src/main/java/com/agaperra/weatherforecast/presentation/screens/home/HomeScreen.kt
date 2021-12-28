@@ -24,9 +24,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalPermissionsApi
 @Composable
 fun HomeScreen(
-    mainViewmodel: MainViewModel = hiltViewModel(),
     navigateToPreferencesScreen: () -> Unit,
-    navigateToSearchScreen: () -> Unit
+    navigateToSearchScreen: () -> Unit,
+    mainViewmodel: MainViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
