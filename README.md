@@ -23,4 +23,4 @@ The settings screen allows you to change the metrics system.
 
 The search screen allows you to find the current weather in any city.
 The screen also has the ability to add a city to favorites.
-<div align=center><img src="https://github.com/agaperra/Weather-Forecast/raw/readmeRefactoring/images/Screenshot_1640687960.png" width="300" /> <img src="https://github.com/agaperra/Weather-Forecast/raw/readmeRefactoring/images/Screenshot_1640687974.png" width="300" /> <img src="https://github.com/agaperra/Weather-Forecast/raw/readmeRefactoring/images/Screenshot_1640687981.png" width="300" /></div><br>
+<div align=center><img src="https://github.com/agaperra/Weather-Forecast/raw/readmeRefactoring/images/Screenshot_1640687960.png" width="200" /> <img src="https://github.com/agaperra/Weather-Forecast/raw/readmeRefactoring/images/Screenshot_1640687974.png" width="200" /> <img src="https://github.com/agaperra/Weather-Forecast/raw/readmeRefactoring/images/Screenshot_1640687981.png" width="200" /></div><br>
