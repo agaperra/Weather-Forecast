@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import com.agaperra.weatherforecast.R
 import com.agaperra.weatherforecast.presentation.theme.secondOrangeDawn
 import com.agaperra.weatherforecast.utils.Constants.TOP_APPBAR_HEIGHT
@@ -78,7 +79,10 @@ fun SearchAppBar(
                 onSearchClicked(searchedTextState)
                 keyboardController?.hide()
             }),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Search,
+                capitalization = KeyboardCapitalization.Sentences
+            ),
             colors = TextFieldDefaults.textFieldColors(
                 cursorColor = Color.White,
                 focusedIndicatorColor = Color.Transparent,
